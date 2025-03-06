@@ -1,0 +1,639 @@
+<!-- Sidebar -->
+
+<div class="navbar-vertical navbar nav-dashboard">
+	<div class="h-100" data-simplebar>
+		<!-- Brand logo -->
+		<a class="navbar-brand" href="@@webRoot/index.html">
+			<img src="@@webRoot/assets/images/brand/logo/logo-2.svg" alt="dash ui - bootstrap 5 admin dashboard template" />
+		</a>
+		<!-- Navbar nav -->
+		<ul class="navbar-nav flex-column" id="sideNavbar">
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'pages') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navDashboard"
+					aria-expanded="false"
+					aria-controls="navDashboard"
+				>
+					<i data-feather="home" class="nav-icon me-2 icon-xxs"></i>
+					Dashboard
+				</a>
+
+				<div id="navDashboard" class="collapse @@if (context.page_group === 'pages') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'analytics') { active }" href="@@webRoot/pages/dashboard-analytics.html">Analytics</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'project') { active }" href="@@webRoot/index.html">Project</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'ecommerce') { active }" href="@@webRoot/pages/dashboard-ecommerce.html">Ecommerce</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'crm') { active }" href="@@webRoot/pages/dashboard-crm.html">CRM</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'finance') { active }" href="@@webRoot/pages/dashboard-finance.html">Finance</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'blogDashboard') { active }" href="@@webRoot/pages/dashboard-blog.html">Blog</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<!-- Nav item -->
+			<li class="nav-item">
+				<div class="navbar-heading">Apps</div>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a class="nav-link has-arrow @@if (context.page === 'calendar') { active }" href="@@webRoot/pages/calendar.html">Calendar</a>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a class="nav-link has-arrow @@if (context.page === 'chat') { active }" href="@@webRoot/pages/chat-app.html">
+					<i data-feather="message-square" class="nav-icon me-2 icon-xxs"></i>
+					Chat
+				</a>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'ecommerce') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navecommerce"
+					aria-expanded="false"
+					aria-controls="navecommerce"
+				>
+					<i data-feather="shopping-cart" class="nav-icon me-2 icon-xxs"></i>
+					Ecommerce
+				</a>
+
+				<div id="navecommerce" class="collapse @@if (context.page_group === 'ecommerce') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-productList') { active }" href="@@webRoot/pages/ecommerce-products.html">Products</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-productDetail') { active }" href="@@webRoot/pages/ecommerce-products-details.html">Product Detail</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-addProduct') { active }" href="@@webRoot/pages/ecommerce-product-edit.html">Add Product</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-orderList') { active }" href="@@webRoot/pages/ecommerce-order-list.html">Orders</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-orderDetail') { active }" href="@@webRoot/pages/ecommerce-order-detail.html">Orders Detail</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-cart') { active }" href="@@webRoot/pages/ecommerce-cart.html">Shopping cart</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'e-checkout') { active }" href="@@webRoot/pages/ecommerce-checkout.html">Checkout</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'customer') { active }" href="@@webRoot/pages/ecommerce-customer.html">Customer</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'seller') { active }" href="@@webRoot/pages/ecommerce-seller.html">Seller</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a class="nav-link has-arrow @@if (context.page_group !== 'email') { collapsed }" href="#!" data-bs-toggle="collapse" data-bs-target="#navEmail" aria-expanded="false" aria-controls="navEmail">
+					<i data-feather="mail" class="nav-icon me-2 icon-xxs"></i>
+					Email
+				</a>
+
+				<div id="navEmail" class="collapse @@if (context.page_group === 'email') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'inbox') { active }" href="@@webRoot/pages/mail.html">Inbox</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'inboxDetails') { active }" href="@@webRoot/pages/mail-details.html">Details</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'inboxDraft') { active }" href="@@webRoot/pages/mail-draft.html">Draft</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'kanban') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navKanban"
+					aria-expanded="false"
+					aria-controls="navKanban"
+				>
+					<i data-feather="layout" class="nav-icon me-2 icon-xxs"></i>
+					Kanban
+				</a>
+
+				<div id="navKanban" class="collapse @@if (context.page_group === 'kanban') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'kanban-grid') { active }" href="@@webRoot/pages/task-kanban-grid.html">Grid</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'kanban-list') { active }" href="@@webRoot/pages/task-kanban-list.html">List</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<!-- Nav item -->
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a class="nav-link @@if (context.page_group !== 'project') { collapsed }" href="#!" data-bs-toggle="collapse" data-bs-target="#navProject" aria-expanded="false" aria-controls="navProject">
+					<i class="nav-icon me-2 icon-xxs" data-feather="file"></i>
+					Project
+				</a>
+				<div id="navProject" class="collapse @@if (context.page_group === 'project') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'grid') { active }" href="@@webRoot/pages/project-grid.html">Grid</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'list') { active }" href="@@webRoot/pages/project-list.html">List</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link @@if (context.page_group_second !== 'projectSingle') { collapsed }"
+								href="#!"
+								data-bs-toggle="collapse"
+								data-bs-target="#navprojectSingle"
+								aria-expanded="false"
+								aria-controls="navprojectSingle"
+							>
+								Single
+							</a>
+							<div id="navprojectSingle" class="collapse @@if (context.page_group_second === 'projectSingle') { show }" data-bs-parent="#navProject">
+								<ul class="nav flex-column">
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'overview') { active }" href="@@webRoot/pages/project-overview.html">Overview</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'task') { active }" href="@@webRoot/pages/project-task.html">Task</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'budget') { active }" href="@@webRoot/pages/project-budget.html">Budget</a>
+									</li>
+
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'files') { active }" href="@@webRoot/pages/project-files.html">Files</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'team') { active }" href="@@webRoot/pages/project-team.html">Team</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'create-project') { active }" href="@@webRoot/pages/add-project.html">Create Project</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link @@if (context.page === 'appFileManager') { active }" href="@@webRoot/pages/apps-file-manager.html">
+					<i data-feather="folder-plus" class="nav-icon me-2 icon-xxs"></i>
+					File Manager
+				</a>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a class="nav-link has-arrow @@if (context.page_group !== 'CRM') { collapsed }" href="#!" data-bs-toggle="collapse" data-bs-target="#navCRM" aria-expanded="false" aria-controls="navCRM">
+					<i data-feather="pie-chart" class="nav-icon me-2 icon-xxs"></i>
+
+					CRM
+				</a>
+
+				<div id="navCRM" class="collapse @@if (context.page_group === 'CRM') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'crmContacts') { active }" href="@@webRoot/pages/crm-contacts.html">Contacts</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'crmCompany') { active }" href="@@webRoot/pages/crm-company.html">Company</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'crmDeals') { active }" href="@@webRoot/pages/deals.html">
+								Deals
+								<span class="badge text-bg-primary ms-2">New</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'crmDealsSingle') { active }" href="@@webRoot/pages/deals-single.html">
+								Deals Single
+								<span class="badge text-bg-primary ms-2">New</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'invoice') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navinvoice"
+					aria-expanded="false"
+					aria-controls="navinvoice"
+				>
+					<i data-feather="clipboard" class="nav-icon me-2 icon-xxs"></i>
+					Invoice
+				</a>
+
+				<div id="navinvoice" class="collapse @@if (context.page_group === 'invoice') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'invoiceList') { active }" href="@@webRoot/pages/invoice-list.html">List</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'invoiceDetail') { active }" href="@@webRoot/pages/invoice-detail.html">Detail</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'invoiceGenerator') { active }" href="@@webRoot/pages/invoice-generator.html">Invoice Generator</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a
+					class="nav-link @@if (context.page_group !== 'profilePages') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navprofilePages"
+					aria-expanded="false"
+					aria-controls="navprofilePages"
+				>
+					<i data-feather="user" class="nav-icon me-2 icon-xxs"></i>
+					Profile
+				</a>
+				<div id="navprofilePages" class="collapse @@if (context.page_group === 'profilePages') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileOverview') { active }" href="@@webRoot/pages/profile-overview.html">Overview</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileProject') { active }" href="@@webRoot/pages/profile-project.html">Project</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileFiles') { active }" href="@@webRoot/pages/profile-files.html">Files</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileTeam') { active }" href="@@webRoot/pages/profile-team.html">Team</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileFollowers') { active }" href="@@webRoot/pages/profile-followers.html">Followers</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileActivity') { active }" href="@@webRoot/pages/profile-activity.html">Activity</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'profileSettings') { active }" href="@@webRoot/pages/profile-settings.html">Settings</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a class="nav-link has-arrow @@if (context.page_group !== 'blog') { collapsed }" href="#!" data-bs-toggle="collapse" data-bs-target="#navblog" aria-expanded="false" aria-controls="navblog">
+					<i data-feather="edit" class="nav-icon me-2 icon-xxs"></i>
+					Blog
+				</a>
+
+				<div id="navblog" class="collapse @@if (context.page_group === 'blog') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'blogAuthor') { active }" href="@@webRoot/pages/blog-author.html">Author</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'blogAuthorSingle') { active }" href="@@webRoot/pages/blog-author-detail.html">Detail</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link has-arrow @@if (context.page === 'createBlogPost') { active }" href="@@webRoot/pages/create-blog-post.html">Create Post</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<!-- Nav item -->
+			<li class="nav-item">
+				<div class="navbar-heading">Layouts & Pages</div>
+			</li>
+
+			<li class="nav-item">
+				<a
+					class="nav-link @@if (context.page_group !== 'layoutPage') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navlayoutPage"
+					aria-expanded="false"
+					aria-controls="navlayoutPage"
+				>
+					<i class="nav-icon me-2 icon-xxs" data-feather="file"></i>
+					Pages
+				</a>
+				<div id="navlayoutPage" class="collapse @@if (context.page_group === 'layoutPage') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'starter') { active }" href="@@webRoot/pages/starter.html">Starter</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'pricing') { active }" href="@@webRoot/pages/pricing.html">Pricing</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'maintenance') { active }" href="@@webRoot/pages/maintenance.html">Maintenance</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === '404error') { active }" href="@@webRoot/pages/404-error.html">404 Error</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<!-- Nav item -->
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'authentication') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navAuthentication"
+					aria-expanded="false"
+					aria-controls="navAuthentication"
+				>
+					<i data-feather="lock" class="nav-icon me-2 icon-xxs"></i>
+					Authentication
+				</a>
+				<div id="navAuthentication" class="collapse @@if (context.page_group === 'authentication') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'signin') { active }" href="@@webRoot/pages/sign-in.html">Sign In</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'signup') { active }" href="@@webRoot/pages/sign-up.html">Sign Up</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'forgetpassword') { active }" href="@@webRoot/pages/forget-password.html">Forget Password</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'layout') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navLayouts"
+					aria-expanded="false"
+					aria-controls="navLayouts"
+				>
+					<i data-feather="sidebar" class="nav-icon me-2 icon-xxs"></i>
+					Layouts
+				</a>
+				<div id="navLayouts" class="collapse @@if (context.page_group === 'layout') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'defaultLayout') { active }" href="@@webRoot/index.html">Default</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'horizontalLayout') { active }" href="@@webRoot/horizontal/index.html">Horizontal</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<!-- Nav item -->
+			<li class="nav-item">
+				<div class="navbar-heading">UI Components</div>
+			</li>
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'components') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navComponents"
+					aria-expanded="false"
+					aria-controls="navComponents"
+				>
+					<i data-feather="package" class="nav-icon me-2 icon-xxs"></i>
+					Components
+				</a>
+				<div id="navComponents" class="collapse @@if (context.page_group === 'components') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/accordions.html" class="nav-link @@if (context.page === 'compoAccordions') { active }">Accordions</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link @@if (context.page === 'compoAlert') { active }" href="@@webRoot/pages/components/alerts.html">Alert</a>
+						</li>
+
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/badge.html" class="nav-link @@if (context.page === 'compoBadge') { active }">Badge</a>
+						</li>
+
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/breadcrumb.html" class="nav-link @@if (context.page === 'compoBreadcrumb') { active }">Breadcrumb</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/buttons.html" class="nav-link @@if (context.page === 'compoButtons') { active }">Buttons</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/button-group.html" class="nav-link @@if (context.page === 'compoButtonGroup') { active }">Button group</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/card.html" class="nav-link @@if (context.page === 'compoCard') { active }">Card</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/carousel.html" class="nav-link @@if (context.page === 'compoCarousel') { active }">Carousel</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/close-button.html" class="nav-link @@if (context.page === 'compoCloseButton') { active }">Close Button</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/collapse.html" class="nav-link @@if (context.page === 'compoCollapse') { active }">Collapse</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/dropdowns.html" class="nav-link @@if (context.page === 'compoDropdowns') { active }">Dropdowns</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/forms.html" class="nav-link @@if (context.page === 'compoForms') { active }">Forms</a>
+						</li>
+
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/list-group.html" class="nav-link @@if (context.page === 'compoListGroup') { active }">List group</a>
+						</li>
+
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/modal.html" class="nav-link @@if (context.page === 'compoModal') { active }">Modal</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/navs-tabs.html" class="nav-link @@if (context.page === 'compoNavstabs') { active }">Navs and tabs</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/navbar.html" class="nav-link @@if (context.page === 'compoNavbar') { active }">Navbar</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/offcanvas.html" class="nav-link @@if (context.page === 'compoOffcanvas') { active }">Offcanvas</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/pagination.html" class="nav-link @@if (context.page === 'compoPagination') { active }">Pagination</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/placeholders.html" class="nav-link @@if (context.page === 'compoPlaceholders') { active }">Placeholders</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/popovers.html" class="nav-link @@if (context.page === 'compoPopovers') { active }">Popovers</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/progress.html" class="nav-link @@if (context.page === 'compoProgress') { active }">Progress</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/scrollspy.html" class="nav-link @@if (context.page === 'compoScrollspy') { active }">Scrollspy</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/spinners.html" class="nav-link @@if (context.page === 'compoSpinners') { active }">Spinners</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/tables.html" class="nav-link @@if (context.page === 'compoTables') { active }">Tables</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/toasts.html" class="nav-link @@if (context.page === 'compoToasts') { active }">Toasts</a>
+						</li>
+						<li class="nav-item">
+							<a href="@@webRoot/pages/components/tooltips.html" class="nav-link @@if (context.page === 'compoTooltips') { active }">Tooltips</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<li class="nav-item">
+				<a
+					class="nav-link has-arrow @@if (context.page_group !== 'menulevel') { collapsed }"
+					href="#!"
+					data-bs-toggle="collapse"
+					data-bs-target="#navMenuLevel"
+					aria-expanded="false"
+					aria-controls="navMenuLevel"
+				>
+					<i data-feather="corner-left-down" class="nav-icon me-2 icon-xxs"></i>
+					Menu Level
+				</a>
+				<div id="navMenuLevel" class="collapse @@if (context.page_group === 'menulevel') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+							<a
+								class="nav-link has-arrow @@if (context.page === 'twolevel') { active }"
+								href="#!"
+								data-bs-toggle="collapse"
+								data-bs-target="#navMenuLevelSecond"
+								aria-expanded="false"
+								aria-controls="navMenuLevelSecond"
+							>
+								Two Level
+							</a>
+							<div id="navMenuLevelSecond" class="collapse" data-bs-parent="#navMenuLevel">
+								<ul class="nav flex-column">
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'navitem1') { active }" href="#!">NavItem 1</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'navitem2') { active }" href="#!">NavItem 2</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link has-arrow @@if (context.page_group !== 'threelevel') { collapsed }"
+								href="#!"
+								data-bs-toggle="collapse"
+								data-bs-target="#navMenuLevelThree"
+								aria-expanded="false"
+								aria-controls="navMenuLevelThree"
+							>
+								Three Level
+							</a>
+							<div id="navMenuLevelThree" class="collapse @@if (context.page_group === 'threelevel') { show }" data-bs-parent="#navMenuLevel">
+								<ul class="nav flex-column">
+									<li class="nav-item">
+										<a
+											class="nav-link @@if (context.page_group !== 'navitemthree1') { collapsed }"
+											href="#!"
+											data-bs-toggle="collapse"
+											data-bs-target="#navMenuLevelThreeOne"
+											aria-expanded="false"
+											aria-controls="navMenuLevelThreeOne"
+										>
+											NavItem 1
+										</a>
+										<div id="navMenuLevelThreeOne" class="collapse collapse @@if (context.page_group === 'navitemthree1') { show }" data-bs-parent="#navMenuLevelThree">
+											<ul class="nav flex-column">
+												<li class="nav-item">
+													<a class="nav-link @@if (context.page === 'navchilitem') { active }" href="#!">NavChild Item 1</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link @@if (context.page === 'navitem2') { active }" href="#!">Nav Item 2</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<!-- Nav item -->
+			<li class="nav-item">
+				<div class="navbar-heading">Documentation</div>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link has-arrow @@if (context.page_group !== 'docs') { collapsed }" href="#!" data-bs-toggle="collapse" data-bs-target="#navDocs" aria-expanded="false" aria-controls="navDocs">
+					<i data-feather="package" class="nav-icon me-2 icon-xxs"></i>
+					Docs
+				</a>
+				<div id="navDocs" class="collapse @@if (context.page_group === 'docs') { show }" data-bs-parent="#sideNavbar">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a href="@@webRoot/docs/index.html" class="nav-link @@if (context.page === 'docsIntro') { active }">Introduction</a></li>
+						<li class="nav-item"><a href="@@webRoot/docs/environment-setup.html" class="nav-link @@if (context.page === 'docsEnv') { active }">Environment setup</a></li>
+						<li class="nav-item"><a href="@@webRoot/docs/working-with-gulp.html" class="nav-link @@if (context.page === 'docsGulp') { active }">Working with Gulp</a></li>
+						<li class="nav-item"><a href="@@webRoot/docs/compiled-files.html" class="nav-link @@if (context.page === 'docsFile') { active }">Compiled Files</a></li>
+						<li class="nav-item"><a href="@@webRoot/docs/file-structure.html" class="nav-link @@if (context.page === 'docsStructure') { active }">File Structure</a></li>
+						<li class="nav-item"><a href="@@webRoot/docs/resources-assets.html" class="nav-link @@if (context.page === 'docsAssets') { active }">Resources & assets</a></li>
+						<li class="nav-item"><a href="@@webRoot/docs/changelog.html" class="nav-link @@if (context.page === 'docsChangelog') { active }">Changelog</a></li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+		<div class="card bg-light shadow-none text-center mx-4 my-8">
+			<div class="card-body py-6">
+				<img src="@@webRoot/assets/images/background/giftbox.png" alt="dash ui - admin dashboard template" />
+				<div class="mt-4">
+					<h5>Unlimited Access</h5>
+					<p class="fs-6 mb-4">Upgrade your plan from a Free trial, to select Business Plan. Start Now</p>
+					<a href="#" class="btn btn-secondary btn-sm">Upgrade Now</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
