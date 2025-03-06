@@ -43,18 +43,18 @@ try {
     <meta name="author" content="Codescandy" />
 
     <!-- Favicon icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="dashui/dist/assets/images/favicon/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="dashui/assets/images/favicon/favicon.ico" />
 
     <!-- Color modes -->
-    <script src="/dashui/dist/assets/js/vendors/color-modes.js"></script>
+    <script src="/dashui/assets/js/vendors/color-modes.js"></script>
 
     <!-- Libs CSS -->
-    <link href="/dashui/dist/assets/libs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="/dashui/dist/assets/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="/dashui/dist/assets/libs/simplebar/dist/simplebar.min.css" rel="stylesheet" />
+    <link href="/dashui/assets/libs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="/dashui/assets/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="/dashui/assets/libs/simplebar/dist/simplebar.min.css" rel="stylesheet" />
 
     <!-- Theme CSS -->
-    <link rel="stylesheet" href="/dashui/dist/assets/css/theme.min.css">
+    <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
 
     <title>Client Details | IDNJ</title>
     <style>

@@ -1,5 +1,0 @@
-// //
-// // Feather js
-// //
-
-// feather.replace()
