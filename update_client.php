@@ -3,6 +3,7 @@ include 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $client_id = $_POST['record_id'];
+    $redirect_url = $_POST['redirect_url'];
     error_log("Updating client ID: " . $client_id);
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
@@ -27,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'state' => $state,
             'zip' => $zip,
             'id' => $client_id
-        ]);
-        header("Location: client_details.php?id=$client_id");
+        ]);  
+        header("Location: $redirect_url"); //Rediect to whichever page called for the Update
         exit;
     } catch (PDOException $e) {
         error_log("Error updating client information: " . $e->getMessage());
