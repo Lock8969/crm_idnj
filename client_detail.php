@@ -1,6 +1,6 @@
 <?php
 include 'db.php';
-include 'navigation.php';
+
 
 // Get Info from DB
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
@@ -60,11 +60,22 @@ try {
     <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
 
     <title>Client Detail | IDNJ</title>
-
     
+    <style>
+    /* Card styles for info displays */
+    .info-row {
+        margin-bottom: 1rem;
+    }
+    .info-label {
+        font-size: 1rem;
+    }
+    .info-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+</style>
+
 </head>
-
-
 
 
 <!-- Format Phone Number: Formats input as 000-000-0000 and removes leading "+1" or "1" -->
@@ -102,39 +113,46 @@ $(document).ready(function(){
     });
 });
 </script>
+<body>
 
-<<!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
+<!--- Begin Navigation --->
+
+<?php include 'navigation.php'; ?>
+
+
+<!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
 
 <!-- After your navigation ends and page begins -->
-<div class="app-content-area">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-12">
-                <!-- Page header -->
-                <div class="mb-5">
-                    <h3 class="mb-0">
-                        <?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?>
-                    </h3>
+
+<!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
+<div id="app-content">
+    <div class="app-content-area">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-12">
+                    <!-- Page header -->
+                    <div class="mb-5">
+                        <h3 class="mb-0">
+                            <?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?>
+                        </h3>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Single row to contain both cards -->
-        <div class="row g-4">
-            <!-- Left column for client info card -->
-            <div class="col-md-6">
-                <?php include 'client_info_card.php'; ?>
+    </div>
+
+    <!-- Use the same container approach as your working file -->
+    <div class="container-fluid px-12">
+        <div class="row gx-12">
+            <div class="col-md-6 mb-12">
+                <?php include 'info_card.php'; ?>
             </div>
-            
-            <!-- Right column for vehicle info card -->
-            <div class="col-md-6">
-                <?php include 'vehicle_info_card.php'; ?>
+            <div class="col-md-6 mb-12">
+                <?php include 'vehicle_card.php'; ?>
             </div>
         </div>
     </div>
 </div>
-
-
 
 
  <!-- ✅ JavaScript ✅ -->
@@ -201,7 +219,26 @@ $(document).ready(function(){
     });
 });
 </script>
+<script>
+// Toggle functions for both cards
+function toggleEditMode() {
+    const staticView = document.getElementById('static-view');
+    const editView = document.getElementById('edit-view');
+    if (staticView && editView) {
+        staticView.classList.toggle('d-none');
+        editView.classList.toggle('d-none');
+    }
+}
 
+function toggleVehicleEditMode() {
+    const staticView = document.getElementById('vehicle-static-view');
+    const editView = document.getElementById('vehicle-edit-view');
+    if (staticView && editView) {
+        staticView.classList.toggle('d-none');
+        editView.classList.toggle('d-none');
+    }
+}
+</script>
 
 
 </body>

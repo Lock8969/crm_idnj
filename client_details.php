@@ -127,11 +127,11 @@ $(document).ready(function(){
 });
 </script>
 
-<<!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
+<!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
 
 
         <!-- Container fluid -->
-        <div class="app-content-area">
+<div class="app-content-area">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-12">

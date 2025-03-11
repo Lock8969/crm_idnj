@@ -1,4 +1,4 @@
-<body>
+
     <!-- Wrapper -->
     <main id="main-wrapper" class="main-wrapper">
       <div class="header">
@@ -118,4 +118,3 @@
 </div>
 </div>
 </div>
-<div id="app-content">
