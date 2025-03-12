@@ -1,4 +1,5 @@
 <?php
+require_once 'auth_check.php';
 // Only include the database if it's not already included in the parent file
 if (!isset($vehicle)) {
     include 'db.php';

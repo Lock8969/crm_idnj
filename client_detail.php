@@ -1,4 +1,5 @@
 <?php
+require_once 'auth_check.php';
 include 'db.php';
 
 
@@ -46,7 +47,7 @@ try {
     <meta name="author" content="Codescandy" />
 
     <!-- Favicon icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="dashui/assets/images/favicon/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="dashui/assets/images/brand/logo/idnj_logo_small.png" />
 
     <!-- Color modes -->
     <script src="/dashui/assets/js/vendors/color-modes.js"></script>
