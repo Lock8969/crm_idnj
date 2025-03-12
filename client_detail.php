@@ -63,6 +63,14 @@ try {
     <title>Client Detail | IDNJ</title>
     
     <style>
+    /* Desktop-specific styling only FIXES MARGINS OFFSET BY NAV*/
+    @media (min-width: 992px) {
+        .content-wrapper {
+            margin-right: 2rem;
+            margin-left: 2rem;
+        }
+    }
+    
     /* Card styles for info displays */
     .info-row {
         margin-bottom: 1rem;
@@ -74,22 +82,21 @@ try {
         font-size: 1.2rem;
         font-weight: bold;
     }
-</style>
+    </style>
 
 </head>
+<body>
 
-
-<!-- Format Phone Number: Formats input as 000-000-0000 and removes leading "+1" or "1" -->
+<!-- Format Phone Number -->
 <script>
 function formatPhoneNumber(input) {
-    let value = input.value.replace(/\D/g, '').replace(/^1/, '').slice(0, 10); // Remove non-digits & leading "1"
-
+    let value = input.value.replace(/\D/g, '').replace(/^1/, '').slice(0, 10);
     input.value = value.replace(/(\d{3})(\d{3})?(\d{4})?/, (m, p1, p2, p3) => 
-        [p1, p2, p3].filter(Boolean).join('-')); // Format as 000-000-0000
+        [p1, p2, p3].filter(Boolean).join('-'));
 }
 </script>
-<!-- script for model dropdown -->
 
+<!-- Script for model dropdown -->
 <script>
 $(document).ready(function(){
     $("#make").change(function(){
@@ -114,114 +121,70 @@ $(document).ready(function(){
     });
 });
 </script>
-<body>
 
 <!--- Begin Navigation --->
-
 <?php include 'navigation.php'; ?>
-
-
-<!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
-
-<!-- After your navigation ends and page begins -->
 
 <!--- THIS IS WHERE NAVIGATION ENDS AND PAGE BEGINS --->
 <div id="app-content">
     <div class="app-content-area">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-12">
-                    <!-- Page header -->
-                    <div class="mb-5">
-                        <h3 class="mb-0">
-                            <?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?>
-                        </h3>
+            <div class="content-wrapper">
+                <!-- Page header -->
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-12">
+                        <div class="mb-5">
+                            <h3 class="mb-0">
+                                <?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Client and Vehicle Cards -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <?php include 'info_card.php'; ?>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <?php include 'vehicle_card.php'; ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Use the same container approach as your working file -->
-    <div class="container-fluid px-12">
-        <div class="row gx-12">
-            <div class="col-md-6 mb-12">
-                <?php include 'info_card.php'; ?>
-            </div>
-            <div class="col-md-6 mb-12">
-                <?php include 'vehicle_card.php'; ?>
-            </div>
-        </div>
-    </div>
 </div>
 
-
- <!-- ✅ JavaScript ✅ -->
-  <!-- Theme JS: Controls DashUI theme settings and layout behavior -->
+<!-- JavaScript -->
 <script src="/dashui/assets/js/theme.min.js"></script>
-<!-- Bootstrap JS: Enables Bootstrap functionality (e.g., modals, tooltips, dropdowns) -->
 <script src="/dashui/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<!-- SimpleBar JS: Adds custom scrollbar styling for better UI experience -->
 <script src="/dashui/assets/libs/simplebar/dist/simplebar.min.js"></script>
 
-
-<!-- Capitalize Words: Ensures first letter of each word is capitalized while typing -->
+<!-- Capitalize Words -->
 <script>
 function capitalizeWords(input) {
     input.value = input.value.replace(/\b\w/g, char => char.toUpperCase());
 }
 </script>
 
-<!-- Format Phone Number: Formats input as 000-000-0000 and removes leading "+1" or "1" -->
+<!-- Toggle Arrow Direction -->
 <script>
-function formatPhoneNumber(input) {
-    let value = input.value.replace(/\D/g, '').replace(/^1/, '').slice(0, 10); // Remove non-digits & leading "1"
+document.addEventListener("DOMContentLoaded", function() {
+    const toggleButton = document.querySelector("[data-bs-toggle='collapse']");
+    const toggleIcon = toggleButton.querySelector(".toggle-icon");
 
-    input.value = value.replace(/(\d{3})(\d{3})?(\d{4})?/, (m, p1, p2, p3) => 
-        [p1, p2, p3].filter(Boolean).join('-')); // Format as 000-000-0000
-}
-</script>
-<!-- JavaScript to Toggle Arrow Direction -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const toggleButton = document.querySelector("[data-bs-toggle='collapse']");
-        const toggleIcon = toggleButton.querySelector(".toggle-icon");
-
-        toggleButton.addEventListener("click", function() {
-            if (toggleIcon.textContent === "▼") {
-                toggleIcon.textContent = "▲";
-            } else {
-                toggleIcon.textContent = "▼";
-            }
-        });
-    });
-</script>
-<script>
-$(document).ready(function(){
-    $("#make").change(function(){
-        var make_id = $(this).val();
-        $("#model").prop("disabled", true).html("<option>Loading...</option>");
-
-        if(make_id) {
-            $.ajax({
-                url: "get_models.php",
-                type: "POST",
-                data: { make_id: make_id },
-                success: function(response){
-                    $("#model").html(response).prop("disabled", false);
-                },
-                error: function() {
-                    alert("Error fetching models. Please try again.");
-                }
-            });
+    toggleButton.addEventListener("click", function() {
+        if (toggleIcon.textContent === "▼") {
+            toggleIcon.textContent = "▲";
         } else {
-            $("#model").html("<option value=''>Select Model</option>").prop("disabled", true);
+            toggleIcon.textContent = "▼";
         }
     });
 });
 </script>
+
+<!-- Toggle functions for both cards -->
 <script>
-// Toggle functions for both cards
 function toggleEditMode() {
     const staticView = document.getElementById('static-view');
     const editView = document.getElementById('edit-view');
@@ -241,7 +204,5 @@ function toggleVehicleEditMode() {
 }
 </script>
 
-
 </body>
-
 </html>

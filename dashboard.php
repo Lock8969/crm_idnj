@@ -30,7 +30,15 @@ include 'db.php';
 
     <title>Dashboard | IDNJ</title>
     
-
+    <style>
+    /* Desktop-specific styling only FIXES MARGINS OFFSET BY NAV*/
+    @media (min-width: 992px) {
+    .content-wrapper {
+        margin-right: -5rem;
+        margin-left: 4rem;
+    }
+}
+</style>
 
 </head>
 <body>
@@ -75,33 +83,33 @@ $(document).ready(function(){
 <?php include 'navigation.php'; ?>
 
 <div id="app-content">
-    <!-- Your main dashboard content goes here -->
     <div class="app-content-area">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-12">
-                    <!-- Page header -->
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <div>
-                            <h3 class="mb-0 fw-bold">Dashboard</h3>
-                            <p class="text-muted mb-0">Location: <?php echo htmlspecialchars($_SESSION['location_name'] ?? 'Unknown'); ?></p>
+            <div class="content-wrapper">
+                <!-- Page header -->
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-5">
+                            <div>
+                                <h3 class="mb-0 fw-bold">Dashboard</h3>
+                                <p class="text-muted mb-0">Location: <?php echo htmlspecialchars($_SESSION['location_name'] ?? 'Unknown'); ?></p>
+                            </div>
+                            <a href="#!" class="btn btn-primary">Time Clock</a>
                         </div>
-                        <a href="#!" class="btn btn-primary">Time Clock</a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Include the client list card - spans full width -->
-            <div class="row">
-                <div class="col-12">
-                    <?php include 'client_list.php'; ?>
+                <!-- Include the client list card - spans full width -->
+                <div class="row">
+                    <div class="col-12">
+                        <?php include 'client_list.php'; ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
 <?php include 'footer.php'; ?>
-
-
+</body>
+</html>

@@ -144,6 +144,15 @@ if (isset($_GET['export']) && $_GET['export'] == 'cb') {
     <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
 
     <title>Inventory | IDNJ</title>
+    <style>
+    /* Desktop-specific styling only FIXES MARGINS OFFSET BY NAV */
+    @media (min-width: 992px) {
+        .content-wrapper {
+            margin-right: -5rem;
+            margin-left: 4rem;
+        }
+    }
+    </style>
 
 </head>
 
@@ -153,7 +162,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'cb') {
 <div id="app-content">
     <div class="app-content-area">
         <div class="container-fluid">
-            <div class="content-wrapper mx-auto" style="max-width: 1200px;">
+            <div class="content-wrapper">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-12">
                         <!-- Page header -->
