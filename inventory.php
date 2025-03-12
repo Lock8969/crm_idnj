@@ -144,6 +144,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'cb') {
     <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
 
     <title>Inventory | IDNJ</title>
+
 </head>
 
 <body>
@@ -152,233 +153,234 @@ if (isset($_GET['export']) && $_GET['export'] == 'cb') {
 <div id="app-content">
     <div class="app-content-area">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-12">
-                    <!-- Page header -->
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <div>
-                            <h3 class="mb-0 fw-bold">Inventory</h3>
-                            <p class="text-muted mb-0">Location: <?php echo htmlspecialchars($_SESSION['location_name'] ?? 'Unknown'); ?></p>
-                        </div>
-                        <a href="#!" class="btn btn-primary">Time Clock</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filter Form -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form id="filterForm" action="" method="GET" class="row g-3 align-items-end">
-                                <!-- Hidden fields to track collapse state -->
-                                <input type="hidden" name="hs_open" id="hs_open" value="<?php echo $hs_open; ?>">
-                                <input type="hidden" name="cb_open" id="cb_open" value="<?php echo $cb_open; ?>">
-                                
-                                <div class="col-md-4">
-                                    <label for="status" class="form-label">Status</label>
-                                    <select class="form-select" id="status" name="status">
-                                        <option value="all" <?php echo ($status_filter == 'all') ? 'selected' : ''; ?>>All Status</option>
-                                        <option value="active" <?php echo ($status_filter == 'active') ? 'selected' : ''; ?>>Active Only</option>
-                                        <option value="in_stock" <?php echo ($status_filter == 'in_stock') ? 'selected' : ''; ?>>In Stock</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="shop" class="form-label">Location</label>
-                                    <select class="form-select" id="shop" name="shop" <?php echo ($status_filter != 'in_stock') ? 'disabled' : ''; ?>>
-                                        <option value="all" <?php echo ($shop_filter == 'all') ? 'selected' : ''; ?>>All Locations</option>
-                                        <?php foreach ($locations as $location): ?>
-                                            <option value="<?php echo $location['id']; ?>" 
-                                                <?php echo ($shop_filter == $location['id']) ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($location['location_name']); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                                </div>
-                            </form>
+            <div class="content-wrapper mx-auto" style="max-width: 1200px;">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-12">
+                        <!-- Page header -->
+                        <div class="d-flex align-items-center mb-5">
+                            <div>
+                                <h3 class="mb-0 fw-bold">Inventory</h3>
+                                <p class="text-muted mb-0">Location: <?php echo htmlspecialchars($_SESSION['location_name'] ?? 'Unknown'); ?></p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- HS Inventory Card -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <a class="text-inherit" data-bs-toggle="collapse" href="#hsInventoryCollapse" role="button" aria-expanded="<?php echo ($hs_open == '1') ? 'true' : 'false'; ?>" aria-controls="hsInventoryCollapse">
-                                    <i class="bi bi-chevron-down me-2"></i>Handsets (<?php echo count($hs_inventory); ?>)
-                                </a>
-                            </h5>
-                            <div class="d-flex align-items-center">
-                                <form class="me-3">
-                                    <div class="input-group">
-                                        <input type="search" class="form-control" placeholder="Search Handsets" id="hsSearch">
-                                        <button class="btn btn-outline-secondary" type="button">
-                                            <i class="bi bi-search"></i>
-                                        </button>
+                <!-- Filter Form -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="filterForm" action="" method="GET" class="row g-3 align-items-end">
+                                    <!-- Hidden fields to track collapse state -->
+                                    <input type="hidden" name="hs_open" id="hs_open" value="<?php echo $hs_open; ?>">
+                                    <input type="hidden" name="cb_open" id="cb_open" value="<?php echo $cb_open; ?>">
+                                    
+                                    <div class="col-md-4">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select class="form-select" id="status" name="status">
+                                            <option value="all" <?php echo ($status_filter == 'all') ? 'selected' : ''; ?>>All Status</option>
+                                            <option value="active" <?php echo ($status_filter == 'active') ? 'selected' : ''; ?>>Active Only</option>
+                                            <option value="in_stock" <?php echo ($status_filter == 'in_stock') ? 'selected' : ''; ?>>In Stock</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="shop" class="form-label">Location</label>
+                                        <select class="form-select" id="shop" name="shop" <?php echo ($status_filter != 'in_stock') ? 'disabled' : ''; ?>>
+                                            <option value="all" <?php echo ($shop_filter == 'all') ? 'selected' : ''; ?>>All Locations</option>
+                                            <?php foreach ($locations as $location): ?>
+                                                <option value="<?php echo $location['id']; ?>" 
+                                                    <?php echo ($shop_filter == $location['id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($location['location_name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
                                     </div>
                                 </form>
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="hsActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Actions
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="hsActionDropdown">
-                                        <li><a class="dropdown-item" href="add_hs.php">Add New Handset</a></li>
-                                        <li><a class="dropdown-item" href="?export=hs<?php echo isset($_GET['status']) ? '&status=' . $_GET['status'] : ''; ?><?php echo isset($_GET['shop']) ? '&shop=' . $_GET['shop'] : ''; ?>">Export to CSV</a></li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
-                        <div class="collapse <?php echo ($hs_open == '1') ? 'show' : ''; ?>" id="hsInventoryCollapse">
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table mb-0" id="hsInventoryTable">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Serial Number</th>
-                                                <th>Customer</th>
-                                                <th>Location</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php if (empty($hs_inventory)): ?>
+                    </div>
+                </div>
+
+                <!-- HS Inventory Card -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <a class="text-inherit" data-bs-toggle="collapse" href="#hsInventoryCollapse" role="button" aria-expanded="<?php echo ($hs_open == '1') ? 'true' : 'false'; ?>" aria-controls="hsInventoryCollapse">
+                                        <i class="bi bi-chevron-down me-2"></i>Handsets (<?php echo count($hs_inventory); ?>)
+                                    </a>
+                                </h5>
+                                <div class="d-flex align-items-center">
+                                    <form class="me-3">
+                                        <div class="input-group">
+                                            <input type="search" class="form-control" placeholder="Search Handsets" id="hsSearch">
+                                            <button class="btn btn-outline-secondary" type="button">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="hsActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="hsActionDropdown">
+                                            <li><a class="dropdown-item" href="add_hs.php">Add New Handset</a></li>
+                                            <li><a class="dropdown-item" href="?export=hs<?php echo isset($_GET['status']) ? '&status=' . $_GET['status'] : ''; ?><?php echo isset($_GET['shop']) ? '&shop=' . $_GET['shop'] : ''; ?>">Export to CSV</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse <?php echo ($hs_open == '1') ? 'show' : ''; ?>" id="hsInventoryCollapse">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0" id="hsInventoryTable">
+                                            <thead class="table-light">
                                                 <tr>
-                                                    <td colspan="5" class="text-center">No handsets found</td>
+                                                    <th>Serial Number</th>
+                                                    <th>Customer</th>
+                                                    <th>Location</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            <?php else: ?>
-                                                <?php foreach ($hs_inventory as $device): ?>
+                                            </thead>
+                                            <tbody>
+                                                <?php if (empty($hs_inventory)): ?>
                                                     <tr>
-                                                        <td><?php echo htmlspecialchars($device['serial_number']); ?></td>
-                                                        <td>
-                                                            <?php if ($device['customer_id']): ?>
-                                                                <a href="client_detail.php?id=<?php echo $device['customer_id']; ?>">
-                                                                    <?php echo htmlspecialchars($device['first_name'] . ' ' . $device['last_name']); ?>
-                                                                </a>
-                                                            <?php else: ?>
-                                                                <span class="text-muted">None</span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td><?php echo htmlspecialchars($device['location_name'] ?? 'None'); ?></td>
-                                                        <td>
-                                                            <span class="badge bg-<?php 
-                                                                echo ($device['status'] == 'ASSIGNED') ? 'success' : 
-                                                                    (($device['status'] == 'IN_STOCK') ? 'primary' : 
-                                                                    (($device['status'] == 'MAINTENANCE') ? 'warning' : 'secondary')); 
-                                                            ?>">
-                                                                <?php echo htmlspecialchars($device['status']); ?>
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="hs_detail.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-title="History">
-                                                                <i class="bi bi-eye"></i>
-                                                            </a>
-                                                            <a href="hs_edit.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Edit">
-                                                                <i class="bi bi-pencil"></i>
-                                                            </a>
-                                                        </td>
+                                                        <td colspan="5" class="text-center">No handsets found</td>
                                                     </tr>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
+                                                <?php else: ?>
+                                                    <?php foreach ($hs_inventory as $device): ?>
+                                                        <tr>
+                                                            <td><?php echo htmlspecialchars($device['serial_number']); ?></td>
+                                                            <td>
+                                                                <?php if ($device['customer_id']): ?>
+                                                                    <a href="client_detail.php?id=<?php echo $device['customer_id']; ?>">
+                                                                        <?php echo htmlspecialchars($device['first_name'] . ' ' . $device['last_name']); ?>
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    <span class="text-muted">None</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td><?php echo htmlspecialchars($device['location_name'] ?? 'None'); ?></td>
+                                                            <td>
+                                                                <span class="badge bg-<?php 
+                                                                    echo ($device['status'] == 'ASSIGNED') ? 'success' : 
+                                                                        (($device['status'] == 'IN_STOCK') ? 'primary' : 
+                                                                        (($device['status'] == 'MAINTENANCE') ? 'warning' : 'secondary')); 
+                                                                ?>">
+                                                                    <?php echo htmlspecialchars($device['status']); ?>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <a href="hs_detail.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-title="History">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </a>
+                                                                <a href="hs_edit.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Edit">
+                                                                    <i class="bi bi-pencil"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- CB Inventory Card -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <a class="text-inherit" data-bs-toggle="collapse" href="#cbInventoryCollapse" role="button" aria-expanded="<?php echo ($cb_open == '1') ? 'true' : 'false'; ?>" aria-controls="cbInventoryCollapse">
-                                    <i class="bi bi-chevron-down me-2"></i>Control Boxes (<?php echo count($cb_inventory); ?>)
-                                </a>
-                            </h5>
-                            <div class="d-flex align-items-center">
-                                <form class="me-3">
-                                    <div class="input-group">
-                                        <input type="search" class="form-control" placeholder="Search Control Boxes" id="cbSearch">
-                                        <button class="btn btn-outline-secondary" type="button">
-                                            <i class="bi bi-search"></i>
+                <!-- CB Inventory Card -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <a class="text-inherit" data-bs-toggle="collapse" href="#cbInventoryCollapse" role="button" aria-expanded="<?php echo ($cb_open == '1') ? 'true' : 'false'; ?>" aria-controls="cbInventoryCollapse">
+                                        <i class="bi bi-chevron-down me-2"></i>Control Boxes (<?php echo count($cb_inventory); ?>)
+                                    </a>
+                                </h5>
+                                <div class="d-flex align-items-center">
+                                    <form class="me-3">
+                                        <div class="input-group">
+                                            <input type="search" class="form-control" placeholder="Search Control Boxes" id="cbSearch">
+                                            <button class="btn btn-outline-secondary" type="button">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="cbActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Actions
                                         </button>
+                                        <ul class="dropdown-menu" aria-labelledby="cbActionDropdown">
+                                            <li><a class="dropdown-item" href="add_cb.php">Add New Control Box</a></li>
+                                            <li><a class="dropdown-item" href="?export=cb<?php echo isset($_GET['status']) ? '&status=' . $_GET['status'] : ''; ?><?php echo isset($_GET['shop']) ? '&shop=' . $_GET['shop'] : ''; ?>">Export to CSV</a></li>
+                                        </ul>
                                     </div>
-                                </form>
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="cbActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Actions
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="cbActionDropdown">
-                                        <li><a class="dropdown-item" href="add_cb.php">Add New Control Box</a></li>
-                                        <li><a class="dropdown-item" href="?export=cb<?php echo isset($_GET['status']) ? '&status=' . $_GET['status'] : ''; ?><?php echo isset($_GET['shop']) ? '&shop=' . $_GET['shop'] : ''; ?>">Export to CSV</a></li>
-                                    </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div class="collapse <?php echo ($cb_open == '1') ? 'show' : ''; ?>" id="cbInventoryCollapse">
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table mb-0" id="cbInventoryTable">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Serial Number</th>
-                                                <th>Customer</th>
-                                                <th>Location</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php if (empty($cb_inventory)): ?>
+                            <div class="collapse <?php echo ($cb_open == '1') ? 'show' : ''; ?>" id="cbInventoryCollapse">
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0" id="cbInventoryTable">
+                                            <thead class="table-light">
                                                 <tr>
-                                                    <td colspan="5" class="text-center">No control boxes found</td>
+                                                    <th>Serial Number</th>
+                                                    <th>Customer</th>
+                                                    <th>Location</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            <?php else: ?>
-                                                <?php foreach ($cb_inventory as $device): ?>
+                                            </thead>
+                                            <tbody>
+                                                <?php if (empty($cb_inventory)): ?>
                                                     <tr>
-                                                        <td><?php echo htmlspecialchars($device['serial_number']); ?></td>
-                                                        <td>
-                                                            <?php if ($device['customer_id']): ?>
-                                                                <a href="client_detail.php?id=<?php echo $device['customer_id']; ?>">
-                                                                    <?php echo htmlspecialchars($device['first_name'] . ' ' . $device['last_name']); ?>
-                                                                </a>
-                                                            <?php else: ?>
-                                                                <span class="text-muted">None</span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td><?php echo htmlspecialchars($device['location_name'] ?? 'None'); ?></td>
-                                                        <td>
-                                                            <span class="badge bg-<?php 
-                                                                echo ($device['status'] == 'ASSIGNED') ? 'success' : 
-                                                                    (($device['status'] == 'IN_STOCK') ? 'primary' : 
-                                                                    (($device['status'] == 'MAINTENANCE') ? 'warning' : 'secondary')); 
-                                                            ?>">
-                                                                <?php echo htmlspecialchars($device['status']); ?>
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="cb_detail.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-title="History">
-                                                                <i class="bi bi-eye"></i>
-                                                            </a>
-                                                            <a href="cb_edit.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Edit">
-                                                                <i class="bi bi-pencil"></i>
-                                                            </a>
-                                                        </td>
+                                                        <td colspan="5" class="text-center">No control boxes found</td>
                                                     </tr>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
+                                                <?php else: ?>
+                                                    <?php foreach ($cb_inventory as $device): ?>
+                                                        <tr>
+                                                            <td><?php echo htmlspecialchars($device['serial_number']); ?></td>
+                                                            <td>
+                                                                <?php if ($device['customer_id']): ?>
+                                                                    <a href="client_detail.php?id=<?php echo $device['customer_id']; ?>">
+                                                                        <?php echo htmlspecialchars($device['first_name'] . ' ' . $device['last_name']); ?>
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    <span class="text-muted">None</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td><?php echo htmlspecialchars($device['location_name'] ?? 'None'); ?></td>
+                                                            <td>
+                                                                <span class="badge bg-<?php 
+                                                                    echo ($device['status'] == 'ASSIGNED') ? 'success' : 
+                                                                        (($device['status'] == 'IN_STOCK') ? 'primary' : 
+                                                                        (($device['status'] == 'MAINTENANCE') ? 'warning' : 'secondary')); 
+                                                                ?>">
+                                                                    <?php echo htmlspecialchars($device['status']); ?>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <a href="cb_detail.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-title="History">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </a>
+                                                                <a href="cb_edit.php?id=<?php echo $device['id']; ?>" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-title="Edit">
+                                                                    <i class="bi bi-pencil"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -421,18 +423,18 @@ $(document).ready(function() {
     });
     
     // HS inventory search
-    $("#hsSearch").on("keyup", function() {
+    $("#hsSearch").on("keyup search", function() {
         var value = $(this).val().toLowerCase();
         $("#hsInventoryTable tbody tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
-    
+
     // CB inventory search
-    $("#cbSearch").on("keyup", function() {
+    $("#cbSearch").on("keyup search", function() {
         var value = $(this).val().toLowerCase();
         $("#cbInventoryTable tbody tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
     
