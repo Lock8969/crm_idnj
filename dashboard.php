@@ -30,15 +30,7 @@ include 'db.php';
 
     <title>Dashboard | IDNJ</title>
     
-    <style>
-    /* Desktop-specific styling only FIXES MARGINS OFFSET BY NAV*/
-    @media (min-width: 992px) {
-    .content-wrapper {
-        margin-right: -5rem;
-        margin-left: 4rem;
-    }
-}
-</style>
+ 
 
 </head>
 <body>
@@ -100,15 +92,19 @@ $(document).ready(function(){
                 </div>
 
                 <!-- Include the client list card - spans full width -->
-                <div class="row">
-                    <div class="col-12">
-                        <?php include 'client_list.php'; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-12">
+        <?php include 'client_list.php'; ?>
     </div>
 </div>
+
+<!-- Include the leads list card in a new row -->
+<div class="row">
+    <div class="col-12">
+        <?php include 'lead_list.php'; ?>
+    </div>
+</div>
+
 
 <?php include 'footer.php'; ?>
 </body>
