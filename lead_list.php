@@ -134,9 +134,18 @@ function get_leads_pagination_url($page, $search) {
                             <tr>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle" data-bs-toggle="dropdown">
+                                       <!-- Replace your current + button dropdown with this -->
+                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle" data-bs-toggle="modal" data-bs-target="#convertLeadModal<?php echo htmlspecialchars($lead['id']); ?>">
                                             <i data-feather="plus-circle" class="icon-xs text-primary"></i>
                                         </button>
+
+                                        <?php
+                                        // Include the modal component file
+                                        include_once 'lead_conversion_modal.php';
+                                        // Render the modal for this lead
+                                        renderLeadConversionModal($lead);
+                                        ?>
+
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" href="add_client.php?lead_id=<?php echo htmlspecialchars($lead['id']); ?>">Add as Client</a></li>
                                             <li><a class="dropdown-item" href="schedule_install.php?lead_id=<?php echo htmlspecialchars($lead['id']); ?>">Schedule Install</a></li>

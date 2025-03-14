@@ -36,14 +36,8 @@ include 'db.php';
 <body>
 
 <!-- Format Phone Number: Formats input as 000-000-0000 and removes leading "+1" or "1" -->
-<script>
-function formatPhoneNumber(input) {
-    let value = input.value.replace(/\D/g, '').replace(/^1/, '').slice(0, 10); // Remove non-digits & leading "1"
-
-    input.value = value.replace(/(\d{3})(\d{3})?(\d{4})?/, (m, p1, p2, p3) => 
-        [p1, p2, p3].filter(Boolean).join('-')); // Format as 000-000-0000
-}
-</script>
+ <!-- Using CRM Utility in JS folder -->
+<script src="/dashui/assets/js/crm-utils.js"></script>
 <!-- script for model dropdown -->
 
 <script>
