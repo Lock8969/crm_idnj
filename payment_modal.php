@@ -62,17 +62,18 @@ function renderPaymentModal($customerId = null, $firstName = null, $lastName = n
                             <h5 class="mb-0">Payment Details</h5>
                         </div>
                         <div class="card-body">
-                            <!-- Pricing Code -->
+                            
+                        <!-- Pricing Code -->
                             <div class="row mb-3">
-                                <label for="pricingCode<?php echo $modalId; ?>" class="col-sm-4 col-form-label">Pricing Code</label>
-                                <div class="col-sm-8">
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" step="0.01" min="0" class="form-control" id="pricingCode<?php echo $modalId; ?>" 
-                                            name="pricing_code" value="0.00" oninput="calculatePaymentTotals('<?php echo $modalId; ?>')">
-                                    </div>
+                            <label for="pricingCode<?php echo $modalId; ?>" class="col-sm-4 col-form-label">Pricing Code</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="pricingCode<?php echo $modalId; ?>" name="pricing_code"  
+                                        placeholder="0.00" step="0.01" min="0"> 
                                 </div>
                             </div>
+                        </div>
                             
                             <!-- Four Week Rental (Calculated) -->
                             <div class="row mb-3">
@@ -93,32 +94,32 @@ function renderPaymentModal($customerId = null, $firstName = null, $lastName = n
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" step="0.01" min="0" class="form-control" id="certFee<?php echo $modalId; ?>" 
-                                            name="cert_fee" value="0.00" oninput="calculatePaymentTotals('<?php echo $modalId; ?>')">
+                                        <input type="number" class="form-control" id="certFee<?php echo $modalId; ?>" 
+                                            name="cert_fee" placeholder="0.00" step="0.01" min="0">
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Administration Fee -->
                             <div class="row mb-3">
                                 <label for="adminFee<?php echo $modalId; ?>" class="col-sm-4 col-form-label">Administration Fee</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" step="0.01" min="0" class="form-control" id="adminFee<?php echo $modalId; ?>" 
-                                            name="admin_fee" value="0.00" oninput="calculatePaymentTotals('<?php echo $modalId; ?>')">
+                                        <input type="number" class="form-control" id="adminFee<?php echo $modalId; ?>" 
+                                            name="admin_fee" placeholder="0.00" step="0.01" min="0">
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Applied Credit -->
                             <div class="row mb-3">
                                 <label for="appliedCredit<?php echo $modalId; ?>" class="col-sm-4 col-form-label">Applied Credit</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" step="0.01" min="0" class="form-control" id="appliedCredit<?php echo $modalId; ?>" 
-                                            name="applied_credit" value="0.00" oninput="calculatePaymentTotals('<?php echo $modalId; ?>')">
+                                        <input type="number" class="form-control" id="appliedCredit<?php echo $modalId; ?>" 
+                                            name="applied_credit" placeholder="0.00" step="0.01" min="0">
                                     </div>
                                 </div>
                             </div>
@@ -257,8 +258,14 @@ function renderPaymentModal($customerId = null, $firstName = null, $lastName = n
 
 <!-- JavaScript for this modal instance -->
 <script>
+
+
 // Initialize calculation on load
 document.addEventListener('DOMContentLoaded', function() {
+    // Add the formatting setup here, before calculating totals
+    formatDecimalInput('<?php echo $modalId; ?>');
+    
+    // Then do the original calculations
     calculatePaymentTotals('<?php echo $modalId; ?>');
     
     <?php if (isset($nextModalId)): ?>
@@ -277,11 +284,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Calculate payment totals
 function calculatePaymentTotals(modalId) {
-    const pricingCode = parseFloat(document.getElementById('pricingCode' + modalId).value) || 0;
+    const pricingCode = parseFloat(document.getElementById('pricingCode' + modalId).value || 0);
     const fourWeekRental = pricingCode * 28;
-    const certFee = parseFloat(document.getElementById('certFee' + modalId).value) || 0;
-    const adminFee = parseFloat(document.getElementById('adminFee' + modalId).value) || 0;
-    const appliedCredit = parseFloat(document.getElementById('appliedCredit' + modalId).value) || 0;
+    const certFee = parseFloat(document.getElementById('certFee' + modalId).value || 0);
+    const adminFee = parseFloat(document.getElementById('adminFee' + modalId).value || 0);
+    const appliedCredit = parseFloat(document.getElementById('appliedCredit' + modalId).value || 0);
     
     const subtotal = fourWeekRental + certFee + adminFee - appliedCredit;
     const salesTax = subtotal * 0.06625; // 6.625% tax rate
@@ -456,7 +463,70 @@ function createClientRecord(modalId, paymentData, transactionData) {
         console.error('Error creating client record:', error);
     });
 }
+function formatDecimalInput(modalId) {
+    const numberInputs = [
+        document.getElementById('pricingCode' + modalId),
+        document.getElementById('certFee' + modalId),
+        document.getElementById('adminFee' + modalId),
+        document.getElementById('appliedCredit' + modalId)
+    ];
+    
+    numberInputs.forEach(input => {
+        if (!input) return;
+        
+        input.addEventListener('input', function() {
+            // Get raw value with no decimal
+            let rawValue = this.value.replace(/\./g, '');
+            
+            // If it's empty, keep it that way to show placeholder
+            if (rawValue === '') {
+                return;
+            }
+            
+            // Convert to a number to remove leading zeros
+            let numValue = parseInt(rawValue, 10);
+            
+            // Format with decimal before last 2 digits
+            if (rawValue.length > 2) {
+                let whole = Math.floor(numValue / 100);
+                let decimal = numValue % 100;
+                // Pad decimal with leading zero if needed
+                decimal = decimal.toString().padStart(2, '0');
+                this.value = whole + '.' + decimal;
+            } else {
+                // Pad for values less than 1
+                let padded = numValue.toString().padStart(2, '0');
+                this.value = '0.' + padded;
+            }
+            
+            // Update calculations
+            calculatePaymentTotals(modalId);
+        });
+        
+        // Handle blur for final formatting
+        input.addEventListener('blur', function() {
+            if (this.value === '') {
+                // Leave empty to show placeholder
+                return;
+            }
+            
+            // Ensure proper format
+            let value = parseFloat(this.value) || 0;
+            this.value = value.toFixed(2);
+        });
+        
+        // Clear on focus for easier entry
+        input.addEventListener('focus', function() {
+            // Optional: clear the field on focus for fresh entry
+            // this.value = '';
+        });
+    });
+}
+
+
+
 </script>
+
 <?php
 }
 ?>

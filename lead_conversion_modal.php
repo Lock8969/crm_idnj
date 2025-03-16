@@ -95,27 +95,16 @@ function renderLeadConversionModal($lead, $customAction = null) {
                         <div class="col-md-6">
                             <label for="email<?php echo $leadId; ?>" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email<?php echo $leadId; ?>" name="email" value="<?php echo $email; ?>">
-                        </div>
-                        
-                        <!-- Pricing Code -->
-                        <div class="col-md-6">
-                            <label for="pricingCode<?php echo $leadId; ?>" class="form-label">Pricing Code</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="pricingCode<?php echo $leadId; ?>" name="pricing_code" value="0.00" step="0.01" min="0">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <!-- Welcome Email Checkbox -->
-                        <div class="col-md-6">
-                            <div class="form-check">
+                            <!-- Welcome Email Checkbox -->
+                            <div class="form-check mt-2">
                                 <input class="form-check-input" type="checkbox" id="welcomeEmail<?php echo $leadId; ?>" name="send_welcome_email">
                                 <label class="form-check-label" for="welcomeEmail<?php echo $leadId; ?>">
                                     Send Welcome Email
                                 </label>
                             </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- This column intentionally left empty to maintain layout -->
                         </div>
                     </div>
                     
