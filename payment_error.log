@@ -1,0 +1,91 @@
+[16-Mar-2025 14:00:29 US/Eastern] [2025-03-16 14:00:29] Payment request started
+[16-Mar-2025 14:00:29 US/Eastern] [2025-03-16 14:00:29] Request method - POST
+[16-Mar-2025 14:00:29 US/Eastern] [2025-03-16 14:00:29] Raw input received - 285 bytes
+[16-Mar-2025 14:00:29 US/Eastern] [2025-03-16 14:00:29] Input parsed successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description","address","city","state","zip"]}
+[16-Mar-2025 14:00:29 US/Eastern] [2025-03-16 14:00:29] All required fields present
+[16-Mar-2025 14:00:29 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 79
+[16-Mar-2025 14:00:29 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:79
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 79
+[16-Mar-2025 14:09:10 US/Eastern] [2025-03-16 14:09:10] Payment request started
+[16-Mar-2025 14:09:10 US/Eastern] [2025-03-16 14:09:10] Request method - POST
+[16-Mar-2025 14:09:10 US/Eastern] [2025-03-16 14:09:10] Raw input received - 242 bytes
+[16-Mar-2025 14:09:10 US/Eastern] [2025-03-16 14:09:10] Input parsed successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description"]}
+[16-Mar-2025 14:09:10 US/Eastern] [2025-03-16 14:09:10] All required fields present
+[16-Mar-2025 14:09:10 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 81
+[16-Mar-2025 14:09:10 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:81
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 81
+[16-Mar-2025 14:26:56 US/Eastern] [2025-03-16 14:26:56] Payment request started
+[16-Mar-2025 14:26:56 US/Eastern] [2025-03-16 14:26:56] Raw input received - {"bytes":242}
+[16-Mar-2025 14:26:56 US/Eastern] [2025-03-16 14:26:56] Parsed JSON successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description"]}
+[16-Mar-2025 14:26:56 US/Eastern] [2025-03-16 14:26:56] All required fields are present
+[16-Mar-2025 14:26:56 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 76
+[16-Mar-2025 14:26:56 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:76
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 76
+[16-Mar-2025 14:28:34 US/Eastern] [2025-03-16 14:28:34] Payment request started
+[16-Mar-2025 14:28:34 US/Eastern] [2025-03-16 14:28:34] Raw input received - {"bytes":242}
+[16-Mar-2025 14:28:34 US/Eastern] [2025-03-16 14:28:34] Parsed JSON successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description"]}
+[16-Mar-2025 14:28:34 US/Eastern] [2025-03-16 14:28:34] All required fields are present
+[16-Mar-2025 14:28:34 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 79
+[16-Mar-2025 14:28:34 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:79
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 79
+[16-Mar-2025 14:40:09 US/Eastern] [2025-03-16 14:40:09] Payment request started
+[16-Mar-2025 14:40:09 US/Eastern] [2025-03-16 14:40:09] Raw input received - {"bytes":242}
+[16-Mar-2025 14:40:09 US/Eastern] [2025-03-16 14:40:09] Parsed JSON successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description"]}
+[16-Mar-2025 14:40:09 US/Eastern] [2025-03-16 14:40:09] All required fields are present
+[16-Mar-2025 14:40:09 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 80
+[16-Mar-2025 14:40:09 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:80
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 80
+[16-Mar-2025 15:02:47 US/Eastern] [2025-03-16 15:02:47] Payment request started
+[16-Mar-2025 15:02:47 US/Eastern] [2025-03-16 15:02:47] Request method - POST
+[16-Mar-2025 15:02:47 US/Eastern] [2025-03-16 15:02:47] Raw input received - 242 bytes
+[16-Mar-2025 15:02:47 US/Eastern] [2025-03-16 15:02:47] Input parsed successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description"]}
+[16-Mar-2025 15:02:47 US/Eastern] [2025-03-16 15:02:47] All required fields present
+[16-Mar-2025 15:02:47 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 83
+[16-Mar-2025 15:02:47 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:83
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 83
+[16-Mar-2025 15:07:04 US/Eastern] [2025-03-16 15:07:04] Payment request started
+[16-Mar-2025 15:07:04 US/Eastern] [2025-03-16 15:07:04] Request method - POST
+[16-Mar-2025 15:07:04 US/Eastern] [2025-03-16 15:07:04] Raw input received - 242 bytes
+[16-Mar-2025 15:07:04 US/Eastern] [2025-03-16 15:07:04] Input parsed successfully - {"fields":["firstName","lastName","cardNumber","expirationMonth","expirationYear","cvv","amount","customerId","email","description"]}
+[16-Mar-2025 15:07:04 US/Eastern] [2025-03-16 15:07:04] All required fields present
+[16-Mar-2025 15:07:04 US/Eastern] PHP Warning:  require_once(../db.php): Failed to open stream: No such file or directory in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 107
+[16-Mar-2025 15:07:04 US/Eastern] PHP Fatal error:  Uncaught Error: Failed opening required '../db.php' (include_path='.:/usr/share/php') in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php:107
+Stack trace:
+#0 {main}
+  thrown in /home/1036675.cloudwaysapps.com/xpjjbrbbmv/public_html/auth_call_install.php on line 107
+[16-Mar-2025 15:13:31 US/Eastern] auth_call_install.php was called at 2025-03-16 15:13:31
+[16-Mar-2025 15:13:31 US/Eastern] [2025-03-16 15:13:31] Payment request received - {"firstName":"Edward","lastName":"Christinzio","cardNumber":"4242********4242","expirationMonth":"02","expirationYear":"2027","cvv":"***","amount":29.86,"customerId":null,"email":"edchristinzio@gmail.com","description":"Installation Payment"}
+[16-Mar-2025 15:13:31 US/Eastern] [2025-03-16 15:13:31] Payment processing completed successfully
+[16-Mar-2025 15:13:31 US/Eastern] [2025-03-16 15:13:31] Sending response - {"success":true,"data":{"message":"Payment processed successfully","transactionId":"test123"}}
+[16-Mar-2025 15:42:26 US/Eastern] auth_call_install.php was called at 2025-03-16 15:42:26
+[16-Mar-2025 15:42:26 US/Eastern] [2025-03-16 15:42:26] Payment request received - {"firstName":"Edward","lastName":"Christinzio","cardNumber":"4242********4242","expirationMonth":"02","expirationYear":"2027","cvv":"***","amount":29.86,"customerId":null,"email":"edchristinzio@gmail.com","description":"Installation Payment"}
+[16-Mar-2025 15:42:26 US/Eastern] [2025-03-16 15:42:26] Payment processing completed successfully
+[16-Mar-2025 15:42:26 US/Eastern] [2025-03-16 15:42:26] Sending response - {"success":true,"data":{"message":"Payment processed successfully","transactionId":"test123"}}
+[16-Mar-2025 16:10:37 US/Eastern] auth_call_install.php was called at 2025-03-16 16:10:37
+[16-Mar-2025 16:10:37 US/Eastern] [2025-03-16 16:10:37] Payment request received - {"request_type":"process_payment","cardData":{"cardNumber":"4242424242424242","expirationMonth":"02","expirationYear":"2028","cvv":"123"},"customerData":{"customer_id":null,"firstName":"Edward","lastName":"Christinzio","email":"edchristinzio@gmail.com","address":"","city":"","state":"","zip":""},"amount":29.86,"description":"Installation Payment","leadData":{"lead_id":"17","first_name":"Edward","last_name":"Christinzio","dl_state":"","law_type":"","offense_number":"","phone_number":"(856) 373-3530","email":"edchristinzio@gmail.com","send_welcome_email":"0","install_comments":"","pricing_code":"1.00","four_week_rental":"28.00","cert_fee":"","admin_fee":"","applied_credit":"","subtotal":"28.00","sales_tax":"1.85","total_amount":"29.86","card_number":"4242 4242 4242 4242","exp_month":"02","exp_year":"2028","cvv":"123","cardholder_first_name":"Edward","cardholder_last_name":"Christinzio"}}
+[16-Mar-2025 16:10:37 US/Eastern] [2025-03-16 16:10:37] Payment processing completed successfully
+[16-Mar-2025 16:10:37 US/Eastern] [2025-03-16 16:10:37] Sending response - {"success":true,"data":{"message":"Payment processed successfully","transactionId":"test123"}}
+[16-Mar-2025 16:15:21 US/Eastern] auth_call_install.php was called at 2025-03-16 16:15:21
+[16-Mar-2025 16:15:21 US/Eastern] [2025-03-16 16:15:21] Payment request received - {"request_type":"process_payment","cardData":{"cardNumber":"4242424242424242","expirationMonth":"02","expirationYear":"2027","cvv":"123"},"customerData":{"customer_id":null,"firstName":"Edward","lastName":"Christinzio","email":"edchristinzio@gmail.com","address":"","city":"","state":"","zip":""},"amount":29.86,"description":"Installation Payment","leadData":{"lead_id":"17","first_name":"Edward","last_name":"Christinzio","dl_state":"","law_type":"","offense_number":"","phone_number":"(856) 373-3530","email":"edchristinzio@gmail.com","send_welcome_email":"0","install_comments":"","pricing_code":"1.00","four_week_rental":"28.00","cert_fee":"","admin_fee":"","applied_credit":"","subtotal":"28.00","sales_tax":"1.85","total_amount":"29.86","card_number":"4242 4242 4242 4242","exp_month":"02","exp_year":"2027","cvv":"123","cardholder_first_name":"Edward","cardholder_last_name":"Christinzio"}}
+[16-Mar-2025 16:15:21 US/Eastern] [2025-03-16 16:15:21] Payment processing completed successfully
+[16-Mar-2025 16:15:21 US/Eastern] [2025-03-16 16:15:21] Sending response - {"success":true,"data":{"message":"Payment processed successfully","transactionId":"test123"}}
+[16-Mar-2025 16:21:46 US/Eastern] auth_call_install.php was called at 2025-03-16 16:21:46
+[16-Mar-2025 16:21:46 US/Eastern] [2025-03-16 16:21:46] Payment request received - {"request_type":"process_payment","cardData":{"cardNumber":"4242424242424242","expirationMonth":"01","expirationYear":"2026","cvv":"123"},"customerData":{"customer_id":null,"firstName":"Edward","lastName":"Christinzio","email":"edchristinzio@gmail.com","address":"","city":"","state":"","zip":""},"amount":29.86,"description":"Installation Payment","leadData":{"lead_id":"17","first_name":"Edward","last_name":"Christinzio","dl_state":"","law_type":"","offense_number":"","phone_number":"(856) 373-3530","email":"edchristinzio@gmail.com","send_welcome_email":"0","install_comments":"","pricing_code":"1.00","four_week_rental":"28.00","cert_fee":"","admin_fee":"","applied_credit":"","subtotal":"28.00","sales_tax":"1.85","total_amount":"29.86","card_number":"4242 4242 4242 4242","exp_month":"01","exp_year":"2026","cvv":"123","cardholder_first_name":"Edward","cardholder_last_name":"Christinzio"}}
+[16-Mar-2025 16:21:46 US/Eastern] [2025-03-16 16:21:46] Payment processing completed successfully
+[16-Mar-2025 16:21:46 US/Eastern] [2025-03-16 16:21:46] Sending response - {"success":true,"data":{"message":"Payment processed successfully","transactionId":"test123"}}
+[16-Mar-2025 16:27:50 US/Eastern] auth_call_install.php was called at 2025-03-16 16:27:50
+[16-Mar-2025 16:27:50 US/Eastern] [2025-03-16 16:27:50] Payment request received - {"request_type":"process_payment","cardData":{"cardNumber":"4242424242424242","expirationMonth":"01","expirationYear":"2027","cvv":"123"},"customerData":{"customer_id":null,"firstName":"Edward","lastName":"Christinzio","email":"edchristinzio@gmail.com","address":"","city":"","state":"","zip":""},"amount":29.86,"description":"Installation Payment","leadData":{"lead_id":"17","first_name":"Edward","last_name":"Christinzio","dl_state":"","law_type":"","offense_number":"","phone_number":"(856) 373-3530","email":"edchristinzio@gmail.com","send_welcome_email":"0","install_comments":"","pricing_code":"1.00","four_week_rental":"28.00","cert_fee":"","admin_fee":"","applied_credit":"","subtotal":"28.00","sales_tax":"1.85","total_amount":"29.86","card_number":"4242 4242 4242 4242","exp_month":"01","exp_year":"2027","cvv":"123","cardholder_first_name":"Edward","cardholder_last_name":"Christinzio"}}
+[16-Mar-2025 16:27:50 US/Eastern] [2025-03-16 16:27:50] Payment processing completed successfully
+[16-Mar-2025 16:27:50 US/Eastern] [2025-03-16 16:27:50] Sending response - {"success":true,"data":{"message":"Payment processed successfully","transactionId":"test123"}}

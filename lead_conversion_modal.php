@@ -131,6 +131,10 @@ function renderLeadConversionModal($lead, $customAction = null) {
 function showPaymentModal(leadId) {
     // Hide the current modal
     let currentModal = bootstrap.Modal.getInstance(document.getElementById('convertLeadModal' + leadId));
+    
+    // Remove focus from any elements before hiding
+    document.activeElement.blur();
+    
     currentModal.hide();
     
     // Collect lead data from the form
@@ -150,23 +154,31 @@ function showPaymentModal(leadId) {
     let paymentModal = new bootstrap.Modal(document.getElementById('paymentModal' + leadId));
     paymentModal.show();
     
-    // Set the nextBtn event handler for moving to vehicle info modal
-    document.getElementById('nextBtn' + leadId + '_payment').addEventListener('click', function() {
-        // Get the client ID from the payment modal's next button
-        const clientId = this.getAttribute('data-client-id');
-        
-        // Hide the payment modal
-        paymentModal.hide();
-        
-        // Show the vehicle info modal (Modal 3)
-        let vehicleModal = new bootstrap.Modal(document.getElementById('vehicleInfoModal' + leadId));
-        
-        // Pass the client ID to the vehicle modal if needed
-        if (clientId) {
-            document.getElementById('vehicleInfoModal' + leadId).setAttribute('data-client-id', clientId);
+    // Wait for modal to be fully shown before setting up event listeners
+    paymentModal._element.addEventListener('shown.bs.modal', function() {
+        // Set the nextBtn event handler for moving to vehicle info modal
+        const nextBtn = document.getElementById('nextBtn' + leadId);
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                // Get the client ID from the payment modal's next button
+                const clientId = this.getAttribute('data-client-id');
+                
+                // Hide the payment modal
+                paymentModal.hide();
+                
+                // Show the vehicle info modal (Modal 3)
+                let vehicleModal = new bootstrap.Modal(document.getElementById('vehicleInfoModal' + leadId));
+                
+                // Pass the client ID to the vehicle modal if needed
+                if (clientId) {
+                    document.getElementById('vehicleInfoModal' + leadId).setAttribute('data-client-id', clientId);
+                }
+                
+                vehicleModal.show();
+            });
+        } else {
+            console.warn('Next button not found with ID: nextBtn' + leadId);
         }
-        
-        vehicleModal.show();
     });
 }
 </script>
