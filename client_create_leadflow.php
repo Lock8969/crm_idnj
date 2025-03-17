@@ -97,38 +97,7 @@ try {
         ]);
     }
     
-    // If new client, create related records
     if ($isNewClient) {
-        // Create appointments record (empty placeholder)
-        $apptStmt = $pdo->prepare("
-            INSERT INTO appointments (
-                customer_id, created_at, status
-            ) VALUES (
-                :customer_id, NOW(), 'Pending'
-            )
-        ");
-        $apptStmt->execute(['customer_id' => $clientId]);
-        
-        // Create cb_inventory record (placeholder)
-        $cbStmt = $pdo->prepare("
-            INSERT INTO cb_inventory (
-                customer_id, status, created_at
-            ) VALUES (
-                :customer_id, 'PENDING_ASSIGNMENT', NOW()
-            )
-        ");
-        $cbStmt->execute(['customer_id' => $clientId]);
-        
-        // Create hs_inventory record (placeholder)
-        $hsStmt = $pdo->prepare("
-            INSERT INTO hs_inventory (
-                customer_id, status, created_at
-            ) VALUES (
-                :customer_id, 'PENDING_ASSIGNMENT', NOW()
-            )
-        ");
-        $hsStmt->execute(['customer_id' => $clientId]);
-        
         // Create vehicle_information record (empty placeholder)
         $vehicleStmt = $pdo->prepare("
             INSERT INTO vehicle_information (
@@ -144,7 +113,6 @@ try {
     if (!empty($data['lead_id'])) {
         $leadStmt = $pdo->prepare("
             UPDATE leads SET
-                status = 'Converted',
                 converted_client_id = :client_id,
                 updated_at = NOW()
             WHERE id = :lead_id
@@ -165,7 +133,7 @@ try {
         'message' => 'Client record created successfully',
         'client_id' => $clientId
     ]);
-    
+
 } catch (Exception $e) {
     // Roll back the transaction on error
     $pdo->rollBack();

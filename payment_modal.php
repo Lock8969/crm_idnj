@@ -1,4 +1,10 @@
 <?php
+require_once 'auth_check.php';
+include 'db.php';
+
+// Include the vehicle information modal component
+include_once 'vehicle_info_modal.php';
+
 /**
  * Payment Modal Component
  * 
@@ -11,7 +17,6 @@
  * @param string|null $lastName The customer's last name (if known)
  * @param array|null $leadData Full lead data if coming from lead conversion
  */
-
 function renderPaymentModal($customerId = null, $firstName = null, $lastName = null, $leadData = null) {
     // Generate a unique identifier for this modal instance
     $modalId = 'paymentModal' . ($customerId ?: (isset($leadData['id']) ? $leadData['id'] : rand(1000, 9999)));
@@ -326,20 +331,20 @@ function processPayment(modalId) {
     const processBtn = document.getElementById('processPaymentBtn' + modalId);
     const nextBtn = document.getElementById('nextBtn' + modalId);
     const statusDiv = document.getElementById('paymentStatus' + modalId);
-    
+
     // Validate form
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
     }
-    
+
     // Disable the process button and show loading state
     processBtn.disabled = true;
     processBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
-    
+
     // Clear any previous status messages
     statusDiv.className = 'alert d-none';
-    
+
     // Prepare data for the API
     const formData = new FormData(form);
     const cardNumber = formData.get('card_number').replace(/\s/g, '');
@@ -347,7 +352,11 @@ function processPayment(modalId) {
     const expYear = formData.get('exp_year');
     const cvv = formData.get('cvv');
     const totalAmount = parseFloat(formData.get('total_amount'));
-    
+
+    // Get pricing code from the input field
+    const pricingCodeInput = document.getElementById('pricingCode' + modalId);
+    const pricingCode = pricingCodeInput ? parseFloat(pricingCodeInput.value) || 0 : 0;
+
     // Prepare the request data
     const paymentData = {
         request_type: 'process_payment',
@@ -373,12 +382,15 @@ function processPayment(modalId) {
         // Include all form data for client creation after successful payment
         leadData: {}
     };
-    
+
     // Add all form fields to leadData for processing
     for (const [key, value] of formData.entries()) {
         paymentData.leadData[key] = value;
     }
-    
+
+    // Remove pricing_code from any other stored sources (ensuring it only comes from input field)
+    delete paymentData.leadData['pricing_code'];
+
     // Send the payment request to the API
     fetch('/auth_call_install.php', {
         method: 'POST',
@@ -387,86 +399,58 @@ function processPayment(modalId) {
         },
         body: JSON.stringify(paymentData)
     })
-    .then(response => {
-        // Log the raw response for debugging
-        return response.text().then(text => {
-            console.log('Raw response:', text);
-            // Try to parse as JSON, but handle gracefully if it's not valid JSON
-            try {
-                return JSON.parse(text);
-            } catch (e) {
-                console.error('Failed to parse JSON response:', e);
-                throw new Error('Invalid JSON response from server');
-            }
-        });
-    })
+    .then(response => response.text().then(text => {
+        console.log('Raw response:', text);
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error('Failed to parse JSON response:', e);
+            throw new Error('Invalid JSON response from server');
+        }
+    }))
     .then(data => {
         console.log('API response:', data);
-        
+
         if (data.success) {
-            // Payment successful
             statusDiv.className = 'alert alert-success';
             statusDiv.innerHTML = '<strong>Payment Successful!</strong> Transaction ID: ' + 
                 (data.data?.transactionId || data.transactionId || 'Test Transaction');
-            
-            // Create transaction data object for client record creation
+
             const transactionData = {
                 transactionId: data.data?.transactionId || data.transactionId || 'Test-' + Date.now(),
                 authCode: data.data?.authCode || data.authCode || 'Test-Auth'
             };
-            
-            // Safely collect client data without depending on lead_id
+
             const clientData = {
                 customer_id: formData.get('customer_id') || null,
                 transaction_id: transactionData.transactionId,
-                transaction_amount: paymentData.amount
+                transaction_amount: paymentData.amount,
+                price_code: pricingCode // ✅ Now correctly using input field
             };
-            
-            // Only add lead_id if it exists in the form
+
             if (formData.has('lead_id') && formData.get('lead_id')) {
                 clientData.lead_id = formData.get('lead_id');
             }
-            
-            // Add other fields if they exist
-            if (formData.has('first_name')) clientData.first_name = formData.get('first_name');
-            if (formData.has('last_name')) clientData.last_name = formData.get('last_name');
-            if (formData.has('phone_number')) clientData.phone_number = formData.get('phone_number');
-            if (formData.has('email')) clientData.email = formData.get('email');
-            if (formData.has('dl_state')) clientData.dl_state = formData.get('dl_state');
-            if (formData.has('law_type')) clientData.law_type = formData.get('law_type');
-            if (formData.has('offense_number')) clientData.offense_number = formData.get('offense_number');
-            if (formData.has('pricing_code')) clientData.price_code = formData.get('pricing_code');
-            if (formData.has('install_comments')) clientData.install_comments = formData.get('install_comments');
-            
-            // Use cardholder name as fallback if first/last name not present
-            if (!clientData.first_name) clientData.first_name = paymentData.customerData.firstName;
-            if (!clientData.last_name) clientData.last_name = paymentData.customerData.lastName;
-            
-            // Create client record if we have either a customer_id or lead_id
+
             if (clientData.customer_id || clientData.lead_id) {
-                // Show the next button but keep it disabled until client creation succeeds
                 processBtn.classList.add('d-none');
                 nextBtn.classList.remove('d-none');
                 nextBtn.disabled = true;
                 nextBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating client...';
-                
+
                 createClientRecord(modalId, paymentData, transactionData, statusDiv, nextBtn);
             } else {
                 console.log('Skipping client record creation - no customer_id or lead_id');
                 statusDiv.innerHTML += '<br><strong>Warning:</strong> Unable to create client record - missing ID information.';
-                
-                // Show the next button but keep it disabled
                 processBtn.classList.add('d-none');
                 nextBtn.classList.remove('d-none');
                 nextBtn.disabled = true;
             }
         } else {
-            // Payment failed
             statusDiv.className = 'alert alert-danger';
             statusDiv.innerHTML = '<strong>Payment Failed:</strong> ' + 
                 (data.data?.message || data.message || 'Unknown error');
-            
-            // Re-enable the process button
+
             processBtn.disabled = false;
             processBtn.innerHTML = 'Try Again';
         }
@@ -475,8 +459,6 @@ function processPayment(modalId) {
         console.error('Error details:', error);
         statusDiv.className = 'alert alert-danger';
         statusDiv.innerHTML = '<strong>Error:</strong> ' + error.message;
-        
-        // Re-enable the process button
         processBtn.disabled = false;
         processBtn.innerHTML = 'Try Again';
     });
@@ -486,40 +468,55 @@ function processPayment(modalId) {
 <script>
 // Create client record after successful payment
 function createClientRecord(modalId, paymentData, transactionData, statusDiv, nextBtn) {
-    // Extract lead ID from modal ID by removing "paymentModal" prefix
     const leadId = modalId.replace('paymentModal', '');
-    
-    // If statusDiv and nextBtn weren't passed, look them up
+
+    // Ensure statusDiv and nextBtn exist
     if (!statusDiv) {
         statusDiv = document.getElementById('paymentStatus' + modalId);
     }
     if (!nextBtn) {
         nextBtn = document.getElementById('nextBtn' + modalId);
     }
-    
-// Prepare client data for creation/update
-const clientData = {
-    lead_id: leadId, // Use extracted leadId directly instead of from paymentData
-    customer_id: paymentData.customer_id || null,
-    first_name: paymentData.first_name || paymentData.firstName,
-    last_name: paymentData.last_name || paymentData.lastName,
-    phone_number: paymentData.phone_number || '',
-    email: paymentData.email || '',
-    dl_state: paymentData.dl_state || '',
-    // Transform law_type directly when setting it
-    law_type: paymentData.law_type === "Old Law" ? "old law" : 
-             (paymentData.law_type === "New Law" ? "new law" : 
-             (paymentData.law_type ? paymentData.law_type.toLowerCase() : '')),
-    offense_number: paymentData.offense_number || '',
-    price_code: paymentData.price_code || 0,
-    install_comments: paymentData.install_comments || '',
-    transaction_id: transactionData?.transactionId || '',
-    transaction_amount: paymentData.amount || 0
-};
-    
+
+    // Retrieve stored lead data if available
+    let storedLeadData = {};
+    try {
+        const storedData = sessionStorage.getItem('leadData_' + leadId);
+        if (storedData) {
+            storedLeadData = JSON.parse(storedData);
+            console.log('Retrieved lead data from sessionStorage:', storedLeadData);
+        }
+    } catch (e) {
+        console.error('Error retrieving lead data from sessionStorage:', e);
+    }
+
+    // Get pricing code from input field
+    const pricingCodeInput = document.getElementById('pricingCode' + modalId);
+    const pricingCode = pricingCodeInput ? parseFloat(pricingCodeInput.value) || 0 : 0;
+
+    // Prepare client data for creation/update
+    const clientData = {
+        lead_id: leadId,
+        customer_id: paymentData.customer_id || null,
+        first_name: storedLeadData.first_name || paymentData.first_name || paymentData.firstName,
+        last_name: storedLeadData.last_name || paymentData.last_name || paymentData.lastName,
+        phone_number: storedLeadData.phone_number || paymentData.phone_number || '',
+        email: storedLeadData.email || paymentData.email || '',
+        dl_state: storedLeadData.dl_state || paymentData.dl_state || '',
+        law_type: storedLeadData.law_type === "Old Law" ? "old law" : 
+                 (storedLeadData.law_type === "New Law" ? "new law" : 
+                 (storedLeadData.law_type ? storedLeadData.law_type.toLowerCase() : "old law")),
+        offense_number: storedLeadData.offense_number || paymentData.offense_number || '',
+        price_code: pricingCode,  
+        install_comments: storedLeadData.install_comments || paymentData.install_comments || '',
+        transaction_id: transactionData?.transactionId || '',
+        transaction_amount: paymentData.amount || 0,
+        payment_type: 'CREDIT_CARD'
+    };
+
     console.log('Creating client record with data:', clientData);
-    
-    // Send the client creation request
+
+    // Send request to create client
     fetch('client_create_leadflow.php', {
         method: 'POST',
         headers: {
@@ -529,59 +526,53 @@ const clientData = {
     })
     .then(response => {
         if (!response.ok) {
-            return response.text().then(text => {
-                throw new Error(`Server error (${response.status}): ${text || 'Unknown error'}`);
-            });
+            throw new Error(`Server error (${response.status}): ${response.statusText}`);
         }
         return response.json();
     })
     .then(data => {
         if (data.success) {
-            console.log('Client record created successfully', data);
-            
-            // Update the status message to include client creation success
-            if (statusDiv) {
-                statusDiv.innerHTML += '<br><strong>Client Record Created!</strong> ID: ' + data.client_id;
-            }
-            
-            // Enable the next button and update its appearance
-            if (nextBtn) {
-                nextBtn.disabled = false;
-                nextBtn.innerHTML = 'Continue to Next Step';
-                
-                // Store the client ID for the next steps
-                if (data.client_id) {
-                    nextBtn.setAttribute('data-client-id', data.client_id);
-                }
+            console.log('Client record created successfully:', data);
+
+            // Enable and update the Next button
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = 'Continue to Vehicle Info';
+
+            if (data.client_id) {
+                nextBtn.setAttribute('data-client-id', data.client_id);
+
+                // Attach event listener to open vehicle info modal
+                nextBtn.onclick = function () {
+                    let clientId = this.getAttribute('data-client-id');
+
+                    // Find the Vehicle Info Modal
+                    let modalElement = document.getElementById('vehicleInfoModal' + clientId);
+
+                    if (!modalElement) {
+                        console.error('Error: vehicleInfoModal not found for client_id:', clientId);
+                        alert('Error: Vehicle information modal is missing.');
+                        return;
+                    }
+
+                    // Hide the current modal
+                    let currentModal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+                    if (currentModal) {
+                        currentModal.hide();
+                    }
+
+                    // Show the vehicle info modal
+                    let vehicleModal = new bootstrap.Modal(modalElement);
+                    vehicleModal.show();
+                };
             }
         } else {
-            console.error('Error creating client record:', data.message);
-            
-            // Update the status message to show client creation failed
-            if (statusDiv) {
-                statusDiv.innerHTML += '<br><strong>Error:</strong> Client record could not be created. ' + data.message;
-            }
-            
-            // Keep the next button disabled
-            if (nextBtn) {
-                nextBtn.disabled = true;
-                nextBtn.innerHTML = 'Cannot Continue - Client Error';
-            }
+            console.error('Client creation failed:', data.message);
+            alert('Error: ' + (data.message || 'Unknown error occurred.'));
         }
     })
     .catch(error => {
         console.error('Error creating client record:', error);
-        
-        // Update the status message to show client creation failed
-        if (statusDiv) {
-            statusDiv.innerHTML += '<br><strong>Error:</strong> Client record could not be created. ' + error.message;
-        }
-        
-        // Keep the next button disabled
-        if (nextBtn) {
-            nextBtn.disabled = true;
-            nextBtn.innerHTML = 'Cannot Continue - Client Error';
-        }
+        alert('An error occurred while creating the client record.');
     });
 }
 </script>

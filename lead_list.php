@@ -1,20 +1,19 @@
 <?php
 require_once 'auth_check.php';
-// Ensure this can be included in other files
+
+// Ensure this file can be included safely in other scripts
 if (!defined('INCLUDED_IN_SCRIPT')) {
-    // Check if this file is being accessed directly
+    define('INCLUDED_IN_SCRIPT', true);
+
+    // Check if database connection exists; if not, include it
     if (!isset($pdo)) {
-        require_once 'auth_check.php';
         include 'db.php';
     }
 }
 
-// Define a constant to indicate this file has been included
-define('INCLUDED_IN_SCRIPT', true);
-
 // Get current page from URL parameter
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$current_page = max(1, $current_page); // Ensure page is at least 1
+$current_page = max(1, $current_page); // Ensure the page is at least 1
 $per_page = 10;
 $offset = ($current_page - 1) * $per_page;
 
@@ -50,12 +49,12 @@ try {
     $total_leads = $count_stmt->fetchColumn();
     $total_pages = ceil($total_leads / $per_page);
     
-    // Get leads for current page
     $query = "SELECT id, phone_number, first_name, last_name, email, status, hybrid, start_system, vehicle_notes, year, make, model
-              FROM leads 
-              $search_condition 
-              ORDER BY id DESC 
-              LIMIT $offset, $per_page";
+          FROM leads 
+          WHERE converted_client_id IS NULL 
+          $search_condition 
+          ORDER BY id DESC 
+          LIMIT $offset, $per_page";
     
     $stmt = $pdo->prepare($query);
     

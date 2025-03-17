@@ -1,16 +1,15 @@
 <?php
 require_once 'auth_check.php';
-// Ensure this can be included in other files
+
+// Ensure this file can be included safely in other scripts
 if (!defined('INCLUDED_IN_SCRIPT')) {
-    // Check if this file is being accessed directly
+    define('INCLUDED_IN_SCRIPT', true);
+
+    // Check if database connection exists before including `db.php`
     if (!isset($pdo)) {
-        require_once 'auth_check.php';
         include 'db.php';
     }
 }
-
-// Define a constant to indicate this file has been included
-define('INCLUDED_IN_SCRIPT', true);
 
 // Get current page from URL parameter
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
