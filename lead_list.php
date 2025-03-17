@@ -140,7 +140,7 @@ function get_leads_pagination_url($page, $search) {
 
                                         <?php
                                         // Include the modal component file
-                                        include_once 'lead_conversion_modal.php';
+                                        include_once 'lead_convert_modal1.php';
                                         // Render the modal for this lead
                                         renderLeadConversionModal($lead);
                                         ?>

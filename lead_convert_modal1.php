@@ -3,7 +3,7 @@
  * Lead Conversion Modal Component
  * 
  * Usage:
- * include 'lead_conversion_modal.php';
+ * include 'lead_convert_modal1.php';
  * renderLeadConversionModal($lead, $customAction = null);
  * 
  * @param array $lead The lead data array
