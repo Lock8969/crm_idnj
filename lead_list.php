@@ -142,7 +142,7 @@ function get_leads_pagination_url($page, $search) {
                                         // Include the modal component file
                                         include_once 'lead_convert_modal1.php';
                                         // Render the modal for this lead
-                                        renderLeadConversionModal($lead);
+                                        renderLeadConvertModal1($lead);
                                         ?>
 
                                         <ul class="dropdown-menu">
