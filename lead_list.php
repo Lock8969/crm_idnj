@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require_once 'auth_check.php';
 
 // Ensure this file can be included safely in other scripts
@@ -10,6 +12,13 @@ if (!defined('INCLUDED_IN_SCRIPT')) {
         include 'db.php';
     }
 }
+
+// Now include the modal files after defining INCLUDED_IN_SCRIPT
+include_once 'convert_modal1.php';
+include_once 'convert_modal2_pymt.php';
+
+// Add Feather Icons library
+echo '<script src="https://unpkg.com/feather-icons"></script>';
 
 // Get current page from URL parameter
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -65,6 +74,7 @@ try {
     }
     
     $leads = $stmt->fetchAll();
+    error_log("Number of leads fetched: " . count($leads));
 } catch (PDOException $e) {
     error_log("Error fetching leads list: " . $e->getMessage());
     $leads = [];
@@ -78,6 +88,11 @@ function get_leads_pagination_url($page, $search) {
         $url .= 'search=' . urlencode($search) . '&';
     }
     return $url . 'page=' . $page;
+}
+
+// After fetching leads, render the payment modal for each lead
+foreach ($leads as $lead) {
+    renderPaymentModal2(null, $lead['first_name'], $lead['last_name'], $lead);
 }
 ?>
 
@@ -132,24 +147,10 @@ function get_leads_pagination_url($page, $search) {
                         <?php foreach ($leads as $index => $lead): ?>
                             <tr>
                                 <td>
-                                    <div class="dropdown">
-                                       <!-- Replace your current + button dropdown with this -->
-                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle" data-bs-toggle="modal" data-bs-target="#convertLeadModal<?php echo htmlspecialchars($lead['id']); ?>">
-                                            <i data-feather="plus-circle" class="icon-xs text-primary"></i>
-                                        </button>
-
-                                        <?php
-                                        // Include the modal component file
-                                        include_once 'lead_convert_modal1.php';
-                                        // Render the modal for this lead
-                                        renderLeadConvertModal1($lead);
-                                        ?>
-
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="add_client.php?lead_id=<?php echo htmlspecialchars($lead['id']); ?>">Add as Client</a></li>
-                                            <li><a class="dropdown-item" href="schedule_install.php?lead_id=<?php echo htmlspecialchars($lead['id']); ?>">Schedule Install</a></li>
-                                        </ul>
-                                    </div>
+                                    <!-- Plus icon button to open modal -->
+                                    <button class="btn btn-ghost btn-icon btn-sm rounded-circle" data-bs-toggle="modal" data-bs-target="#convertLeadModal1<?php echo htmlspecialchars($lead['id']); ?>">
+                                        <i data-feather="plus-circle" class="icon-xs text-primary"></i>
+                                    </button>
                                 </td>
                                 <td>
                                     <div class="lh-1">
@@ -230,11 +231,16 @@ function get_leads_pagination_url($page, $search) {
     </div>
 </div>
 
+<?php foreach ($leads as $lead): ?>
+    <?php renderLeadConvertModal1($lead); ?>
+    <?php renderPaymentModal2(null, $lead['first_name'], $lead['last_name'], $lead); ?>
+<?php endforeach; ?>
+
+<?php include_once 'convert_modal2_pymt.php'; ?>
+
 <!-- Initialize Feather Icons -->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        feather.replace();
     });
 </script>

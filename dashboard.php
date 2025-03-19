@@ -95,7 +95,10 @@ $(document).ready(function(){
 <!-- Include the leads list card in a new row -->
 <div class="row">
     <div class="col-12">
-        <?php include 'lead_list.php'; ?>
+        <?php 
+        define('INCLUDED_IN_SCRIPT', true);
+        include 'lead_list.php'; 
+        ?>
     </div>
 </div>
 

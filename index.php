@@ -14,6 +14,9 @@ include 'db.php';
     <link href="sb_admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="sb_admin/css/sb-admin-2.min.css" rel="stylesheet">
 
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
     <!-- jQuery and Bootstrap JS -->
     <script src="sb_admin/vendor/jquery/jquery.min.js"></script>
     <script src="sb_admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -179,6 +182,12 @@ include 'db.php';
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <!-- Initialize Feather Icons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+        });
+    </script>
 </body>
 
 </html>
