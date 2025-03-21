@@ -162,7 +162,7 @@ foreach ($leads as $lead) {
                                     </div>
                                 </td>
                                 <td><?php echo htmlspecialchars($lead['phone_number']); ?></td>
-                                <td><?php echo htmlspecialchars($lead['email']); ?></td>
+                                <td><?php echo !empty($lead['email']) ? htmlspecialchars($lead['email']) : ''; ?></td>
                                 <td>
                                     <span class="badge bg-<?php 
                                         echo ($lead['status'] == 'Installed') ? 'success' : 

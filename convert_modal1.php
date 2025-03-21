@@ -2,9 +2,17 @@
 if (!defined('INCLUDED_IN_SCRIPT')) {
     die('No direct script access allowed');
 }
+// Ensure states.php is included and $states is available
 include_once 'states.php';
 
+// Debug check - remove this in production
+if (!isset($states) || !is_array($states)) {
+    echo '<!-- Error: $states array not available after include -->';
+}
+
 function renderLeadConvertModal1($lead) {
+    // Make states available within the function
+    global $states;
 ?>
 <!-- Modal template - will be used for each lead -->
 <div class="modal fade" id="convertLeadModal1<?php echo htmlspecialchars($lead['id']); ?>" tabindex="-1" aria-labelledby="convertLeadModalLabel<?php echo htmlspecialchars($lead['id']); ?>" aria-hidden="true">
@@ -31,12 +39,30 @@ function renderLeadConvertModal1($lead) {
                                 <label for="dlState<?php echo htmlspecialchars($lead['id']); ?>" class="form-label">Driver's License State</label>
                                 <select class="form-select" id="dlState<?php echo htmlspecialchars($lead['id']); ?>" name="dl_state" tabindex="3">
                                     <option value="">Select State</option>
-                                    <?php foreach ($states as $abbr => $state): ?>
-                                        <option value="<?php echo htmlspecialchars($abbr); ?>" 
-                                            <?php echo (($lead['dl_state'] ?? '') === $abbr) ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($abbr); ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                    <?php 
+                                    // Access the global $states array
+                                    global $states;
+                                    
+                                    // Use $states if available, otherwise use a fallback
+                                    if (isset($states) && is_array($states)) {
+                                        foreach ($states as $abbr => $state): ?>
+                                            <option value="<?php echo htmlspecialchars($abbr); ?>" 
+                                                <?php echo (($lead['dl_state'] ?? '') === $abbr) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($abbr); ?>
+                                            </option>
+                                        <?php endforeach;
+                                    } else {
+                                        // Fallback in case $states is not available
+                                        $stateAbbrs = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+                                        
+                                        foreach ($stateAbbrs as $abbr): ?>
+                                            <option value="<?php echo htmlspecialchars($abbr); ?>" 
+                                                <?php echo (($lead['dl_state'] ?? '') === $abbr) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($abbr); ?>
+                                            </option>
+                                        <?php endforeach;
+                                    }
+                                    ?>
                                 </select>
                             </div>
 
@@ -105,8 +131,34 @@ function renderLeadConvertModal1($lead) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const continueBtn = document.getElementById('continueToPayment<?php echo htmlspecialchars($lead['id']); ?>');
-    const form = document.getElementById('convertLeadForm<?php echo htmlspecialchars($lead['id']); ?>');
+    const leadId = '<?php echo htmlspecialchars($lead['id']); ?>';
+    const continueBtn = document.getElementById('continueToPayment' + leadId);
+    const form = document.getElementById('convertLeadForm' + leadId);
+    
+    // Function to capitalize first letter of each word
+    function capitalizeWords(str) {
+        return str.toLowerCase().replace(/(?:^|\s)\S/g, function(word) {
+            return word.toUpperCase();
+        });
+    }
+    
+    // Add input event listeners for name capitalization
+    const firstNameInput = document.getElementById('firstName' + leadId);
+    const lastNameInput = document.getElementById('lastName' + leadId);
+    
+    [firstNameInput, lastNameInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', function(e) {
+                const cursorPosition = e.target.selectionStart;
+                const originalLength = e.target.value.length;
+                e.target.value = capitalizeWords(e.target.value);
+                // Adjust cursor position if the string length changed
+                const newLength = e.target.value.length;
+                const newPosition = cursorPosition + (newLength - originalLength);
+                e.target.setSelectionRange(newPosition, newPosition);
+            });
+        }
+    });
     
     continueBtn.addEventListener('click', function() {
         // Get all form data
@@ -116,17 +168,24 @@ document.addEventListener('DOMContentLoaded', function() {
             data[key] = value;
         });
         
-        // Store the data in sessionStorage
-        sessionStorage.setItem('leadConversionData', JSON.stringify(data));
+        // Store the final form data in sessionStorage
+        const storageKey = 'leadConversionData_' + leadId;
+        console.log('Lead ID:', leadId);
+        console.log('Storage Key:', storageKey);
+        console.log('Storing data:', data);
+        sessionStorage.setItem(storageKey, JSON.stringify(data));
+        
+        // Also log all current session storage keys for debugging
+        console.log('All sessionStorage keys:', Object.keys(sessionStorage));
         
         // Close current modal
-        const currentModal = bootstrap.Modal.getInstance(document.getElementById('convertLeadModal1<?php echo htmlspecialchars($lead['id']); ?>'));
+        const currentModal = bootstrap.Modal.getInstance(document.getElementById('convertLeadModal1' + leadId));
         currentModal.hide();
         
         // Wait for the current modal to fully close
         setTimeout(() => {
             // Show the payment modal
-            const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal<?php echo htmlspecialchars($lead['id']); ?>'));
+            const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal' + leadId));
             paymentModal.show();
         }, 150);
     });

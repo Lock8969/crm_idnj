@@ -17,7 +17,7 @@ function renderPaymentModal2($client_id, $first_name, $last_name, $lead) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="paymentForm<?php echo htmlspecialchars($lead['id']); ?>" action="conv_process_pymt.php" method="POST">
+                <form id="paymentForm<?php echo htmlspecialchars($lead['id']); ?>">
                     <input type="hidden" name="lead_id" value="<?php echo htmlspecialchars($lead['id']); ?>">
                     <input type="hidden" name="amount" id="hiddenTotal<?php echo htmlspecialchars($lead['id']); ?>">
                     
@@ -201,7 +201,7 @@ function renderPaymentModal2($client_id, $first_name, $last_name, $lead) {
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="processPaymentBtn<?php echo htmlspecialchars($lead['id']); ?>">Process Payment</button>
+                        <button type="button" class="btn btn-primary" id="processPaymentBtn<?php echo htmlspecialchars($lead['id']); ?>">Process Payment</button>
                     </div>
                 </form>
             </div>
@@ -210,23 +210,51 @@ function renderPaymentModal2($client_id, $first_name, $last_name, $lead) {
 </div>
 
 <script>
+// Main initialization script
 document.addEventListener('DOMContentLoaded', function() {
     const leadId = '<?php echo htmlspecialchars($lead['id']); ?>';
-    const form = document.getElementById('paymentForm' + leadId);
+    const paymentModal = document.getElementById('paymentModal' + leadId);
     
-    // Get data from previous modal
-    const leadData = JSON.parse(sessionStorage.getItem('leadConversionData') || '{}');
-    
-    // Pre-populate card holder names from previous modal
-    document.getElementById('cardFirstName' + leadId).value = leadData.first_name || '';
-    document.getElementById('cardLastName' + leadId).value = leadData.last_name || '';
+    // Only initialize when the modal is actually being shown
+    paymentModal.addEventListener('show.bs.modal', function (event) {
+        console.log('Payment Modal Opening for Lead ID:', leadId);
+        
+        // Get lead-specific data from previous modal
+        const storageKey = 'leadConversionData_' + leadId;
+        console.log('Payment Modal - Looking for storage key:', storageKey);
+        
+        const storedData = sessionStorage.getItem(storageKey);
+        console.log('Payment Modal - Retrieved stored data:', storedData);
+        
+        if (storedData) {
+            const leadData = JSON.parse(storedData);
+            console.log('Payment Modal - Parsed lead data:', leadData);
+            
+            // Pre-populate card holder names from stored data
+            if (leadData.first_name) {
+                console.log('Setting first name to:', leadData.first_name);
+                document.getElementById('cardFirstName' + leadId).value = leadData.first_name;
+            }
+            if (leadData.last_name) {
+                console.log('Setting last name to:', leadData.last_name);
+                document.getElementById('cardLastName' + leadId).value = leadData.last_name;
+            }
+        } else {
+            console.log('No stored data found for lead ' + leadId);
+        }
+    });
 
-    // Add the formatting setup here, before calculating totals
+    // Initialize decimal formatting and calculations
     formatDecimalInput(leadId);
-    
-    // Then do the original calculations
     calculatePaymentTotals(leadId);
+});
+</script>
 
+<script>
+// Card number formatting script
+document.addEventListener('DOMContentLoaded', function() {
+    const leadId = '<?php echo htmlspecialchars($lead['id']); ?>';
+    
     // Format card number input
     document.getElementById('cardNumber' + leadId).addEventListener('input', function(e) {
         let value = this.value.replace(/\D/g, '');
@@ -241,120 +269,186 @@ document.addEventListener('DOMContentLoaded', function() {
         
         this.value = formattedValue;
     });
+});
+</script>
 
+<script>
+// CVV formatting script
+document.addEventListener('DOMContentLoaded', function() {
+    const leadId = '<?php echo htmlspecialchars($lead['id']); ?>';
+    
     // Format CVV input
     document.getElementById('cvv' + leadId).addEventListener('input', function(e) {
         this.value = this.value.replace(/\D/g, '');
     });
-
-    // Handle Process Payment button click
-    document.getElementById('processPaymentBtn' + leadId).addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Get the expiration date
-        const expMonth = document.getElementById('expMonth' + leadId).value;
-        const expYear = document.getElementById('expYear' + leadId).value;
-        
-        // Get the total amount
-        const totalAmount = document.getElementById('hiddenTotal' + leadId).value;
-        
-        // Get cardholder name
-        const firstName = document.getElementById('cardFirstName' + leadId).value;
-        const lastName = document.getElementById('cardLastName' + leadId).value;
-        
-        // Get card details
-        const cardNumber = document.getElementById('cardNumber' + leadId).value.replace(/\s/g, '');
-        const cvv = document.getElementById('cvv' + leadId).value;
-        
-        // Validate required fields
-        if (!firstName || !lastName || !cardNumber || !expMonth || !expYear || !cvv || !totalAmount) {
-            alert('Please fill in all required fields');
-            return;
-        }
-        
-        // Validate card number length
-        if (cardNumber.length < 15 || cardNumber.length > 16) {
-            alert('Please enter a valid card number');
-            return;
-        }
-        
-        // Validate CVV
-        if (cvv.length < 3 || cvv.length > 4) {
-            alert('Please enter a valid CVV');
-            return;
-        }
-        
-        // Validate amount
-        if (parseFloat(totalAmount) <= 0) {
-            alert('Invalid payment amount');
-            return;
-        }
-        
-        // Create form data
-        const formData = new FormData();
-        formData.append('first_name', firstName);
-        formData.append('last_name', lastName);
-        formData.append('card_number', cardNumber);
-        formData.append('expiration_date', expMonth + expYear);
-        formData.append('cvv', cvv);
-        formData.append('amount', totalAmount);
-        
-        // Show loading state
-        const submitButton = this;
-        const originalText = submitButton.innerHTML;
-        submitButton.disabled = true;
-        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
-        
-        // Send the payment request
-        fetch('conv_process_pymt.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text().then(text => {
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    console.error('Server response:', text);
-                    throw new Error('Invalid JSON response from server');
-                }
-            });
-        })
-        .then(data => {
-            if (data.success) {
-                // Payment successful
-                alert('Payment processed successfully!');
-                // Close the modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal' + leadId));
-                modal.hide();
-                // Optionally refresh the page or update UI
-                window.location.reload();
-            } else {
-                // Payment failed
-                alert(data.message || 'Payment processing failed');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while processing the payment: ' + error.message);
-        })
-        .finally(() => {
-            // Restore button state
-            submitButton.disabled = false;
-            submitButton.innerHTML = originalText;
-        });
-    });
 });
+</script>
 
+<script>
+// Payment processing script
+document.addEventListener('DOMContentLoaded', function() {
+    const leadId = '<?php echo htmlspecialchars($lead['id']); ?>';
+    
+    // Prevent multiple event listener registration
+    const buttonId = 'processPaymentBtn' + leadId;
+    const paymentButton = document.getElementById(buttonId);
+    
+    // Check if we've already attached the listener to this button
+    if (paymentButton && !paymentButton.hasAttribute('data-listener-attached')) {
+        console.log('Attaching payment event listener for lead:', leadId);
+        
+        // Mark the button as having a listener attached
+        paymentButton.setAttribute('data-listener-attached', 'true');
+        
+        // Handle Process Payment button click
+        paymentButton.addEventListener('click', function(e) {
+            console.log('Payment process started for lead:', leadId, '- Time:', new Date().toISOString());
+            e.preventDefault();
+            
+            // Get the expiration date
+            const expMonth = document.getElementById('expMonth' + leadId).value;
+            const expYear = document.getElementById('expYear' + leadId).value;
+            
+            // Get the total amount
+            const totalAmount = document.getElementById('hiddenTotal' + leadId).value;
+            
+            // Get cardholder name
+            const firstName = document.getElementById('cardFirstName' + leadId).value;
+            const lastName = document.getElementById('cardLastName' + leadId).value;
+            
+            // Get card details
+            const cardNumber = document.getElementById('cardNumber' + leadId).value.replace(/\s/g, '');
+            const cvv = document.getElementById('cvv' + leadId).value;
+            
+            // Validate required fields
+            if (!firstName || !lastName || !cardNumber || !expMonth || !expYear || !cvv || !totalAmount) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Validate card number length
+            if (cardNumber.length < 15 || cardNumber.length > 16) {
+                alert('Please enter a valid card number');
+                return;
+            }
+            
+            // Validate CVV
+            if (cvv.length < 3 || cvv.length > 4) {
+                alert('Please enter a valid CVV');
+                return;
+            }
+            
+            // Validate amount
+            if (parseFloat(totalAmount) <= 0) {
+                alert('Invalid payment amount');
+                return;
+            }
+
+            // Validate expiration date
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1;
+            const selectedYear = parseInt(expYear);
+            const selectedMonth = parseInt(expMonth);
+
+            if (selectedYear < currentYear || (selectedYear === currentYear && selectedMonth < currentMonth)) {
+                alert('Card has expired');
+                return;
+            }
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('first_name', firstName);
+            formData.append('last_name', lastName);
+            formData.append('card_number', cardNumber);
+            // Format expiration date as MMYY for Authorize.net
+            const expirationDate = expMonth + expYear.substring(2); // Get last 2 digits of year
+            formData.append('expiration_date', expirationDate);
+            formData.append('cvv', cvv);
+            formData.append('amount', totalAmount);
+            
+            // Show loading state
+            const submitButton = this;
+            const originalText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+            
+            // Send the payment request
+            fetch('conv_process_pymt.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // Get the response text
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Server response:', text);
+                        throw new Error('Invalid JSON response from server');
+                    }
+                });
+            })
+            .then(data => {
+                console.log('Authorize.net full response:', data);
+                
+                // Check for success based on Authorize.net's response format
+                // responseCode = 1 means Approved
+                if (data.transactionResponse && 
+                    data.transactionResponse.responseCode == '1') {
+                    
+                    // Payment successful
+                    const transId = data.transactionResponse.transId;
+                    alert('Payment processed successfully! Transaction ID: ' + transId);
+                    
+                    // Close the modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal' + leadId));
+                    modal.hide();
+                    
+                    // Optionally refresh the page or update UI
+                    window.location.reload();
+                } else {
+                    // Payment failed - extract error message
+                    let errorMessage = 'Payment processing failed';
+                    
+                    // Try to get specific error message from Authorize.net
+                    if (data.transactionResponse && data.transactionResponse.errors) {
+                        errorMessage = data.transactionResponse.errors[0].errorText;
+                    } else if (data.messages && data.messages.message) {
+                        errorMessage = data.messages.message[0].text;
+                    }
+                    
+                    alert(errorMessage);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing the payment: ' + error.message);
+            })
+            .finally(() => {
+                // Restore button state
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+                console.log('Payment process completed for lead:', leadId, '- Time:', new Date().toISOString());
+            });
+            
+            // Prevent form submission as an extra precaution
+            return false;
+        });
+    }
+});
+</script>
+
+<script>
+// Form validation function
 function validatePaymentForm(leadId) {
     // Add your validation logic here
     return true;
 }
+</script>
 
-// Function to format decimal input
+<script>
+// Decimal input formatting function
 function formatDecimalInput(leadId) {
     const numberInputs = [
         document.getElementById('pricingCode' + leadId),
@@ -416,8 +510,10 @@ function formatDecimalInput(leadId) {
         });
     });
 }
+</script>
 
-// Function to calculate totals
+<script>
+// Payment totals calculation function
 function calculatePaymentTotals(leadId) {
     const pricingCode = parseFloat(document.getElementById('pricingCode' + leadId).value || 0);
     const fourWeekRental = pricingCode * 28;
@@ -439,6 +535,7 @@ function calculatePaymentTotals(leadId) {
     document.getElementById('hiddenTotal' + leadId).value = total.toFixed(2);
 }
 </script>
+
 <?php
 }
 ?>
