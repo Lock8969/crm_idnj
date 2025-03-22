@@ -399,14 +399,57 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Payment successful
                     const transId = data.transactionResponse.transId;
+                    
+                    // Get existing stored data
+                    const storageKey = 'leadConversionData_' + leadId;
+                    const storedData = sessionStorage.getItem(storageKey);
+                    let leadData = storedData ? JSON.parse(storedData) : {};
+                    
+                    // Add transaction data to lead data
+                    leadData.transaction = {
+                        id: transId,
+                        amount: totalAmount,
+                        status: 'success',
+                        timestamp: new Date().toISOString(),
+                        response: data.transactionResponse
+                    };
+                    
+                    // Add pricing code to lead data
+                    const pricingCode = document.getElementById('pricingCode' + leadId).value;
+                    leadData.pricing_code = pricingCode;
+                    
+                    // Add additional fee fields
+                    leadData.certification_fee = document.getElementById('certificationFee' + leadId).value;
+                    leadData.admin_fee = document.getElementById('adminFee' + leadId).value;
+                    leadData.applied_credit = document.getElementById('appliedCredit' + leadId).value;
+                    leadData.sales_tax = document.getElementById('salesTax' + leadId).value;
+                    
+                    // Store updated data back
+                    sessionStorage.setItem(storageKey, JSON.stringify(leadData));
+                    
+                    // Trigger the client creation process
+                    createClientFromStoredData(leadId);
+                    
                     alert('Payment processed successfully! Transaction ID: ' + transId);
                     
-                    // Close the modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal' + leadId));
-                    modal.hide();
+                    // Update button text and state
+                    const submitButton = this;
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Next: Update Vehicle Information';
                     
-                    // Optionally refresh the page or update UI
-                    window.location.reload();
+                    // Add new click handler for vehicle information
+                    submitButton.onclick = function(e) {
+                        e.preventDefault();
+                        // Close current modal
+                        const currentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal' + leadId));
+                        currentModal.hide();
+                        
+                        // Show vehicle information modal
+                        setTimeout(() => {
+                            const vehicleModal = new bootstrap.Modal(document.getElementById('vehicleInfoModal' + leadId));
+                            vehicleModal.show();
+                        }, 150);
+                    };
                 } else {
                     // Payment failed - extract error message
                     let errorMessage = 'Payment processing failed';
@@ -419,16 +462,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     alert(errorMessage);
+                    // Restore button state on failure
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalText;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred while processing the payment: ' + error.message);
-            })
-            .finally(() => {
-                // Restore button state
+                // Restore button state on error
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalText;
+            })
+            .finally(() => {
                 console.log('Payment process completed for lead:', leadId, '- Time:', new Date().toISOString());
             });
             
@@ -437,6 +483,65 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+</script>
+
+<script>
+// Standalone client creation script
+function createClientFromStoredData(leadId) {
+    console.log('Starting client creation process for lead:', leadId);
+    
+    // Get the stored data
+    const storageKey = 'leadConversionData_' + leadId;
+    const storedData = sessionStorage.getItem(storageKey);
+    
+    if (!storedData) {
+        console.error('No stored data found for lead:', leadId);
+        return;
+    }
+    
+    try {
+        const leadData = JSON.parse(storedData);
+        console.log('Retrieved stored data:', JSON.stringify(leadData, null, 2));
+        
+        // Send the data to create client
+        fetch('conv_create_client.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(leadData)
+        })
+        .then(response => {
+            console.log('Server response status:', response.status);
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Raw server response:', text);
+                    throw new Error('Invalid JSON response: ' + text);
+                }
+            });
+        })
+        .then(result => {
+            if (result.success) {
+                console.log('Client created successfully with ID:', result.client_id);
+                // Add client ID to stored data
+                leadData.client_id = result.client_id;
+                sessionStorage.setItem(storageKey, JSON.stringify(leadData));
+            } else {
+                console.error('Error creating client:', result.error);
+                alert('Client creation failed: ' + result.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error during client creation:', error);
+            console.error('Error details:', JSON.stringify(error, null, 2));
+            alert('An error occurred while creating the client record');
+        });
+    } catch (error) {
+        console.error('Error parsing stored data:', error);
+    }
+}
 </script>
 
 <script>
