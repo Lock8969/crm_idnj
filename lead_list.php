@@ -16,6 +16,7 @@ if (!defined('INCLUDED_IN_SCRIPT')) {
 // Now include the modal files after defining INCLUDED_IN_SCRIPT
 include_once 'convert_modal1.php';
 include_once 'convert_modal2_pymt.php';
+include_once 'conv_modal3_vehicle.php';
 
 // Add Feather Icons library
 echo '<script src="https://unpkg.com/feather-icons"></script>';
@@ -234,9 +235,8 @@ foreach ($leads as $lead) {
 <?php foreach ($leads as $lead): ?>
     <?php renderLeadConvertModal1($lead); ?>
     <?php renderPaymentModal2(null, $lead['first_name'], $lead['last_name'], $lead); ?>
+    <?php renderVehicleInfoModal($lead); ?>
 <?php endforeach; ?>
-
-<?php include_once 'convert_modal2_pymt.php'; ?>
 
 <!-- Initialize Feather Icons -->
 <script>

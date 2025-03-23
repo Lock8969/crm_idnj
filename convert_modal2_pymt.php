@@ -432,13 +432,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     alert('Payment processed successfully! Transaction ID: ' + transId);
                     
-                    // Update button text and state
+                    // Replace Process Payment button with Next button
                     const submitButton = this;
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = 'Next: Update Vehicle Information';
+                    const newButton = document.createElement('button');
+                    newButton.type = 'button';
+                    newButton.className = 'btn btn-primary';
+                    newButton.id = 'nextVehicleBtn' + leadId;
+                    newButton.innerHTML = 'Next: Update Vehicle Information';
                     
-                    // Add new click handler for vehicle information
-                    submitButton.onclick = function(e) {
+                    // Add click handler for the new button
+                    newButton.addEventListener('click', function(e) {
                         e.preventDefault();
                         // Close current modal
                         const currentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal' + leadId));
@@ -449,7 +452,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             const vehicleModal = new bootstrap.Modal(document.getElementById('vehicleInfoModal' + leadId));
                             vehicleModal.show();
                         }, 150);
-                    };
+                    });
+                    
+                    // Replace the old button with the new one
+                    submitButton.parentNode.replaceChild(newButton, submitButton);
                 } else {
                     // Payment failed - extract error message
                     let errorMessage = 'Payment processing failed';
