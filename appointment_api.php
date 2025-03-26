@@ -1,4 +1,31 @@
 <?php
+/**
+ * Appointment API
+ * 
+ * Required Fields for POST/PUT:
+ * - customer_id: The ID of the customer
+ * - title: The appointment title
+ * - appointment_type: Must be one of: 'Install', 'Recalibration', 'Removal', 'Final_download', 'Service', 'Paper_Swap'
+ * - start_time: Appointment start time (MySQL datetime format)
+ * - end_time: Appointment end time (MySQL datetime format)
+ * - location_id: The ID of the appointment location
+ * 
+ * Optional Fields:
+ * - status: Appointment status (defaults to 'scheduled')
+ * - service_note: Any service-related notes
+ * - description: General appointment description
+ * - reason: Required only for DELETE requests
+ * 
+ * GET Request Parameters:
+ * - id: Get specific appointment
+ * - start_date: Start date for date range (defaults to current date)
+ * - end_date: End date for date range (defaults to current date + 30 days)
+ * - location_id: Filter by location
+ * - status: Filter by status
+ * - appointment_type: Filter by appointment type
+ * - customer_id: Filter by customer
+ */
+
 require_once 'auth_check.php';
 include 'db.php';
 require_once 'AppointmentService.php';
@@ -46,6 +73,25 @@ try {
             $data = json_decode(file_get_contents('php://input'), true);
             if (!$data) {
                 $data = $_POST; // Try form data if JSON fails
+            }
+            
+            // Validate required fields
+            $requiredFields = ['start_time', 'end_time', 'location_id', 'title', 'appointment_type', 'customer_id'];
+            foreach ($requiredFields as $field) {
+                if (empty($data[$field])) {
+                    throw new Exception("Missing required field: $field");
+                }
+            }
+            
+            // Validate appointment_type
+            $validTypes = ['Install', 'Recalibration', 'Removal', 'Final_download', 'Service', 'Paper_Swap'];
+            if (!in_array($data['appointment_type'], $validTypes)) {
+                throw new Exception("Invalid appointment type");
+            }
+            
+            // Validate date/time values
+            if (strtotime($data['start_time']) >= strtotime($data['end_time'])) {
+                throw new Exception("End time must be after start time");
             }
             
             $appointmentId = $appointmentService->createAppointment($data);

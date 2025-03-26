@@ -6,292 +6,185 @@ class AppointmentService {
         $this->pdo = $pdo;
     }
     
-    // Create a new appointment
+    /**
+     * Create a new appointment
+     * @param array $data Appointment data
+     * @return int The ID of the created appointment
+     */
     public function createAppointment($data) {
-        // Validate appointment data
-        $this->validateAppointmentData($data);
-        
-        // Check for conflicts
-        if ($this->hasScheduleConflict($data['location_id'], $data['start_time'], $data['end_time'])) {
-            throw new Exception("Schedule conflict detected");
+        try {
+            $sql = "INSERT INTO appointments (
+                customer_id,
+                title,
+                appointment_type,
+                start_time,
+                end_time,
+                location_id,
+                status,
+                service_note,
+                description,
+                created_by,
+                created_at
+            ) VALUES (
+                :customer_id,
+                :title,
+                :appointment_type,
+                :start_time,
+                :end_time,
+                :location_id,
+                :status,
+                :service_note,
+                :description,
+                :created_by,
+                NOW()
+            )";
+            
+            $stmt = $this->pdo->prepare($sql);
+            
+            $stmt->execute([
+                ':customer_id' => $data['customer_id'],
+                ':title' => $data['title'],
+                ':appointment_type' => $data['appointment_type'],
+                ':start_time' => $data['start_time'],
+                ':end_time' => $data['end_time'],
+                ':location_id' => $data['location_id'],
+                ':status' => $data['status'] ?? 'scheduled',
+                ':service_note' => $data['service_note'] ?? null,
+                ':description' => $data['description'] ?? null,
+                ':created_by' => $_SESSION['user_id'] ?? null
+            ]);
+            
+            return $this->pdo->lastInsertId();
+            
+        } catch (PDOException $e) {
+            throw new Exception("Error creating appointment: " . $e->getMessage());
         }
-        
-        // Insert appointment
-        $stmt = $this->pdo->prepare("
-            INSERT INTO appointments (lead_id, customer_id, title, appointment_type, service_note, 
-                                     description, start_time, end_time, location_id, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        
-        $stmt->execute([
-            $data['lead_id'] ?? null,
-            $data['customer_id'] ?? null,
-            $data['title'],
-            $data['appointment_type'],
-            $data['service_note'] ?? null,
-            $data['description'] ?? null,
-            $data['start_time'],
-            $data['end_time'],
-            $data['location_id'],
-            $data['status'] ?? 'scheduled'
-        ]);
-        
-        $appointmentId = $this->pdo->lastInsertId();
-        
-        // Update lead status if needed
-        if (!empty($data['lead_id'])) {
-            $this->updateLeadStatus($data['lead_id'], 'Scheduled');
-        }
-        
-        return $appointmentId;
     }
     
-    // Get appointment by ID
+    /**
+     * Get a single appointment by ID
+     * @param int $id Appointment ID
+     * @return array|null Appointment data or null if not found
+     */
     public function getAppointment($id) {
-        $stmt = $this->pdo->prepare("
-            SELECT a.*, 
-                   CONCAT(l.first_name, ' ', l.last_name) as lead_name,
-                   CONCAT(c.first_name, ' ', c.last_name) as customer_name,
-                   loc.location_name
-            FROM appointments a
-            LEFT JOIN leads l ON a.lead_id = l.id
-            LEFT JOIN client_information c ON a.customer_id = c.id
-            LEFT JOIN locations loc ON a.location_id = loc.id
-            WHERE a.id = ?
-        ");
-        
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM appointments WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Error getting appointment: " . $e->getMessage());
+        }
     }
     
-    // Update an appointment
-    public function updateAppointment($id, $data, $userId) {
-        // Get current appointment data for history
-        $currentAppointment = $this->getAppointment($id);
-        if (!$currentAppointment) {
-            throw new Exception("Appointment not found");
-        }
-        
-        // Validate appointment data
-        $this->validateAppointmentData($data);
-        
-        // Check for conflicts (except with itself)
-        if ($this->hasScheduleConflict(
-            $data['location_id'], 
-            $data['start_time'], 
-            $data['end_time'], 
-            $id
-        )) {
-            throw new Exception("Schedule conflict detected");
-        }
-        
-        // Save history record
-        $this->saveAppointmentHistory($id, $currentAppointment, $userId, $data['change_reason'] ?? null);
-        
-        // Update appointment
-        $stmt = $this->pdo->prepare("
-            UPDATE appointments 
-            SET lead_id = ?, 
-                customer_id = ?,
-                title = ?,
-                appointment_type = ?,
-                service_note = ?,
-                description = ?,
-                start_time = ?,
-                end_time = ?,
-                location_id = ?,
-                status = ?
-            WHERE id = ?
-        ");
-        
-        $stmt->execute([
-            $data['lead_id'] ?? null,
-            $data['customer_id'] ?? null,
-            $data['title'],
-            $data['appointment_type'],
-            $data['service_note'] ?? null,
-            $data['description'] ?? null,
-            $data['start_time'],
-            $data['end_time'],
-            $data['location_id'],
-            $data['status'] ?? 'scheduled',
-            $id
-        ]);
-        
-        // Clear Google sync data if significant changes were made
-        if ($this->needsResync($currentAppointment, $data)) {
-            $this->clearGoogleSyncData($id);
-        }
-        
-        return true;
-    }
-    
-    // Delete an appointment
-    public function deleteAppointment($id, $userId, $reason = null) {
-        // Get current appointment for history
-        $currentAppointment = $this->getAppointment($id);
-        if (!$currentAppointment) {
-            throw new Exception("Appointment not found");
-        }
-        
-        // Save to history
-        $this->saveAppointmentHistory($id, $currentAppointment, $userId, $reason ?? "Appointment deleted");
-        
-        // Delete the appointment
-        $stmt = $this->pdo->prepare("DELETE FROM appointments WHERE id = ?");
-        $stmt->execute([$id]);
-        
-        return true;
-    }
-    
-    // Get appointments for a date range
+    /**
+     * Get appointments for a date range
+     * @param string $startDate Start date (Y-m-d format)
+     * @param string $endDate End date (Y-m-d format)
+     * @param array $filters Optional filters
+     * @return array Array of appointments
+     */
     public function getAppointmentsForRange($startDate, $endDate, $filters = []) {
-        $where = ["(start_time >= ? AND start_time <= ?)"];
-        $params = [$startDate, $endDate];
-        
-        // Add filters
-        if (!empty($filters['location_id'])) {
-            $where[] = "location_id = ?";
-            $params[] = $filters['location_id'];
-        }
-        
-        if (!empty($filters['status'])) {
-            $where[] = "status = ?";
-            $params[] = $filters['status'];
-        }
-        
-        if (!empty($filters['appointment_type'])) {
-            $where[] = "appointment_type = ?";
-            $params[] = $filters['appointment_type'];
-        }
-        
-        if (!empty($filters['customer_id'])) {
-            $where[] = "customer_id = ?";
-            $params[] = $filters['customer_id'];
-        }
-        
-        $whereClause = implode(" AND ", $where);
-        
-        $stmt = $this->pdo->prepare("
-            SELECT a.*, 
-                   CONCAT(l.first_name, ' ', l.last_name) as lead_name,
-                   CONCAT(c.first_name, ' ', c.last_name) as customer_name,
-                   loc.location_name
-            FROM appointments a
-            LEFT JOIN leads l ON a.lead_id = l.id
-            LEFT JOIN client_information c ON a.customer_id = c.id
-            LEFT JOIN locations loc ON a.location_id = loc.id
-            WHERE $whereClause
-            ORDER BY start_time
-        ");
-        
-        $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    // Check for scheduling conflicts
-    private function hasScheduleConflict($locationId, $startTime, $endTime, $excludeAppointmentId = null) {
-        $params = [$locationId, $endTime, $startTime, $endTime, $startTime, $startTime, $endTime];
-        $excludeClause = "";
-        
-        if ($excludeAppointmentId) {
-            $excludeClause = "AND id != ?";
-            $params[] = $excludeAppointmentId;
-        }
-        
-        $stmt = $this->pdo->prepare("
-            SELECT COUNT(*) FROM appointments 
-            WHERE location_id = ? 
-            AND (
-                (start_time <= ? AND end_time > ?) OR
-                (start_time < ? AND end_time >= ?) OR
-                (start_time >= ? AND end_time <= ?)
-            )
-            AND status NOT IN ('cancelled', 'completed')
-            $excludeClause
-        ");
-        
-        $stmt->execute($params);
-        return $stmt->fetchColumn() > 0;
-    }
-    
-    // Update lead status when scheduling
-    private function updateLeadStatus($leadId, $status) {
-        $stmt = $this->pdo->prepare("UPDATE leads SET status = ? WHERE id = ?");
-        $stmt->execute([$status, $leadId]);
-    }
-    
-    // Save appointment change history
-    private function saveAppointmentHistory($appointmentId, $currentData, $userId, $reason = null) {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO appointment_history 
-            (appointment_id, previous_start, previous_end, previous_status, previous_location_id, changed_by_user_id, reason)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ");
-        
-        $stmt->execute([
-            $appointmentId,
-            $currentData['start_time'],
-            $currentData['end_time'],
-            $currentData['status'],
-            $currentData['location_id'],
-            $userId,
-            $reason
-        ]);
-    }
-    
-    // Check if appointment needs Google Calendar resync
-    private function needsResync($oldData, $newData) {
-        // Check if any significant fields changed that would require Google resync
-        return $oldData['start_time'] != $newData['start_time'] ||
-               $oldData['end_time'] != $newData['end_time'] ||
-               $oldData['title'] != $newData['title'] ||
-               $oldData['status'] != $newData['status'] ||
-               $oldData['location_id'] != $newData['location_id'];
-    }
-    
-    // Clear Google sync data when appointment changes significantly
-    private function clearGoogleSyncData($appointmentId) {
-        $stmt = $this->pdo->prepare("
-            UPDATE appointments
-            SET google_event_id = NULL, last_sync = NULL
-            WHERE id = ?
-        ");
-        $stmt->execute([$appointmentId]);
-    }
-    
-    // Validate appointment data
-    private function validateAppointmentData($data) {
-        // Ensure required fields are present
-        $requiredFields = ['start_time', 'end_time', 'location_id', 'title', 'appointment_type'];
-        foreach ($requiredFields as $field) {
-            if (empty($data[$field])) {
-                throw new Exception("Missing required field: $field");
+        try {
+            $sql = "SELECT * FROM appointments WHERE start_time BETWEEN ? AND ?";
+            $params = [$startDate . ' 00:00:00', $endDate . ' 23:59:59'];
+            
+            // Add filters if provided
+            if (!empty($filters['location_id'])) {
+                $sql .= " AND location_id = ?";
+                $params[] = $filters['location_id'];
             }
+            if (!empty($filters['status'])) {
+                $sql .= " AND status = ?";
+                $params[] = $filters['status'];
+            }
+            if (!empty($filters['appointment_type'])) {
+                $sql .= " AND appointment_type = ?";
+                $params[] = $filters['appointment_type'];
+            }
+            if (!empty($filters['customer_id'])) {
+                $sql .= " AND customer_id = ?";
+                $params[] = $filters['customer_id'];
+            }
+            
+            $sql .= " ORDER BY start_time ASC";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            throw new Exception("Error getting appointments: " . $e->getMessage());
         }
-        
-        // Validate date/time values
-        if (strtotime($data['start_time']) >= strtotime($data['end_time'])) {
-            throw new Exception("End time must be after start time");
+    }
+    
+    /**
+     * Update an appointment
+     * @param int $id Appointment ID
+     * @param array $data Updated appointment data
+     * @param int $userId User making the update
+     */
+    public function updateAppointment($id, $data, $userId) {
+        try {
+            $sql = "UPDATE appointments SET 
+                customer_id = :customer_id,
+                title = :title,
+                appointment_type = :appointment_type,
+                start_time = :start_time,
+                end_time = :end_time,
+                location_id = :location_id,
+                status = :status,
+                service_note = :service_note,
+                description = :description,
+                updated_by = :updated_by,
+                updated_at = NOW()
+                WHERE id = :id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            
+            $stmt->execute([
+                ':id' => $id,
+                ':customer_id' => $data['customer_id'],
+                ':title' => $data['title'],
+                ':appointment_type' => $data['appointment_type'],
+                ':start_time' => $data['start_time'],
+                ':end_time' => $data['end_time'],
+                ':location_id' => $data['location_id'],
+                ':status' => $data['status'] ?? 'scheduled',
+                ':service_note' => $data['service_note'] ?? null,
+                ':description' => $data['description'] ?? null,
+                ':updated_by' => $userId
+            ]);
+            
+        } catch (PDOException $e) {
+            throw new Exception("Error updating appointment: " . $e->getMessage());
         }
-        
-        // Ensure at least one of lead_id or customer_id is set
-        if (empty($data['lead_id']) && empty($data['customer_id'])) {
-            throw new Exception("Either lead_id or customer_id must be provided");
+    }
+    
+    /**
+     * Delete an appointment
+     * @param int $id Appointment ID
+     * @param int $userId User making the deletion
+     * @param string|null $reason Reason for deletion
+     */
+    public function deleteAppointment($id, $userId, $reason = null) {
+        try {
+            $sql = "UPDATE appointments SET 
+                status = 'cancelled',
+                deleted_by = :deleted_by,
+                deleted_at = NOW(),
+                deletion_reason = :reason
+                WHERE id = :id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':id' => $id,
+                ':deleted_by' => $userId,
+                ':reason' => $reason
+            ]);
+            
+        } catch (PDOException $e) {
+            throw new Exception("Error deleting appointment: " . $e->getMessage());
         }
-        
-        // Validate appointment_type
-        $validTypes = ['Install', 'Recalibration', 'Removal_Download', 'Service', 'Paper_Swap'];
-        if (!in_array($data['appointment_type'], $validTypes)) {
-            throw new Exception("Invalid appointment type");
-        }
-        
-        // If appointment is of type Service, service_note is required
-        if ($data['appointment_type'] == 'Service' && empty($data['service_note'])) {
-            throw new Exception("Service note is required for Service appointment type");
-        }
-        
-        return true;
     }
 }
-?>
+?> 
