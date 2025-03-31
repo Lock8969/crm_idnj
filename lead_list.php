@@ -17,12 +17,13 @@ if (!defined('INCLUDED_IN_SCRIPT')) {
 include_once 'convert_modal1.php';
 include_once 'convert_modal2_pymt.php';
 include_once 'conv_modal3_vehicle.php';
+include_once 'conv_modal4_install.php';
 
 // Add Feather Icons library
 echo '<script src="https://unpkg.com/feather-icons"></script>';
 
 // Get current page from URL parameter
-$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$current_page = isset($_GET['lead_page']) ? (int)$_GET['lead_page'] : 1;
 $current_page = max(1, $current_page); // Ensure the page is at least 1
 $per_page = 10;
 $offset = ($current_page - 1) * $per_page;
@@ -88,7 +89,7 @@ function get_leads_pagination_url($page, $search) {
     if (!empty($search)) {
         $url .= 'search=' . urlencode($search) . '&';
     }
-    return $url . 'page=' . $page;
+    return $url . 'lead_page=' . $page;
 }
 
 // After fetching leads, render the payment modal for each lead
@@ -236,6 +237,7 @@ foreach ($leads as $lead) {
     <?php renderLeadConvertModal1($lead); ?>
     <?php renderPaymentModal2(null, $lead['first_name'], $lead['last_name'], $lead); ?>
     <?php renderVehicleInfoModal($lead); ?>
+    <?php renderInstallAppointmentModal($lead); ?>
 <?php endforeach; ?>
 
 <!-- Initialize Feather Icons -->

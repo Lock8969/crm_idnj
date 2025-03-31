@@ -1,0 +1,469 @@
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 15:46:56
+Data received:
+- customer_id: 105
+- title: Recalibration
+- appointment_type: recalibration
+- start_time: 2025-04-01 11:30:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 15:43:09
+Data received:
+- customer_id: 120
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-04-01 12:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 15:39:47
+Data received:
+- customer_id: 105
+- title: Recalibration
+- appointment_type: recalibration
+- start_time: 2025-04-03 11:30:00
+- location_id: 2
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 15:38:23
+Data received:
+- customer_id: 111
+- title: Recalibration
+- appointment_type: recalibration
+- start_time: 2025-04-02 11:15:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 15:36:45
+Data received:
+- customer_id: 120
+- title: Recalibration
+- appointment_type: recalibration
+- start_time: 2025-04-02 11:30:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 15:34:50
+Data received:
+- customer_id: 105
+- title: Recalibration
+- appointment_type: recalibration
+- start_time: 2025-04-02 11:30:00
+- location_id: 2
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-31 14:38:09
+Data received:
+- customer_id: 105
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-04-01 11:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:40:56
+Data received:
+- customer_id: 103
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-05-29 11:30:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:39:26
+Data received:
+- customer_id: 118
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-04-04 11:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:37:53
+Data received:
+- customer_id: 121
+- title: Install
+- appointment_type: install120
+- start_time: 2025-04-04 17:00:00
+- location_id: 1
+- description: 121 Sharon Rogers<br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:34:41
+Data received:
+- customer_id: 108
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-04-02 13:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:34:08
+Data received:
+- customer_id: 116
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-04-01 17:00:00
+- location_id: 2
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:33:00
+Data received:
+- customer_id: 102
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-04-05 11:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 15:31:26
+Data received:
+- customer_id: 116
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-04-05 11:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 14:38:03
+Data received:
+- customer_id: 103
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-03-31 17:00:00
+- location_id: 6
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 14:27:04
+Data received:
+- customer_id: 118
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-04-05 13:00:00
+- location_id: 2
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 14:26:17
+Data received:
+- customer_id: 120
+- title: Install
+- appointment_type: install120
+- start_time: 2025-04-05 17:00:00
+- location_id: 2
+- description: 120 Jason Cook<br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 14:09:11
+Data received:
+- customer_id: 105
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-04-04 13:15:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 13:52:07
+Data received:
+- customer_id: 105
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-04-05 13:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-30 13:48:34
+Data received:
+- customer_id: 119
+- title: Install
+- appointment_type: install120
+- start_time: 2025-04-05 17:00:00
+- location_id: 1
+- description: 119 Deborah Gutierrez<br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:48:14
+Data received:
+- customer_id: 118
+- title: Install
+- appointment_type: install120
+- start_time: 2025-04-03 17:00:00
+- location_id: 5
+- description: 118 Tatiana Knapp<br>
+Price Code: 1.00<br>
+New Law<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:45:33
+Data received:
+- customer_id: 117
+- title: Install
+- appointment_type: install120
+- start_time: 2025-04-02 17:00:00
+- location_id: 3
+- description: 117 jillian queripeo<br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:42:32
+Data received:
+- customer_id: 116
+- title: Install
+- appointment_type: install120
+- start_time: 2025-04-01 17:00:00
+- location_id: 3
+- description: 116 Malik Hampton<br>
+Price Code: 1.00<br>
+New Law<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:36:03
+Data received:
+- customer_id: 115
+- title: Install
+- appointment_type: install120
+- start_time: 2025-03-31 22:00:00
+- location_id: 1
+- description: 115 Bernard Moon<br>
+Price Code: 1.00<br>
+Old Law<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:31:46
+Data received:
+- customer_id: 104
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-03-31 13:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:24:27
+Data received:
+- customer_id: 110
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-03-30 13:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:22:05
+Data received:
+- customer_id: 110
+- title: Removal
+- appointment_type: removal
+- start_time: 2025-03-30 13:00:00
+- location_id: 2
+- description: null
+- service_note: test
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:15:44
+Data received:
+- customer_id: 113
+- title: Install
+- appointment_type: install120
+- start_time: 2025-03-30 17:00:00
+- location_id: 2
+- description: 113 Jackie Harker<br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:13:23
+Data received:
+- customer_id: 112
+- title: Install
+- appointment_type: install90
+- start_time: 2025-03-28 11:30:00
+- location_id: 1
+- description: 112 Brea Stringer-cannon<br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:11:41
+Data received:
+- customer_id: 111
+- title: Install
+- appointment_type: install90
+- start_time: 2025-04-16 12:00:00
+- location_id: 2
+- description: 111 Narpceso bautista martinez <br>
+Price Code: 1.00<br>
+<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:08:18
+Data received:
+- customer_id: 110
+- title: Install
+- appointment_type: install120
+- start_time: 2025-03-31 11:00:00
+- location_id: 1
+- description: 110 Amber Palmer<br>
+Price Code: 1.00<br>
+New Law<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:07:16
+Data received:
+- customer_id: 109
+- title: Install
+- appointment_type: Install
+- start_time: 2025-03-31 16:00:00
+- end_time: 2025-03-31 18:00:00
+- location_id: 1
+- description: 109 Devin Thornton<br>
+Price Code: 1.00<br>
+Old Law<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 18:05:23
+Data received:
+- customer_id: 109
+- title: Install
+- appointment_type: Install
+- start_time: 2025-03-31 16:00:00
+- end_time: 2025-03-31 18:00:00
+- location_id: 1
+- description: 109 Devin Thornton<br>
+Price Code: 1.00<br>
+Old Law<br>
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 17:17:16
+Data received:
+- customer_id: 103
+- title: Final_download
+- appointment_type: final_download
+- start_time: 2025-03-30 07:00:00
+- location_id: 1
+- description: this is test 1
+===========================
+
+
+=== Appointment API Request ===
+Time: 2025-03-29 17:27:04
+Data received:
+- customer_id: 107
+- title: Paper_Swap
+- appointment_type: paper_swap
+- start_time: 2025-03-30 07:30:00
+- location_id: 1
+- description: null
+- service_note: this is test note 2
+===========================

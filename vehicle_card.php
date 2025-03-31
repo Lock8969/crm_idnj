@@ -85,107 +85,128 @@ if (!isset($vehicle)) {
     <div id="vehicleInfo">
         <div class="card-body">
             <!-- STATIC VIEW -->
-<!-- STATIC VIEW -->
-<div id="vehicle-static-view">
-    <div class="row info-row">
-        <div class="col-md-6">
-            <div class="info-label">Year</div>
-            <div class="info-value" data-field="year">
-                <?php 
-                if (!empty($vehicle['year_id'])) {
-                    // Fetch the year name directly here
-                    $year_id = $vehicle['year_id'];
-                    try {
-                        $year_stmt = $pdo->prepare("SELECT year FROM vehicle_years WHERE id = ?");
-                        $year_stmt->execute([$year_id]);
-                        $year_row = $year_stmt->fetch(PDO::FETCH_ASSOC);
-                        echo $year_row ? htmlspecialchars($year_row['year']) : "ID: $year_id (not found)";
-                    } catch (Exception $e) {
-                        echo "Error fetching year";
-                    }
-                } else {
-                    echo 'Not specified';
-                }
-                ?>
+            <div id="vehicle-static-view">
+                <div class="row info-row">
+                    <div class="col-md-6">
+                        <div class="info-label">Year</div>
+                        <div class="info-value" data-field="year">
+                            <?php 
+                            if (!empty($vehicle['year_id'])) {
+                                // Fetch the year name directly here
+                                $year_id = $vehicle['year_id'];
+                                try {
+                                    $year_stmt = $pdo->prepare("SELECT year FROM vehicle_years WHERE id = ?");
+                                    $year_stmt->execute([$year_id]);
+                                    $year_row = $year_stmt->fetch(PDO::FETCH_ASSOC);
+                                    echo $year_row ? htmlspecialchars($year_row['year']) : "ID: $year_id (not found)";
+                                } catch (Exception $e) {
+                                    echo "Error fetching year";
+                                }
+                            } else {
+                                echo 'Not specified';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-label">Make</div>
+                        <div class="info-value" data-field="make">
+                            <?php 
+                            if (!empty($vehicle['make_id'])) {
+                                $make_id = $vehicle['make_id'];
+                                try {
+                                    $make_stmt = $pdo->prepare("SELECT make FROM vehicle_makes WHERE id = ?");
+                                    $make_stmt->execute([$make_id]);
+                                    $make_row = $make_stmt->fetch(PDO::FETCH_ASSOC);
+                                    echo $make_row ? htmlspecialchars($make_row['make']) : "ID: $make_id (not found)";
+                                } catch (Exception $e) {
+                                    echo "Error fetching make";
+                                }
+                            } else {
+                                echo 'Not specified';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row info-row">
+                    <div class="col-md-6">
+                        <div class="info-label">Model</div>
+                        <div class="info-value" data-field="model">
+                            <?php 
+                            if (!empty($vehicle['model_id'])) {
+                                $model_id = $vehicle['model_id'];
+                                try {
+                                    $model_stmt = $pdo->prepare("SELECT model FROM vehicle_models WHERE id = ?");
+                                    $model_stmt->execute([$model_id]);
+                                    $model_row = $model_stmt->fetch(PDO::FETCH_ASSOC);
+                                    echo $model_row ? htmlspecialchars($model_row['model']) : "ID: $model_id (not found)";
+                                } catch (Exception $e) {
+                                    echo "Error fetching model";
+                                }
+                            } else {
+                                echo 'Not specified';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-label">Hybrid</div>
+                        <div class="info-value" data-field="hybrid">
+                            <?php 
+                            // TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified
+                            if ($vehicle['hybrid'] === null) {
+                                echo 'Not specified';
+                            } elseif ($vehicle['hybrid'] == 1) {
+                                echo 'Yes';
+                            } else {
+                                echo 'No';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row info-row">
+                    <div class="col-md-6">
+                        <div class="info-label">Start System</div>
+                        <div class="info-value" data-field="start_system">
+                            <?php 
+                            if ($vehicle['start_system'] === null) {
+                                echo 'Not specified';
+                            } else {
+                                echo htmlspecialchars($vehicle['start_system']);
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-label">Start/Stop</div>
+                        <div class="info-value" data-field="start_stop">
+                            <?php 
+                            // TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified
+                            if ($vehicle['start_stop'] === null) {
+                                echo 'Not specified';
+                            } elseif ($vehicle['start_stop'] == 1) {
+                                echo 'Yes';
+                            } else {
+                                echo 'No';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php if (!empty($vehicle['notes'])): ?>
+                <div class="row info-row">
+                    <div class="col-md-12">
+                        <div class="info-label">Vehicle Notes</div>
+                        <div class="info-value" data-field="notes"><?php echo nl2br(htmlspecialchars($vehicle['notes'])); ?></div>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="info-label">Make</div>
-            <div class="info-value" data-field="make">
-                <?php 
-                if (!empty($vehicle['make_id'])) {
-                    $make_id = $vehicle['make_id'];
-                    try {
-                        $make_stmt = $pdo->prepare("SELECT make FROM vehicle_makes WHERE id = ?");
-                        $make_stmt->execute([$make_id]);
-                        $make_row = $make_stmt->fetch(PDO::FETCH_ASSOC);
-                        echo $make_row ? htmlspecialchars($make_row['make']) : "ID: $make_id (not found)";
-                    } catch (Exception $e) {
-                        echo "Error fetching make";
-                    }
-                } else {
-                    echo 'Not specified';
-                }
-                ?>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row info-row">
-        <div class="col-md-6">
-            <div class="info-label">Model</div>
-            <div class="info-value" data-field="model">
-                <?php 
-                if (!empty($vehicle['model_id'])) {
-                    $model_id = $vehicle['model_id'];
-                    try {
-                        $model_stmt = $pdo->prepare("SELECT model FROM vehicle_models WHERE id = ?");
-                        $model_stmt->execute([$model_id]);
-                        $model_row = $model_stmt->fetch(PDO::FETCH_ASSOC);
-                        echo $model_row ? htmlspecialchars($model_row['model']) : "ID: $model_id (not found)";
-                    } catch (Exception $e) {
-                        echo "Error fetching model";
-                    }
-                } else {
-                    echo 'Not specified';
-                }
-                ?>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row info-row">
-        <div class="col-md-6">
-            <div class="info-label">Hybrid</div>
-            <div class="info-value" data-field="hybrid">
-                <?php 
-                if ($vehicle['hybrid'] === null) {
-                    echo 'Not specified';
-                } elseif ($vehicle['hybrid'] == 1) {
-                    echo 'Yes';
-                } else {
-                    echo 'No';
-                }
-                ?>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="info-label">Start System</div>
-            <div class="info-value" data-field="start_system">
-                <?php echo !empty($vehicle['start_system']) ? htmlspecialchars($vehicle['start_system']) : 'Not specified'; ?>
-            </div>
-        </div>
-    </div>
-    
-    <?php if (!empty($vehicle['notes'])): ?>
-    <div class="row info-row">
-        <div class="col-md-12">
-            <div class="info-label">Vehicle Notes</div>
-            <div class="info-value" data-field="notes"><?php echo nl2br(htmlspecialchars($vehicle['notes'])); ?></div>
-        </div>
-    </div>
-    <?php endif; ?>
-</div>
 
             <!-- Edit View -->
             <div id="vehicle-edit-view" class="d-none">
@@ -250,13 +271,11 @@ if (!isset($vehicle)) {
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- Column 1: Hybrid -->
+                        <!-- Column 2: Hybrid -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="hybrid" class="form-label fw-bold fs-5 mb-0">Hybrid</label>
+                                <!-- TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified -->
                                 <select id="hybrid" name="hybrid" class="form-control form-control-lg mb-0">
                                     <option value="" <?php echo ($vehicle['hybrid'] === null) ? "selected" : ""; ?>>Select</option>
                                     <option value="0" <?php echo ($vehicle['hybrid'] == 0) ? "selected" : ""; ?>>No</option>
@@ -264,14 +283,29 @@ if (!isset($vehicle)) {
                                 </select>
                             </div>
                         </div>
-                        <!-- Column 2: Start System -->
+                    </div>
+
+                    <div class="row">
+                        <!-- Column 1: Start System -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="start_system" class="form-label fw-bold fs-5 mb-0">Start System</label>
                                 <select id="start_system" name="start_system" class="form-control form-control-lg mb-0">
                                     <option value="" <?php echo (is_null($vehicle['start_system'])) ? "selected" : ""; ?>>Select</option>
                                     <option value="Key" <?php echo ($vehicle['start_system'] === "Key") ? "selected" : ""; ?>>Key</option>
-                                    <option value="Push button" <?php echo ($vehicle['start_system'] === "Push button") ? "selected" : ""; ?>>Push Button</option>
+                                    <option value="Push Button" <?php echo ($vehicle['start_system'] === "Push Button") ? "selected" : ""; ?>>Push Button</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Column 2: Start/Stop -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="start_stop" class="form-label fw-bold fs-5 mb-0">Start/Stop</label>
+                                <!-- TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified -->
+                                <select id="start_stop" name="start_stop" class="form-control form-control-lg mb-0">
+                                    <option value="" <?php echo ($vehicle['start_stop'] === null) ? "selected" : ""; ?>>Select</option>
+                                    <option value="0" <?php echo ($vehicle['start_stop'] == 0) ? "selected" : ""; ?>>No</option>
+                                    <option value="1" <?php echo ($vehicle['start_stop'] == 1) ? "selected" : ""; ?>>Yes</option>
                                 </select>
                             </div>
                         </div>

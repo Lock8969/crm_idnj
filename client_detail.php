@@ -135,7 +135,7 @@ $(document).ready(function(){
                     <div class="col-lg-12 col-md-12 col-12">
                         <div class="mb-5">
                             <h3 class="mb-0">
-                                <?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?>
+                                <?php echo $client_id . '&nbsp;&nbsp;&nbsp;' . htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?>
                             </h3>
                         </div>
                     </div>
@@ -150,6 +150,19 @@ $(document).ready(function(){
                         <?php include 'vehicle_card.php'; ?>
                     </div>
                 </div>
+                
+                <!-- Program Card Row -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <?php include 'program_card.php'; ?>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <!-- Space for future card -->
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <?php include 'footer.php'; ?>
             </div>
         </div>
     </div>
@@ -204,5 +217,3 @@ function toggleVehicleEditMode() {
 }
 </script>
 
-</body>
-</html>

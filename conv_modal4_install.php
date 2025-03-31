@@ -205,13 +205,26 @@ document.addEventListener('DOMContentLoaded', function() {
         if (storedData) {
             const leadData = JSON.parse(storedData);
             
+            // =============================================
+            // APPOINTMENT TYPE MAPPING
+            // =============================================
+            // Convert install duration to correct appointment type
+            // Example: 90 minutes -> install90, 120 minutes -> install120
+            const installLength = data.install_length;
+            console.log('Install Length:', installLength); // Debug log
+            const installType = installLength === '90' ? 'install90' : 'install120';
+            console.log('Mapped Install Type:', installType); // Debug log
+            
+            // =============================================
+            // DATA PREPARATION
+            // =============================================
             // Format appointment data for API
+            // Note: end_time is no longer needed as it's calculated by the service
             const appointmentData = {
                 customer_id: leadData.client_id,
                 title: 'Install',
-                appointment_type: 'Install',
+                appointment_type: installType,
                 start_time: data.start_time,
-                end_time: data.end_time,
                 location_id: data.install_location,
                 description: `${leadData.client_id} ${leadData.first_name} ${leadData.last_name}<br>
 Price Code: ${leadData.pricing_code}<br>
@@ -220,6 +233,9 @@ ${leadData.law_type}<br>`
 
             console.log('Sending to API:', JSON.stringify(appointmentData, null, 2));
 
+            // =============================================
+            // API CALL
+            // =============================================
             // Send data to appointment API
             fetch('appointment_api.php', {
                 method: 'POST',
@@ -228,7 +244,13 @@ ${leadData.law_type}<br>`
                 },
                 body: JSON.stringify(appointmentData)
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json().then(data => {
+                    console.log('Response data:', data);
+                    return data;
+                });
+            })
             .then(result => {
                 if (result.success) {
                     alert('Installation appointment saved successfully!');
@@ -236,11 +258,12 @@ ${leadData.law_type}<br>`
                     const modal = bootstrap.Modal.getInstance(installModal);
                     modal.hide();
                 } else {
-                    throw new Error(result.error || 'Failed to save installation appointment');
+                    throw new Error(result.message || 'Failed to save installation appointment');
                 }
             })
             .catch(error => {
                 console.error('Error saving installation appointment:', error);
+                console.error('Full error details:', error.message);
                 alert('Failed to save installation appointment. Please try again.');
                 // Re-enable save button and hide spinner
                 saveButton.disabled = false;

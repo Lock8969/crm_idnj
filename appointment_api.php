@@ -75,8 +75,25 @@ try {
                 $data = $_POST; // Try form data if JSON fails
             }
             
+            // Log the received data
+            $logFile = 'appointment_api_log.txt';
+            $timestamp = date('Y-m-d H:i:s');
+            $logMessage = "\n\n=== Appointment API Request ===\n";
+            $logMessage .= "Time: " . $timestamp . "\n";
+            $logMessage .= "Data received:\n";
+            foreach ($data as $key => $value) {
+                $logMessage .= "- $key: " . ($value === null ? 'null' : $value) . "\n";
+            }
+            $logMessage .= "===========================\n";
+            
+            // Read existing content
+            $existingContent = file_exists($logFile) ? file_get_contents($logFile) : '';
+            
+            // Prepend new content
+            file_put_contents($logFile, $logMessage . $existingContent);
+            
             // Validate required fields
-            $requiredFields = ['start_time', 'end_time', 'location_id', 'title', 'appointment_type', 'customer_id'];
+            $requiredFields = ['start_time', 'location_id', 'title', 'appointment_type', 'customer_id'];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
                     throw new Exception("Missing required field: $field");
@@ -84,14 +101,19 @@ try {
             }
             
             // Validate appointment_type
-            $validTypes = ['Install', 'Recalibration', 'Removal', 'Final_download', 'Service', 'Paper_Swap'];
+            $validTypes = [
+                'install90', 'install120',
+                'recalibration', 'removal', 'final_download',
+                'service', 'paper_swap',
+                'other15', 'other30', 'other45', 'other60'
+            ];
             if (!in_array($data['appointment_type'], $validTypes)) {
                 throw new Exception("Invalid appointment type");
             }
             
-            // Validate date/time values
-            if (strtotime($data['start_time']) >= strtotime($data['end_time'])) {
-                throw new Exception("End time must be after start time");
+            // Validate date/time value
+            if (!strtotime($data['start_time'])) {
+                throw new Exception("Invalid start time format");
             }
             
             $appointmentId = $appointmentService->createAppointment($data);

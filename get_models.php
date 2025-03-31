@@ -1,5 +1,12 @@
 <?php
-require 'db.php'; // Include database connection
+/**
+ * This works with Lead convert flow from vehicles and with the edit part of the vehicle card
+ * Uses this to get models based on selected make from the database
+ */
+
+require_once 'db.php';
+
+header('Content-Type: application/json');
 
 if (isset($_POST['make_id'])) {
     $make_id = intval($_POST['make_id']); // Ensure it's an integer

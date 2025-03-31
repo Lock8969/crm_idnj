@@ -12,7 +12,7 @@ if (!defined('INCLUDED_IN_SCRIPT')) {
 }
 
 // Get current page from URL parameter
-$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$current_page = isset($_GET['client_page']) ? (int)$_GET['client_page'] : 1;
 $current_page = max(1, $current_page); // Ensure page is at least 1
 $per_page = 10;
 $offset = ($current_page - 1) * $per_page;
@@ -73,7 +73,7 @@ function get_pagination_url($page, $search) {
     if (!empty($search)) {
         $url .= 'search=' . urlencode($search) . '&';
     }
-    return $url . 'page=' . $page;
+    return $url . 'client_page=' . $page;
 }
 ?>
 
@@ -123,7 +123,11 @@ function get_pagination_url($page, $search) {
                     <?php else: ?>
                         <?php foreach ($clients as $index => $client): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($client['id']); ?></td>
+                                <td>
+                                    <a href="client_detail.php?id=<?php echo htmlspecialchars($client['id']); ?>" class="text-inherit">
+                                        <?php echo htmlspecialchars($client['id']); ?>
+                                    </a>
+                                </td>
                                 <td>
                                     <div class="lh-1">
                                         <h5 class="mb-0">
@@ -136,14 +140,21 @@ function get_pagination_url($page, $search) {
                                 <td><?php echo htmlspecialchars($client['email']); ?></td>
                                 <td><?php echo htmlspecialchars($client['phone_number']); ?></td>
                                 <td>
-                                    <a href="client_detail.php?id=<?php echo htmlspecialchars($client['id']); ?>" 
-                                       class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
-                                       data-template="eye<?php echo $index; ?>">
-                                        <i data-feather="eye" class="icon-xs"></i>
-                                        <div id="eye<?php echo $index; ?>" class="d-none">
-                                            <span>View Client</span>
-                                        </div>
-                                    </a>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?>">
+                                            <i data-feather="plus-circle" class="icon-xs text-primary"></i>
+                                        </button>
+                                        <a href="client_detail.php?id=<?php echo htmlspecialchars($client['id']); ?>" 
+                                           class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                                           data-template="view<?php echo $index; ?>">
+                                            <i data-feather="eye" class="icon-xs"></i>
+                                            <div id="view<?php echo $index; ?>" class="d-none">
+                                                <span>View Client</span>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -183,6 +194,16 @@ function get_pagination_url($page, $search) {
         </nav>
     </div>
 </div>
+
+<?php
+// Include the invoice flow modals
+include_once 'invoice_flow_modals.php';
+
+// Render the next appointment modal for each client
+foreach ($clients as $client) {
+    renderNextAppointmentModal($client, $pdo);
+}
+?>
 
 <!-- Initialize Feather Icons -->
 <script>
