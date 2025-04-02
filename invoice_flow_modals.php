@@ -256,7 +256,55 @@ function renderNextAppointmentModal($client, $pdo) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="saveNextAppointment(<?php echo htmlspecialchars($client['id']); ?>)">
+                    <button type="button" class="btn btn-primary" onclick="
+                        const appointmentData = {
+                            customer_id: <?php echo htmlspecialchars($client['id']); ?>,
+                            title: document.getElementById('appointmentType<?php echo htmlspecialchars($client['id']); ?>').value,
+                            appointment_type: document.getElementById('appointmentType<?php echo htmlspecialchars($client['id']); ?>').value.toLowerCase(),
+                            start_time: document.getElementById('appointmentDate<?php echo htmlspecialchars($client['id']); ?>').value + ' ' + 
+                                       document.getElementById('appointmentTime<?php echo htmlspecialchars($client['id']); ?>').value,
+                            location_id: document.getElementById('appointmentLocation<?php echo htmlspecialchars($client['id']); ?>').value,
+                            description: null,
+                            service_note: document.getElementById('serviceNotes<?php echo htmlspecialchars($client['id']); ?>').value || null
+                        };
+                        const storageKey = 'appointmentData_' + <?php echo htmlspecialchars($client['id']); ?>;
+                        window[storageKey] = appointmentData;
+                        console.log('Stored Appointment Data:', window[storageKey]);
+                        
+                        // Disable all form fields
+                        const form = document.getElementById('nextAppointmentForm<?php echo htmlspecialchars($client['id']); ?>');
+                        const fields = form.querySelectorAll('input, select, textarea');
+                        fields.forEach(field => {
+                            field.disabled = true;
+                        });
+                        
+                        // Hide save button and show invoice button
+                        this.style.display = 'none';
+                        const invoiceButton = document.createElement('button');
+                        invoiceButton.type = 'button';
+                        invoiceButton.className = 'btn btn-success';
+                        invoiceButton.innerHTML = 'Invoice';
+                        invoiceButton.onclick = () => {
+                            // Close the appointment modal
+                            const appointmentModal = bootstrap.Modal.getInstance(document.getElementById('nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?>'));
+                            appointmentModal.hide();
+                            
+                            // Show the invoice modal using Bootstrap's modal
+                            const invoiceModalElement = document.getElementById('invoiceModal<?php echo htmlspecialchars($client['id']); ?>');
+                            if (invoiceModalElement) {
+                                const invoiceModal = new bootstrap.Modal(invoiceModalElement);
+                                invoiceModal.show();
+                            } else {
+                                console.error('Invoice modal not found. Please refresh the page.');
+                                alert('Error: Invoice modal not found. Please refresh the page.');
+                            }
+                        };
+                        this.parentNode.appendChild(invoiceButton);
+                        
+                        // Disable the 'No Appointment Needed' checkbox
+                        const noAppointmentCheckbox = document.getElementById('noAppointment<?php echo htmlspecialchars($client['id']); ?>');
+                        noAppointmentCheckbox.disabled = true;
+                    ">
                         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         Save Appointment
                     </button>
@@ -646,9 +694,9 @@ function renderNextAppointmentModal($client, $pdo) {
         const startTime = startDateTime.toISOString().slice(0, 19).replace('T', ' ');
 
         // =============================================
-        // DATA PREPARATION
+        // STORE APPOINTMENT DATA
         // =============================================
-        const appointmentData = {
+        window.pendingAppointment = {
             customer_id: clientId,
             title: type,
             appointment_type: appointmentType,
@@ -659,64 +707,44 @@ function renderNextAppointmentModal($client, $pdo) {
         };
 
         // =============================================
-        // API CALL
+        // UPDATE UI
         // =============================================
-        fetch('appointment_api.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(appointmentData)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                alert('Appointment saved successfully!');
-                
-                // Disable all form fields
-                const form = document.getElementById('nextAppointmentForm' + clientId);
-                const fields = form.querySelectorAll('input, select, textarea');
-                fields.forEach(field => {
-                    field.disabled = true;
-                });
-                
-                // Hide save button and show invoice button
-                saveButton.style.display = 'none';
-                const invoiceButton = document.createElement('button');
-                invoiceButton.type = 'button';
-                invoiceButton.className = 'btn btn-success';
-                invoiceButton.innerHTML = 'Invoice';
-                invoiceButton.onclick = () => {
-                    // Close the appointment modal
-                    const appointmentModal = bootstrap.Modal.getInstance(document.getElementById('nextAppointmentModal' + clientId));
-                    appointmentModal.hide();
-                    
-                    // Show the invoice modal using Bootstrap's modal
-                    const invoiceModalElement = document.getElementById('invoiceModal' + clientId);
-                    if (invoiceModalElement) {
-                        const invoiceModal = new bootstrap.Modal(invoiceModalElement);
-                        invoiceModal.show();
-                    } else {
-                        console.error('Invoice modal not found. Please refresh the page.');
-                        alert('Error: Invoice modal not found. Please refresh the page.');
-                    }
-                };
-                saveButton.parentNode.appendChild(invoiceButton);
-                
-                // Disable the "No Appointment Needed" checkbox
-                const noAppointmentCheckbox = document.getElementById('noAppointment' + clientId);
-                noAppointmentCheckbox.disabled = true;
-                
-            } else {
-                throw new Error(result.message || 'Failed to save appointment');
-            }
-        })
-        .catch(error => {
-            console.error('Error saving appointment:', error);
-            alert('Failed to save appointment. Please try again.');
-            saveButton.disabled = false;
-            spinner.classList.add('d-none');
+        // Disable all form fields
+        const form = document.getElementById('nextAppointmentForm' + clientId);
+        const fields = form.querySelectorAll('input, select, textarea');
+        fields.forEach(field => {
+            field.disabled = true;
         });
+        
+        // Hide save button and show invoice button
+        saveButton.style.display = 'none';
+        const invoiceButton = document.createElement('button');
+        invoiceButton.type = 'button';
+        invoiceButton.className = 'btn btn-success';
+        invoiceButton.innerHTML = 'Invoice';
+        invoiceButton.onclick = () => {
+            // Close the appointment modal
+            const appointmentModal = bootstrap.Modal.getInstance(document.getElementById('nextAppointmentModal' + clientId));
+            appointmentModal.hide();
+            
+            // Show the invoice modal using Bootstrap's modal
+            const invoiceModalElement = document.getElementById('invoiceModal' + clientId);
+            if (invoiceModalElement) {
+                const invoiceModal = new bootstrap.Modal(invoiceModalElement);
+                invoiceModal.show();
+            } else {
+                console.error('Invoice modal not found. Please refresh the page.');
+                alert('Error: Invoice modal not found. Please refresh the page.');
+            }
+        };
+        saveButton.parentNode.appendChild(invoiceButton);
+        
+        // Disable the "No Appointment Needed" checkbox
+        const noAppointmentCheckbox = document.getElementById('noAppointment' + clientId);
+        noAppointmentCheckbox.disabled = true;
+        
+        // Hide spinner
+        spinner.classList.add('d-none');
     }
     </script>
 

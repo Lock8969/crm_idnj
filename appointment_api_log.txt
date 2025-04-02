@@ -1,6 +1,19 @@
 
 
 === Appointment API Request ===
+Time: 2025-04-02 16:22:09
+Data received:
+- customer_id: 105
+- title: Recalibration
+- appointment_type: recalibration
+- start_time: 2025-04-03 11:00:00
+- location_id: 1
+- description: null
+- service_note: null
+===========================
+
+
+=== Appointment API Request ===
 Time: 2025-03-31 15:46:56
 Data received:
 - customer_id: 105
