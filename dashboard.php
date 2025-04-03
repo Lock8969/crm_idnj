@@ -96,7 +96,9 @@ $(document).ready(function(){
 <div class="row">
     <div class="col-12">
         <?php 
-        define('INCLUDED_IN_SCRIPT', true);
+        if (!defined('INCLUDED_IN_SCRIPT')) {
+            define('INCLUDED_IN_SCRIPT', true);
+        }
         include 'lead_list.php'; 
         ?>
     </div>
