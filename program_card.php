@@ -79,6 +79,32 @@ if (!isset($client)) {
                         <div class="info-label">Calibration Interval</div>
                         <div class="info-value" data-field="calibration_interval"><?php echo htmlspecialchars($client['calibration_interval'] ?: 'N/A'); ?></div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="info-label">Arresting Municipality</div>
+                        <div class="info-value" data-field="arresting_municipality">
+                            <?php 
+                            if ($client['arresting_municipality']) {
+                                $stmt = $pdo->prepare("SELECT township, municipal_code FROM municipality WHERE id = :id");
+                                $stmt->execute(['id' => $client['arresting_municipality']]);
+                                $municipality = $stmt->fetch();
+                                echo htmlspecialchars($municipality['township'] . ' (' . $municipality['municipal_code'] . ')');
+                            } else {
+                                echo 'N/A';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row info-row">
+                    <div class="col-md-6">
+                        <div class="info-label">Offense Date</div>
+                        <div class="info-value" data-field="offense_date"><?php echo $client['offense_date'] ? date('m/d/Y', strtotime($client['offense_date'])) : 'N/A'; ?></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-label">Out of State</div>
+                        <div class="info-value" data-field="out_of_state"><?php echo $client['out_of_state'] ? 'Yes' : 'No'; ?></div>
+                    </div>
                 </div>
 
                 <?php if (!empty($client['install_comments'])): ?>
@@ -209,6 +235,44 @@ if (!isset($client)) {
                                     <option value="60 day" <?php echo $client['calibration_interval'] == '60 day' ? 'selected' : ''; ?>>60 Day</option>
                                     <option value="90 day" <?php echo $client['calibration_interval'] == '90 day' ? 'selected' : ''; ?>>90 Day</option>
                                     <option value="No Limit" <?php echo $client['calibration_interval'] == 'No Limit' ? 'selected' : ''; ?>>No Limit</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Column 2: Arresting Municipality -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="arresting_municipality" class="form-label fw-bold fs-5 mb-0">Arresting Municipality</label>
+                                <select class="form-control form-control-lg mb-0" id="arresting_municipality" name="arresting_municipality">
+                                    <option value="">Select Municipality</option>
+                                    <?php
+                                    // Fetch municipalities from the database
+                                    $stmt = $pdo->query("SELECT id, township, municipal_code FROM municipality ORDER BY township");
+                                    while ($municipality = $stmt->fetch()) {
+                                        $selected = ($client['arresting_municipality'] == $municipality['id']) ? 'selected' : '';
+                                        echo "<option value='{$municipality['id']}' {$selected}>{$municipality['township']} ({$municipality['municipal_code']})</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Column 1: Offense Date -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="offense_date" class="form-label fw-bold fs-5 mb-0">Offense Date</label>
+                                <input type="date" class="form-control form-control-lg mb-0" id="offense_date" name="offense_date"
+                                    value="<?php echo $client['offense_date'] ? date('Y-m-d', strtotime($client['offense_date'])) : ''; ?>">
+                            </div>
+                        </div>
+                        <!-- Column 2: Out of State -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="out_of_state" class="form-label fw-bold fs-5 mb-0">Out of State</label>
+                                <select class="form-control form-control-lg mb-0" id="out_of_state" name="out_of_state">
+                                    <option value="0" <?php echo $client['out_of_state'] == 0 ? 'selected' : ''; ?>>No</option>
+                                    <option value="1" <?php echo $client['out_of_state'] == 1 ? 'selected' : ''; ?>>Yes</option>
                                 </select>
                             </div>
                         </div>

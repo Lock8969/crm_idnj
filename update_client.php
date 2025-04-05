@@ -15,9 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = $_POST['city'];
     $state = $_POST['state'];
     $zip = $_POST['zip'];
+    $dob = $_POST['dob'];
 
     try {
-        $stmt = $pdo->prepare("UPDATE client_information SET first_name = :first_name, last_name = :last_name, phone_number = :phone_number, email = :email, address1 = :address1, address2 = :address2, city = :city, state = :state, zip = :zip WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE client_information SET first_name = :first_name, last_name = :last_name, phone_number = :phone_number, email = :email, address1 = :address1, address2 = :address2, city = :city, state = :state, zip = :zip, dob = :dob WHERE id = :id");
         $stmt->execute([
             'first_name' => $first_name,
             'last_name' => $last_name,
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'city' => $city,
             'state' => $state,
             'zip' => $zip,
+            'dob' => $dob,
             'id' => $client_id
         ]);  
         header("Location: $redirect_url"); //Rediect to whichever page called for the Update

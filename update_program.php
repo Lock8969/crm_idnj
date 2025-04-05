@@ -35,6 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $law_type = $_POST['law_type'];
     $price_code = $_POST['price_code'];
     $install_comments = $_POST['install_comments'];
+    $arresting_municipality = $_POST['arresting_municipality'];
+    $offense_date = $_POST['offense_date'];
+    $out_of_state = $_POST['out_of_state'];
 
     try {
         $stmt = $pdo->prepare("UPDATE client_information 
@@ -44,7 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                   dl_state = :dl_state,
                                   law_type = :law_type,
                                   price_code = :price_code,
-                                  install_comments = :install_comments 
+                                  install_comments = :install_comments,
+                                  arresting_municipality = :arresting_municipality,
+                                  offense_date = :offense_date,
+                                  out_of_state = :out_of_state
                               WHERE id = :id");
         
         $params = [
@@ -55,6 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'law_type' => $law_type ?: null,
             'price_code' => $price_code ?: null,
             'install_comments' => $install_comments,
+            'arresting_municipality' => $arresting_municipality,
+            'offense_date' => empty($offense_date) ? null : $offense_date,
+            'out_of_state' => $out_of_state,
             'id' => $client_id
         ];
         
