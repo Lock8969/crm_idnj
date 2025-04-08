@@ -44,10 +44,10 @@ try {
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="author" content="Codescandy" />
+    <meta name="author" content="idnj" />
 
-    <!-- Favicon icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="dashui/assets/images/brand/logo/idnj_logo_small.png" />
+    <!-- Favicon icon-->
+    <link rel="shortcut icon" type="image-x-icon" href="/dashui/assets/images/brand/logo/idnj_logo_small.png" />
 
     <!-- Color modes -->
     <script src="/dashui/assets/js/vendors/color-modes.js"></script>
@@ -59,6 +59,8 @@ try {
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/dashui/assets/css/custom.css">
 
     <title>Client Detail | IDNJ</title>
     
@@ -147,17 +149,24 @@ $(document).ready(function(){
                         <?php include 'info_card.php'; ?>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <?php include 'vehicle_card.php'; ?>
+                        <?php include 'program_card.php'; ?>
                     </div>
                 </div>
                 
-                <!-- Program Card Row -->
+                <!-- Vehicle and Device Card Row -->
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <?php include 'program_card.php'; ?>
+                        <?php include 'vehicle_card.php'; ?>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <!-- Space for future card -->
+                        <?php include 'device_card.php'; ?>
+                    </div>
+                </div>
+
+                <!-- Receipts Card Row -->
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <?php include 'receipts_card.php'; ?>
                     </div>
                 </div>
 
@@ -180,22 +189,6 @@ function capitalizeWords(input) {
 }
 </script>
 
-<!-- Toggle Arrow Direction -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const toggleButton = document.querySelector("[data-bs-toggle='collapse']");
-    const toggleIcon = toggleButton.querySelector(".toggle-icon");
-
-    toggleButton.addEventListener("click", function() {
-        if (toggleIcon.textContent === "▼") {
-            toggleIcon.textContent = "▲";
-        } else {
-            toggleIcon.textContent = "▼";
-        }
-    });
-});
-</script>
-
 <!-- Toggle functions for both cards -->
 <script>
 function toggleEditMode() {
@@ -210,6 +203,15 @@ function toggleEditMode() {
 function toggleVehicleEditMode() {
     const staticView = document.getElementById('vehicle-static-view');
     const editView = document.getElementById('vehicle-edit-view');
+    if (staticView && editView) {
+        staticView.classList.toggle('d-none');
+        editView.classList.toggle('d-none');
+    }
+}
+
+function toggleDeviceEditMode() {
+    const staticView = document.getElementById('device-static-view');
+    const editView = document.getElementById('device-edit-view');
     if (staticView && editView) {
         staticView.classList.toggle('d-none');
         editView.classList.toggle('d-none');

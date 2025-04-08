@@ -1,6 +1,10 @@
 <?php
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
+    // Override PHP's session garbage collection settings
+    ini_set('session.gc_maxlifetime', 3600); // 1 hour
+    ini_set('session.gc_probability', 1);
+    ini_set('session.gc_divisor', 100);
     session_start();
 }
 

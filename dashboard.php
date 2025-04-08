@@ -21,7 +21,7 @@ include 'db.php';
     <script src="/dashui/assets/js/vendors/color-modes.js"></script>
 
     <!-- Libs CSS -->
-    <link href="/dashui/assets/libs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="https://crm.idnj.com/dashui/assets/libs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="/dashui/assets/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
     <link href="/dashui/assets/libs/simplebar/dist/simplebar.min.css" rel="stylesheet" />
 

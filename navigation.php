@@ -4,7 +4,31 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="author" content="idnj" />
+
+    <!-- Favicon icon-->
+    <link rel="shortcut icon" type="image/x-icon" href="/dashui/assets/images/brand/logo/idnj_logo_small.png" />
+
+    <!-- Color modes -->
+    <script src="/dashui/assets/js/vendors/color-modes.js"></script>
+
+    <!-- Libs CSS -->
+    <link href="/dashui/assets/libs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="/dashui/assets/libs/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="/dashui/assets/libs/simplebar/dist/simplebar.min.css" rel="stylesheet" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
     
+
+</head>
+<body>
 <!-- Wrapper -->
 <main id="main-wrapper" class="main-wrapper">
   <div class="header">
@@ -113,3 +137,5 @@ if (session_status() === PHP_SESSION_NONE) {
 </div>
 </div>
 </div>
+</body>
+</html>

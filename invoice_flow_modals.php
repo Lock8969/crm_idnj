@@ -23,7 +23,7 @@ require_once 'balance_calculator.php';
  */
 function getClientInvoiceData($client_id, $pdo) {
     try {
-        $query = "SELECT removal_date, calibration_interval FROM client_information WHERE id = ?";
+        $query = "SELECT removal_date, calibration_interval, install_on FROM client_information WHERE id = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$client_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -167,6 +167,7 @@ function renderNextAppointmentModal($client, $pdo) {
                     <div class="mb-4">
                         <p class="mb-1"><?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?></p>
                         <p class="mb-0">ID: <?php echo htmlspecialchars($client['id']); ?></p>
+                        <p class="mb-0">Install Date: <?php echo $client_data && $client_data['install_on'] ? date('m/d/Y', strtotime($client_data['install_on'])) : 'Not Installed'; ?></p>
                         <p class="mb-0">Removal Date: <?php echo $removal_date ? htmlspecialchars($removal_date) : 'Missing'; ?></p>
                         <p class="mb-0">Calibration Interval: <?php echo $calibration_interval ? htmlspecialchars($calibration_interval) : 'Not Set'; ?></p>
                         <p class="mb-0">Next Appointment: <?php echo htmlspecialchars($appointment_display); ?></p>
@@ -439,12 +440,22 @@ function renderNextAppointmentModal($client, $pdo) {
     // Add hidden.bs.modal event listener to reset fields when modal is closed
     document.getElementById('nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?>').addEventListener('hidden.bs.modal', function() {
         resetModalFields(<?php echo htmlspecialchars($client['id']); ?>);
+        // Move focus back to the trigger button
+        const triggerButton = document.querySelector(`[data-bs-target="#nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?>"]`);
+        if (triggerButton) {
+            triggerButton.focus();
+        }
     });
 
     // Add click event listener for cancel button in appointment modal
     document.querySelector(`#nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?> .btn-secondary`).addEventListener('click', function() {
         sessionStorage.removeItem('pendingAppointment');
         console.log('Cleared pending appointment data - Appointment modal cancel clicked');
+        // Move focus back to the trigger button before closing
+        const triggerButton = document.querySelector(`[data-bs-target="#nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?>"]`);
+        if (triggerButton) {
+            triggerButton.focus();
+        }
         window.location.reload();
     });
     </script>
@@ -588,9 +599,17 @@ function renderNextAppointmentModal($client, $pdo) {
         invoiceButton.className = 'btn btn-success';
         invoiceButton.innerHTML = 'Invoice';
         invoiceButton.onclick = () => {
+            // Get the trigger button that opened the appointment modal
+            const triggerButton = document.querySelector(`[data-bs-target="#nextAppointmentModal${clientId}"]`);
+            
             // Close the appointment modal
             const appointmentModal = bootstrap.Modal.getInstance(document.getElementById('nextAppointmentModal' + clientId));
             appointmentModal.hide();
+            
+            // Move focus back to the trigger button
+            if (triggerButton) {
+                triggerButton.focus();
+            }
             
             // Show the invoice modal using Bootstrap's modal
             const invoiceModalElement = document.getElementById('invoiceModal' + clientId);
@@ -733,7 +752,7 @@ function renderInvoiceModal($client, $pdo) {
     <!-- ============================================= -->
     <div class="modal fade" id="invoiceModal<?php echo htmlspecialchars($client['id']); ?>" tabindex="-1" aria-labelledby="invoiceModalLabel<?php echo htmlspecialchars($client['id']); ?>" aria-hidden="true">
         <!-- Add Bootstrap Icons -->
-        <link rel="stylesheet" href="dashui/assets/libs/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="dashui/assets/libs/bootstrap-icons/font/bootstrap-icons.min.css">
         
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -750,9 +769,10 @@ function renderInvoiceModal($client, $pdo) {
                     <div class="mb-4">
                         <p class="mb-1"><?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?></p>
                         <p class="mb-0">ID: <?php echo htmlspecialchars($client['id']); ?></p>
+                        <p class="mb-0">Install Date: <?php echo $client_data && $client_data['install_on'] ? date('m/d/Y', strtotime($client_data['install_on'])) : 'Not Installed'; ?></p>
                         <p class="mb-0">Control Box: <?php echo htmlspecialchars($inventory['control_box']); ?></p>
                         <p class="mb-0">Handset: <?php echo htmlspecialchars($inventory['handset']); ?></p>
-                        <p class="mb-0">Account Balance Due as of Today <?php echo $today; ?>: <span id="accountBalance<?php echo htmlspecialchars($client['id']); ?>">Loading...</span></p>
+                        <p class="mb-0">Account Balance Due as of Today <?php echo $today; ?> <span id="accountBalance<?php echo htmlspecialchars($client['id']); ?>" style="color: #dc3545;">Loading...</span></p>
                         <p class="mb-0">Removal Date: <?php echo htmlspecialchars($removal_date); ?></p>
                         <p class="mb-0" id="pendingAppointmentDisplay<?php echo htmlspecialchars($client['id']); ?>"></p>
                     </div>
@@ -801,6 +821,10 @@ function renderInvoiceModal($client, $pdo) {
                         <div class="d-flex justify-content-between mb-2">
                             <span>Total Collected:</span>
                             <span id="totalCollected<?php echo htmlspecialchars($client['id']); ?>">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" id="customerCreditContainer<?php echo htmlspecialchars($client['id']); ?>" style="display: none;">
+                            <span>Customer Credit:</span>
+                            <span id="customerCredit<?php echo htmlspecialchars($client['id']); ?>">$0.00</span>
                         </div>
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Remaining Balance:</span>
@@ -1061,8 +1085,26 @@ function renderInvoiceModal($client, $pdo) {
                     const balanceDisplay = document.getElementById('accountBalance' + clientId);
                     const rentBalance = data.data.rent_balance;
                     
-                    // Update the account balance display
-                    balanceDisplay.textContent = `$${rentBalance.toFixed(2)}`;
+                    // Update the account balance display with appropriate styling and text
+                    if (rentBalance > 0) {
+                        balanceDisplay.style.color = '#dc3545';
+                        balanceDisplay.textContent = `Balance Owed: $${rentBalance.toFixed(2)}`;
+                        // Hide customer credit if balance is positive
+                        document.getElementById('customerCreditContainer' + clientId).style.display = 'none';
+                    } else if (rentBalance < 0) {
+                        balanceDisplay.style.color = '#198754';
+                        balanceDisplay.textContent = `Customer Credit: $${Math.abs(rentBalance).toFixed(2)}`;
+                        // Show customer credit if balance is negative
+                        const creditContainer = document.getElementById('customerCreditContainer' + clientId);
+                        const creditDisplay = document.getElementById('customerCredit' + clientId);
+                        creditContainer.style.display = 'flex';
+                        creditDisplay.textContent = `$${Math.abs(rentBalance).toFixed(2)}`;
+                    } else {
+                        balanceDisplay.style.color = '#0d6efd';
+                        balanceDisplay.textContent = `Balance: $${rentBalance.toFixed(2)}`;
+                        // Hide customer credit if balance is zero
+                        document.getElementById('customerCreditContainer' + clientId).style.display = 'none';
+                    }
                     
                     // Store today's balance data
                     invoiceData_<?php echo htmlspecialchars($client['id']); ?>.balance = {
@@ -1106,8 +1148,12 @@ function renderInvoiceModal($client, $pdo) {
                     const [year, month, day] = calculationDate.split('-');
                     const formattedDate = `${month}/${day}/${year}`;
                     
-                    // Update the rental payment display
-                    rentalPayment.textContent = `$${rentBalance.toFixed(2)}`;
+                    // Update the rental payment display - show $0.00 if balance is negative
+                    if (rentBalance < 0) {
+                        rentalPayment.textContent = '$0.00';
+                    } else {
+                        rentalPayment.textContent = `$${rentBalance.toFixed(2)}`;
+                    }
                     rentalPaymentDate.textContent = `Balance through: ${formattedDate}`;
                     
                     // Store appointment balance data
@@ -1155,7 +1201,7 @@ function renderInvoiceModal($client, $pdo) {
         const subtotal = servicesTotal + rentalAmount;
 
         // Calculate tax on the total of rental and services
-        const tax = subtotal * 0.06625;
+        const tax = parseFloat((subtotal * 0.06625).toFixed(2));
         const total = subtotal + tax;
 
         // Update displays
@@ -1174,7 +1220,13 @@ function renderInvoiceModal($client, $pdo) {
 
         // Update remaining balance with invoice total
         const totalCollected = parseFloat(document.getElementById('totalCollected' + clientId).textContent.replace('$', '')) || 0;
-        const remainingBalance = total - totalCollected;
+        
+        // Get customer credit if it exists
+        const customerCreditContainer = document.getElementById('customerCreditContainer' + clientId);
+        const customerCredit = parseFloat(document.getElementById('customerCredit' + clientId).textContent.replace('$', '')) || 0;
+        
+        // Calculate remaining balance, subtracting both total collected and customer credit
+        const remainingBalance = total - totalCollected - customerCredit;
         document.getElementById('remainingBalance' + clientId).textContent = '$' + remainingBalance.toFixed(2);
         
         // Update payment data
@@ -1200,8 +1252,11 @@ function renderInvoiceModal($client, $pdo) {
         // Get invoice total
         const invoiceTotal = parseFloat(document.getElementById('invoiceTotal' + clientId).textContent.replace('$', '')) || 0;
         
-        // Calculate remaining balance
-        const remainingBalance = invoiceTotal - totalCollected;
+        // Get customer credit if it exists
+        const customerCredit = parseFloat(document.getElementById('customerCredit' + clientId).textContent.replace('$', '')) || 0;
+        
+        // Calculate remaining balance, subtracting both total collected and customer credit
+        const remainingBalance = invoiceTotal - totalCollected - customerCredit;
 
         // Update displays
         document.getElementById('totalCollected' + clientId).textContent = '$' + totalCollected.toFixed(2);
@@ -1240,23 +1295,150 @@ function renderInvoiceModal($client, $pdo) {
         // Get pending appointment data if it exists
         const pendingAppointment = JSON.parse(sessionStorage.getItem('pendingAppointment') || 'null');
         
+        // Ensure payments object exists
+        if (!invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments) {
+            invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments = {
+                cash: 0,
+                credit: 0,
+                check: 0,
+                other: 0,
+                totalCollected: 0,
+                remainingBalance: 0
+            };
+        }
+        
         // Prepare invoice data
         const invoiceDataToSave = {
+            request_type: 'create_invoice_with_payment',
             customer_id: clientId,
-            services: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.services,
-            totals: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.totals,
-            balance: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.balance,
-            payments: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments,
-            odometerReading: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.odometerReading,
-            notes: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.notes,
-            pending_appointment: pendingAppointment
+            created_by: <?php echo $_SESSION['user_id']; ?>,
+            location_id: <?php echo $_SESSION['location_id']; ?>,
+            services: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.services || [],
+            payment_type: 'credit', // Default to credit, will be updated based on actual payment
+            amount: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.totalCollected,
+            description: 'Invoice Payment',
+            
+            // Add rental information
+            rent_total: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.totals.rentalSubtotal || 0,
+            service_total: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.totals.servicesSubtotal || 0,
+            tax_amount: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.totals.salesTax || 0,
+            invoice_total: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.totals.invoiceTotal || 0,
+            
+            // Add additional invoice information
+            odometer_reading: document.getElementById('odometerReading' + clientId).value || null,
+            notes: document.getElementById('invoiceNotes' + clientId).value || null,
+            
+            // Add balance information
+            balance: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.balance || null,
+            
+            // Add payment breakdown
+            payments: {
+                cash: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.cash || 0,
+                credit: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.credit || 0,
+                check: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.check || 0,
+                other: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.other || 0,
+                total_collected: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.totalCollected || 0,
+                remaining_balance: invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.remainingBalance || 0
+            }
         };
 
-        // TODO: Send to server
-        console.log('Saving invoice data:', invoiceDataToSave);
-        
-        // Clear session storage after saving
-        sessionStorage.removeItem('pendingAppointment');
+        // Determine payment type based on which amount is non-zero
+        if (invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.cash > 0) {
+            invoiceDataToSave.payment_type = 'cash';
+            invoiceDataToSave.amount = invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.cash;
+        } else if (invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.credit > 0) {
+            invoiceDataToSave.payment_type = 'credit';
+            invoiceDataToSave.amount = invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.credit;
+        } else if (invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.check > 0) {
+            invoiceDataToSave.payment_type = 'check';
+            invoiceDataToSave.amount = invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.check;
+        } else if (invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.other > 0) {
+            invoiceDataToSave.payment_type = 'other';
+            invoiceDataToSave.amount = invoiceData_<?php echo htmlspecialchars($client['id']); ?>.payments.other;
+        }
+
+        // Log the data being sent
+        console.log('=== INVOICE DATA BEING SENT ===');
+        console.log('Request Type:', invoiceDataToSave.request_type);
+        console.log('Customer ID:', invoiceDataToSave.customer_id);
+        console.log('Created By:', invoiceDataToSave.created_by);
+        console.log('Location ID:', invoiceDataToSave.location_id);
+        console.log('Payment Type:', invoiceDataToSave.payment_type);
+        console.log('Amount:', invoiceDataToSave.amount);
+        console.log('Description:', invoiceDataToSave.description);
+        console.log('Rent Total:', invoiceDataToSave.rent_total);
+        console.log('Service Total:', invoiceDataToSave.service_total);
+        console.log('Tax Amount:', invoiceDataToSave.tax_amount);
+        console.log('Invoice Total:', invoiceDataToSave.invoice_total);
+        console.log('Odometer Reading:', invoiceDataToSave.odometer_reading);
+        console.log('Notes:', invoiceDataToSave.notes);
+        console.log('Balance Info:', JSON.stringify(invoiceDataToSave.balance, null, 2));
+        console.log('Payment Info:', JSON.stringify(invoiceDataToSave.payments, null, 2));
+        console.log('Services:', JSON.stringify(invoiceDataToSave.services, null, 2));
+        console.log('=============================');
+
+        // Send payment data to payment API first
+        fetch('payment_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(invoiceDataToSave)
+        })
+        .then(response => {
+            console.log('Payment API Response Status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Payment API Response Data:', data);
+            if (data.success) {
+                console.log('Invoice created and payment processed successfully:', data);
+                // If payment is successful, send appointment data
+                if (pendingAppointment && pendingAppointment.start_time) {
+                    return fetch('appointment_api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(pendingAppointment)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Appointment created successfully:', data);
+                            alert('Invoice and appointment saved successfully!');
+                        } else {
+                            console.error('Error creating appointment:', data.message);
+                            alert('Invoice saved, but appointment creation failed: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Invoice saved, but an error occurred while creating the appointment. Please try again.');
+                    });
+                } else {
+                    alert('Invoice saved successfully!');
+                }
+            } else {
+                console.error('Error creating invoice:', data.message);
+                alert('Error creating invoice: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving the invoice. Please try again.');
+        })
+        .finally(() => {
+            // Clear session storage after saving
+            sessionStorage.removeItem('pendingAppointment');
+            
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal' + clientId));
+            modal.hide();
+            
+            // Reload the page to show updated data
+            window.location.reload();
+        });
     }
 
     // Add initial service row when modal opens
@@ -1284,6 +1466,11 @@ function renderInvoiceModal($client, $pdo) {
     document.querySelector(`#invoiceModal<?php echo htmlspecialchars($client['id']); ?> .btn-secondary`).addEventListener('click', function() {
         sessionStorage.removeItem('pendingAppointment');
         console.log('Cleared pending appointment data - Invoice modal cancel clicked');
+        // Move focus back to the trigger button before closing
+        const triggerButton = document.querySelector(`[data-bs-target="#invoiceModal<?php echo htmlspecialchars($client['id']); ?>"]`);
+        if (triggerButton) {
+            triggerButton.focus();
+        }
         window.location.reload();
     });
     </script>

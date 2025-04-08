@@ -50,9 +50,16 @@ if (!isset($client)) {
                 
                 <div class="row info-row">
                     <div class="col-md-6">
+                        <div class="info-label">Date of Birth</div>
+                        <div class="info-value" data-field="dob"><?php echo $client['dob'] ? date('m/d/Y', strtotime($client['dob'])) : 'N/A'; ?></div>
+                    </div>
+                    <div class="col-md-6">
                         <div class="info-label">Phone</div>
                         <div class="info-value" data-field="phone_number"><?php echo htmlspecialchars($client['phone_number']); ?></div>
                     </div>
+                </div>
+                
+                <div class="row info-row">
                     <div class="col-md-6">
                         <div class="info-label">Email</div>
                         <div class="info-value" data-field="email"><?php echo htmlspecialchars($client['email']); ?></div>
@@ -118,7 +125,15 @@ if (!isset($client)) {
                     </div>
 
                     <div class="row">
-                        <!-- Column 1: Phone -->
+                        <!-- Column 1: Date of Birth -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="dob" class="form-label fw-bold fs-5 mb-0">Date of Birth</label>
+                                <input type="date" class="form-control form-control-lg mb-0" id="dob" name="dob"
+                                    value="<?php echo $client['dob'] ? date('Y-m-d', strtotime($client['dob'])) : ''; ?>">
+                            </div>
+                        </div>
+                        <!-- Column 2: Phone -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="phone_number" class="form-label fw-bold fs-5 mb-0">Phone</label>
@@ -127,7 +142,9 @@ if (!isset($client)) {
                                     maxlength="12" oninput="formatPhoneNumber(this)">
                             </div>
                         </div>
-                        <!-- Column 2: Email -->
+                    </div>
+                    <div class="row">
+                        <!-- Column 1: Email -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-bold fs-5 mb-0">Email</label>

@@ -1,0 +1,4801 @@
+// Open the file in read mode to get existing content
+$existingContent = file_get_contents('payment_api_log.txt');
+
+// New log entry
+$newLogEntry = "New log entry content here\n";
+
+// Prepend the new log entry to the existing content
+file_put_contents('payment_api_log.txt', $newLogEntry . $existingContent);
+
+=== Payment API Log - 2025-04-04 17:44:03 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            },
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 25,
+        "description": "Invoice Payment"
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 17:44:03 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        },
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 25,
+    "description": "Invoice Payment"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 17:44:03 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[HY000]: General error: 1364 Field 'rent_total' doesn't have a default value",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:00:03 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            },
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 84.03,
+        "description": "Invoice Payment"
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:00:03 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        },
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 84.03,
+    "description": "Invoice Payment"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:00:03 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "32",
+    "transaction_id": "107",
+    "breakdown": {
+        "services_collected": 25,
+        "services_tax_collected": 1.65625,
+        "total_collected": 84.03,
+        "remaining_balance": -57.37375
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:10:06 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            },
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 85.11,
+        "description": "Invoice Payment",
+        "rent_total": 54.82,
+        "service_total": 25,
+        "tax_amount": 5.288075,
+        "invoice_total": 85.108075,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 47.75
+            },
+            "appointmentBalance": {
+                "rentBalance": 54.82,
+                "calculationDate": "04\/11\/2025"
+            }
+        },
+        "payments": {
+            "cash": 85.11,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 85.11,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:10:06 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        },
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 85.11,
+    "description": "Invoice Payment",
+    "rent_total": 54.82,
+    "service_total": 25,
+    "tax_amount": 5.288075,
+    "invoice_total": 85.108075,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 47.75
+        },
+        "appointmentBalance": {
+            "rentBalance": 54.82,
+            "calculationDate": "04\/11\/2025"
+        }
+    },
+    "payments": {
+        "cash": 85.11,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 85.11,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:10:06 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "33",
+    "transaction_id": "108",
+    "breakdown": {
+        "services_collected": 25,
+        "services_tax_collected": 1.65625,
+        "total_collected": 85.11,
+        "remaining_balance": -58.45375
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:26:03 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            },
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 84.03,
+        "description": "Invoice Payment",
+        "rent_total": 53.81,
+        "service_total": 25,
+        "tax_amount": 5.2211625,
+        "invoice_total": 84.03116250000001,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 47.75
+            },
+            "appointmentBalance": {
+                "rentBalance": 53.81,
+                "calculationDate": "04\/10\/2025"
+            }
+        },
+        "payments": {
+            "cash": 84.03,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 84.03,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:26:03 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        },
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 84.03,
+    "description": "Invoice Payment",
+    "rent_total": 53.81,
+    "service_total": 25,
+    "tax_amount": 5.2211625,
+    "invoice_total": 84.03116250000001,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 47.75
+        },
+        "appointmentBalance": {
+            "rentBalance": 53.81,
+            "calculationDate": "04\/10\/2025"
+        }
+    },
+    "payments": {
+        "cash": 84.03,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 84.03,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:26:03 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'invoice_date' in 'field list'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:29:02 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            },
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 85.11,
+        "description": "Invoice Payment",
+        "rent_total": 54.82,
+        "service_total": 25,
+        "tax_amount": 5.288075,
+        "invoice_total": 85.108075,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 47.75
+            },
+            "appointmentBalance": {
+                "rentBalance": 54.82,
+                "calculationDate": "04\/11\/2025"
+            }
+        },
+        "payments": {
+            "cash": 85.11,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 85.11,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:29:02 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        },
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 85.11,
+    "description": "Invoice Payment",
+    "rent_total": 54.82,
+    "service_total": 25,
+    "tax_amount": 5.288075,
+    "invoice_total": 85.108075,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 47.75
+        },
+        "appointmentBalance": {
+            "rentBalance": 54.82,
+            "calculationDate": "04\/11\/2025"
+        }
+    },
+    "payments": {
+        "cash": 85.11,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 85.11,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:29:02 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'notes' in 'field list'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:34:56 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            },
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 84.03,
+        "description": "Invoice Payment",
+        "rent_total": 53.81,
+        "service_total": 25,
+        "tax_amount": 5.2211625,
+        "invoice_total": 84.03116250000001,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 47.75
+            },
+            "appointmentBalance": {
+                "rentBalance": 53.81,
+                "calculationDate": "04\/10\/2025"
+            }
+        },
+        "payments": {
+            "cash": 84.03,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 84.03,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:34:56 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        },
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 84.03,
+    "description": "Invoice Payment",
+    "rent_total": 53.81,
+    "service_total": 25,
+    "tax_amount": 5.2211625,
+    "invoice_total": 84.03116250000001,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 47.75
+        },
+        "appointmentBalance": {
+            "rentBalance": 53.81,
+            "calculationDate": "04\/10\/2025"
+        }
+    },
+    "payments": {
+        "cash": 84.03,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 84.03,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:34:56 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "34",
+    "transaction_id": "109",
+    "breakdown": {
+        "services_collected": 25,
+        "services_tax_collected": 5.219999999999999,
+        "total_collected": 84.03,
+        "remaining_balance": 0.0011625000000066166
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:36:44 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 108,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            },
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 67.17,
+        "description": "Invoice Payment",
+        "rent_total": 38,
+        "service_total": 25,
+        "tax_amount": 4.17375,
+        "invoice_total": 67.17375,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 31
+            },
+            "appointmentBalance": {
+                "rentBalance": 38,
+                "calculationDate": "04\/11\/2025"
+            }
+        },
+        "payments": {
+            "cash": 67.17,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 67.17,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:36:44 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 108,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        },
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 67.17,
+    "description": "Invoice Payment",
+    "rent_total": 38,
+    "service_total": 25,
+    "tax_amount": 4.17375,
+    "invoice_total": 67.17375,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 31
+        },
+        "appointmentBalance": {
+            "rentBalance": 38,
+            "calculationDate": "04\/11\/2025"
+        }
+    },
+    "payments": {
+        "cash": 67.17,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 67.17,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:36:44 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "35",
+    "transaction_id": "110",
+    "breakdown": {
+        "services_collected": 25,
+        "services_tax_collected": 4.170000000000002,
+        "total_collected": 67.17,
+        "remaining_balance": 0.0037499999999965894
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:39:59 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 102,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 50,
+        "description": "Invoice Payment",
+        "rent_total": 69,
+        "service_total": 0,
+        "tax_amount": 4.57125,
+        "invoice_total": 73.57125,
+        "odometer_reading": "222",
+        "notes": "222",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 62
+            },
+            "appointmentBalance": {
+                "rentBalance": 69,
+                "calculationDate": "04\/11\/2025"
+            }
+        },
+        "payments": {
+            "cash": 50,
+            "credit": 23.57,
+            "check": 0,
+            "other": 0,
+            "total_collected": 73.57,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:39:59 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 102,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 50,
+    "description": "Invoice Payment",
+    "rent_total": 69,
+    "service_total": 0,
+    "tax_amount": 4.57125,
+    "invoice_total": 73.57125,
+    "odometer_reading": "222",
+    "notes": "222",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 62
+        },
+        "appointmentBalance": {
+            "rentBalance": 69,
+            "calculationDate": "04\/11\/2025"
+        }
+    },
+    "payments": {
+        "cash": 50,
+        "credit": 23.57,
+        "check": 0,
+        "other": 0,
+        "total_collected": 73.57,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:39:59 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Services",
+    "field": "services"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:39:59 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Services",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:44:13 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 103,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 50,
+        "description": "Invoice Payment",
+        "rent_total": 64,
+        "service_total": 0,
+        "tax_amount": 4.24,
+        "invoice_total": 68.24,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 57
+            },
+            "appointmentBalance": {
+                "rentBalance": 64,
+                "calculationDate": "04\/11\/2025"
+            }
+        },
+        "payments": {
+            "cash": 50,
+            "credit": 18.24,
+            "check": 0,
+            "other": 0,
+            "total_collected": 68.24,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:44:13 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 103,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 50,
+    "description": "Invoice Payment",
+    "rent_total": 64,
+    "service_total": 0,
+    "tax_amount": 4.24,
+    "invoice_total": 68.24,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 57
+        },
+        "appointmentBalance": {
+            "rentBalance": 64,
+            "calculationDate": "04\/11\/2025"
+        }
+    },
+    "payments": {
+        "cash": 50,
+        "credit": 18.24,
+        "check": 0,
+        "other": 0,
+        "total_collected": 68.24,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:44:13 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Services",
+    "field": "services"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:44:13 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Services",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:00 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 103,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 50,
+        "description": "Invoice Payment",
+        "rent_total": 57,
+        "service_total": 0,
+        "tax_amount": 3.77625,
+        "invoice_total": 60.77625,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 57
+            },
+            "appointmentBalance": {
+                "rentBalance": 57,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 50,
+            "credit": 10.78,
+            "check": 0,
+            "other": 0,
+            "total_collected": 60.78,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:00 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 103,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 50,
+    "description": "Invoice Payment",
+    "rent_total": 57,
+    "service_total": 0,
+    "tax_amount": 3.77625,
+    "invoice_total": 60.77625,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 57
+        },
+        "appointmentBalance": {
+            "rentBalance": 57,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 50,
+        "credit": 10.78,
+        "check": 0,
+        "other": 0,
+        "total_collected": 60.78,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:00 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Services",
+    "field": "services"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:00 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Services",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:35 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 103,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 50,
+        "description": "Invoice Payment",
+        "rent_total": 57,
+        "service_total": 0,
+        "tax_amount": 3.77625,
+        "invoice_total": 60.77625,
+        "odometer_reading": "123",
+        "notes": "123",
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 57
+            },
+            "appointmentBalance": {
+                "rentBalance": 57,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 50,
+            "credit": 10.78,
+            "check": 0,
+            "other": 0,
+            "total_collected": 60.78,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:35 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 103,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 50,
+    "description": "Invoice Payment",
+    "rent_total": 57,
+    "service_total": 0,
+    "tax_amount": 3.77625,
+    "invoice_total": 60.77625,
+    "odometer_reading": "123",
+    "notes": "123",
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 57
+        },
+        "appointmentBalance": {
+            "rentBalance": 57,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 50,
+        "credit": 10.78,
+        "check": 0,
+        "other": 0,
+        "total_collected": 60.78,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:45:35 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "36",
+    "transaction_id": "111",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 50,
+        "remaining_balance": 10.776249999999997
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:56:27 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 113,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 7.46,
+        "description": "Invoice Payment",
+        "rent_total": 7,
+        "service_total": 0,
+        "tax_amount": 0.46375,
+        "invoice_total": 7.46375,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 7
+            },
+            "appointmentBalance": {
+                "rentBalance": 7,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 7.46,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 7.46,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:56:27 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 113,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 7.46,
+    "description": "Invoice Payment",
+    "rent_total": 7,
+    "service_total": 0,
+    "tax_amount": 0.46375,
+    "invoice_total": 7.46375,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 7
+        },
+        "appointmentBalance": {
+            "rentBalance": 7,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 7.46,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 7.46,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:56:27 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "37",
+    "transaction_id": "112",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0.45999999999999996,
+        "total_collected": 7.46,
+        "remaining_balance": 0.003750000000000142
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:58:51 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 103,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 7,
+        "description": "Invoice Payment",
+        "rent_total": 7,
+        "service_total": 0,
+        "tax_amount": 0.46375,
+        "invoice_total": 7.46375,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 7
+            },
+            "appointmentBalance": {
+                "rentBalance": 7,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 7,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 7,
+            "remaining_balance": 0.4637500000000001
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:58:51 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 103,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 7,
+    "description": "Invoice Payment",
+    "rent_total": 7,
+    "service_total": 0,
+    "tax_amount": 0.46375,
+    "invoice_total": 7.46375,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 7
+        },
+        "appointmentBalance": {
+            "rentBalance": 7,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 7,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 7,
+        "remaining_balance": 0.4637500000000001
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 18:58:51 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "38",
+    "transaction_id": "113",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 7,
+        "remaining_balance": 0.4637500000000001
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:04:10 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 102,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 66.11,
+        "description": "Invoice Payment",
+        "rent_total": 62,
+        "service_total": 0,
+        "tax_amount": 4.1075,
+        "invoice_total": 66.1075,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 62
+            },
+            "appointmentBalance": {
+                "rentBalance": 62,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 66.11,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 66.11,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:04:10 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 102,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 66.11,
+    "description": "Invoice Payment",
+    "rent_total": 62,
+    "service_total": 0,
+    "tax_amount": 4.1075,
+    "invoice_total": 66.1075,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 62
+        },
+        "appointmentBalance": {
+            "rentBalance": 62,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 66.11,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 66.11,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:04:10 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "39",
+    "transaction_id": "114",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 4.1075,
+        "total_collected": 66.11,
+        "remaining_balance": -0.0024999999999977263
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:07:47 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 106,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 44.78,
+        "description": "Invoice Payment",
+        "rent_total": 42,
+        "service_total": 0,
+        "tax_amount": 2.78,
+        "invoice_total": 44.78,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 42
+            },
+            "appointmentBalance": {
+                "rentBalance": 42,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 44.78,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 44.78,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:07:47 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 106,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 44.78,
+    "description": "Invoice Payment",
+    "rent_total": 42,
+    "service_total": 0,
+    "tax_amount": 2.78,
+    "invoice_total": 44.78,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 42
+        },
+        "appointmentBalance": {
+            "rentBalance": 42,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 44.78,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 44.78,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:07:47 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "40",
+    "transaction_id": "115",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 2.78,
+        "total_collected": 44.78,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:10:30 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 109,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 26,
+        "description": "Invoice Payment",
+        "rent_total": 26,
+        "service_total": 0,
+        "tax_amount": 1.72,
+        "invoice_total": 27.72,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 26
+            },
+            "appointmentBalance": {
+                "rentBalance": 26,
+                "calculationDate": "04\/04\/2025"
+            }
+        },
+        "payments": {
+            "cash": 26,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 26,
+            "remaining_balance": 1.7199999999999989
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:10:30 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 109,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 26,
+    "description": "Invoice Payment",
+    "rent_total": 26,
+    "service_total": 0,
+    "tax_amount": 1.72,
+    "invoice_total": 27.72,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 26
+        },
+        "appointmentBalance": {
+            "rentBalance": 26,
+            "calculationDate": "04\/04\/2025"
+        }
+    },
+    "payments": {
+        "cash": 26,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 26,
+        "remaining_balance": 1.7199999999999989
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:10:30 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "41",
+    "transaction_id": "116",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 26,
+        "remaining_balance": 1.7199999999999989
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:11:09 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 112,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "3",
+                "name": "Recalibration",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 4,
+        "description": "Invoice Payment",
+        "rent_total": 18,
+        "service_total": 0,
+        "tax_amount": 1.19,
+        "invoice_total": 19.19,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 11
+            },
+            "appointmentBalance": {
+                "rentBalance": 18,
+                "calculationDate": "04\/11\/2025"
+            }
+        },
+        "payments": {
+            "cash": 4,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 4,
+            "remaining_balance": 15.190000000000001
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:11:09 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 112,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "3",
+            "name": "Recalibration",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 4,
+    "description": "Invoice Payment",
+    "rent_total": 18,
+    "service_total": 0,
+    "tax_amount": 1.19,
+    "invoice_total": 19.19,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 11
+        },
+        "appointmentBalance": {
+            "rentBalance": 18,
+            "calculationDate": "04\/11\/2025"
+        }
+    },
+    "payments": {
+        "cash": 4,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 4,
+        "remaining_balance": 15.190000000000001
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-04 19:11:09 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "42",
+    "transaction_id": "117",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 4,
+        "remaining_balance": 15.190000000000001
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:37:37 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 1,
+        "description": "Invoice Payment",
+        "rent_total": -5.05,
+        "service_total": 0,
+        "tax_amount": -0.33,
+        "invoice_total": -5.38,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -5.05
+            },
+            "appointmentBalance": {
+                "rentBalance": -5.05,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 1,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 1,
+            "remaining_balance": -6.38
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:37:37 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 1,
+    "description": "Invoice Payment",
+    "rent_total": -5.05,
+    "service_total": 0,
+    "tax_amount": -0.33,
+    "invoice_total": -5.38,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -5.05
+        },
+        "appointmentBalance": {
+            "rentBalance": -5.05,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 1,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 1,
+        "remaining_balance": -6.38
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:37:37 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Services",
+    "field": "services"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:37:37 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Services",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:38:13 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 1,
+        "description": "Invoice Payment",
+        "rent_total": -5.05,
+        "service_total": 0,
+        "tax_amount": -0.33,
+        "invoice_total": -5.38,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -5.05
+            },
+            "appointmentBalance": {
+                "rentBalance": -5.05,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 1,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 1,
+            "remaining_balance": -6.38
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:38:13 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 1,
+    "description": "Invoice Payment",
+    "rent_total": -5.05,
+    "service_total": 0,
+    "tax_amount": -0.33,
+    "invoice_total": -5.38,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -5.05
+        },
+        "appointmentBalance": {
+            "rentBalance": -5.05,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 1,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 1,
+        "remaining_balance": -6.38
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:38:13 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Services",
+    "field": "services"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:38:13 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Services",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:41:29 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 1,
+        "description": "Invoice Payment",
+        "rent_total": -5.05,
+        "service_total": 0,
+        "tax_amount": -0.33,
+        "invoice_total": -5.38,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -5.05
+            },
+            "appointmentBalance": {
+                "rentBalance": -5.05,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 1,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 1,
+            "remaining_balance": -6.38
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:41:29 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 1,
+    "description": "Invoice Payment",
+    "rent_total": -5.05,
+    "service_total": 0,
+    "tax_amount": -0.33,
+    "invoice_total": -5.38,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -5.05
+        },
+        "appointmentBalance": {
+            "rentBalance": -5.05,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 1,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 1,
+        "remaining_balance": -6.38
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:41:29 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "43",
+    "transaction_id": "118",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": -0.33,
+        "total_collected": 1,
+        "remaining_balance": -6.38
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:48:38 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 103,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 1,
+        "service_total": 0,
+        "tax_amount": 0.07,
+        "invoice_total": 1.07,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 1
+            },
+            "appointmentBalance": {
+                "rentBalance": 1,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 10,
+            "check": 0,
+            "other": 0,
+            "total_collected": 20,
+            "remaining_balance": -18.93
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:48:38 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 103,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 1,
+    "service_total": 0,
+    "tax_amount": 0.07,
+    "invoice_total": 1.07,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 1
+        },
+        "appointmentBalance": {
+            "rentBalance": 1,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 10,
+        "check": 0,
+        "other": 0,
+        "total_collected": 20,
+        "remaining_balance": -18.93
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:48:38 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_transaction_id' in 'field list'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:50:18 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 120,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 10,
+            "check": 0,
+            "other": 0,
+            "total_collected": 20,
+            "remaining_balance": -20
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:50:18 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 120,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 10,
+        "check": 0,
+        "other": 0,
+        "total_collected": 20,
+        "remaining_balance": -20
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:50:18 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_transaction_id' in 'field list'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:51:46 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 11,
+            "check": 0,
+            "other": 0,
+            "total_collected": 21,
+            "remaining_balance": -21
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:51:46 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 11,
+        "check": 0,
+        "other": 0,
+        "total_collected": 21,
+        "remaining_balance": -21
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:51:46 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_transaction_id' in 'field list'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:52:54 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 12,
+            "check": 0,
+            "other": 0,
+            "total_collected": 22,
+            "remaining_balance": -22
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:52:54 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 12,
+        "check": 0,
+        "other": 0,
+        "total_collected": 22,
+        "remaining_balance": -22
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:52:54 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parent_transaction_id' in 'field list'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:54:32 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 10,
+            "check": 0,
+            "other": 0,
+            "total_collected": 20,
+            "remaining_balance": -20
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:54:32 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 10,
+        "check": 0,
+        "other": 0,
+        "total_collected": 20,
+        "remaining_balance": -20
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 13:54:32 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "48",
+    "transaction_id": "119",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:05:40 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 113,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 1,
+        "service_total": 0,
+        "tax_amount": 0.07,
+        "invoice_total": 1.07,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 1
+            },
+            "appointmentBalance": {
+                "rentBalance": 1,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 15,
+            "check": 0,
+            "other": 0,
+            "total_collected": 25,
+            "remaining_balance": -23.93
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:05:40 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 113,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 1,
+    "service_total": 0,
+    "tax_amount": 0.07,
+    "invoice_total": 1.07,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 1
+        },
+        "appointmentBalance": {
+            "rentBalance": 1,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 15,
+        "check": 0,
+        "other": 0,
+        "total_collected": 25,
+        "remaining_balance": -23.93
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:05:40 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'payment_type' at row 1",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:08:32 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 25.25,
+        "service_total": 0,
+        "tax_amount": 1.67,
+        "invoice_total": 26.92,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 25.25,
+                "calculationDate": "04\/30\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 10,
+            "check": 0,
+            "other": 0,
+            "total_collected": 20,
+            "remaining_balance": 6.920000000000002
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:08:32 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 25.25,
+    "service_total": 0,
+    "tax_amount": 1.67,
+    "invoice_total": 26.92,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 25.25,
+            "calculationDate": "04\/30\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 10,
+        "check": 0,
+        "other": 0,
+        "total_collected": 20,
+        "remaining_balance": 6.920000000000002
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:08:32 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'payment_type' at row 1",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:23:26 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 25.25,
+        "service_total": 0,
+        "tax_amount": 1.67,
+        "invoice_total": 26.92,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 25.25,
+                "calculationDate": "04\/30\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 15,
+            "check": 0,
+            "other": 0,
+            "total_collected": 25,
+            "remaining_balance": 1.9200000000000017
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:23:26 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 25.25,
+    "service_total": 0,
+    "tax_amount": 1.67,
+    "invoice_total": 26.92,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 25.25,
+            "calculationDate": "04\/30\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 15,
+        "check": 0,
+        "other": 0,
+        "total_collected": 25,
+        "remaining_balance": 1.9200000000000017
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:23:26 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "51",
+    "transaction_id": "122",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 10,
+        "remaining_balance": 16.92
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:36:53 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 120,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 1,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/30\/2025"
+            }
+        },
+        "payments": {
+            "cash": 1,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 1,
+            "remaining_balance": -1
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:36:53 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 120,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 1,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/30\/2025"
+        }
+    },
+    "payments": {
+        "cash": 1,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 1,
+        "remaining_balance": -1
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:36:53 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_id' in 'where clause'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:37:44 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 120,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 1,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/30\/2025"
+            }
+        },
+        "payments": {
+            "cash": 1,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 1,
+            "remaining_balance": -1
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:37:44 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 120,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 1,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/30\/2025"
+        }
+    },
+    "payments": {
+        "cash": 1,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 1,
+        "remaining_balance": -1
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:37:44 ===
+create_invoice_with_payment result
+Data: {
+    "success": false,
+    "message": "Error creating invoice with payment: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_id' in 'where clause'",
+    "invoice_id": null,
+    "transaction_id": null
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:46:40 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 120,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 1,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "05\/16\/2025"
+            }
+        },
+        "payments": {
+            "cash": 1,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 1,
+            "remaining_balance": -1
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:46:40 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 120,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 1,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "05\/16\/2025"
+        }
+    },
+    "payments": {
+        "cash": 1,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 1,
+        "remaining_balance": -1
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 14:46:40 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "54",
+    "transaction_id": "124",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 1,
+        "remaining_balance": -1
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:00:42 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 121,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "credit",
+        "amount": 0,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 0,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 0,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:00:42 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 121,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "credit",
+    "amount": 0,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 0,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 0,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:00:42 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Amount",
+    "field": "amount"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:00:42 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Amount",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:24 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 121,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "credit",
+        "amount": 0,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 0,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 0,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:24 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 121,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "credit",
+    "amount": 0,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 0,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 0,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:24 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Amount",
+    "field": "amount"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:24 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Amount",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:46 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 121,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "credit",
+        "amount": 0,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 0,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 0,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:46 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 121,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "credit",
+    "amount": 0,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 0,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 0,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:46 ===
+Validation failed
+Data: {
+    "error": "Missing required field: Amount",
+    "field": "amount"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:01:46 ===
+Error occurred
+Data: {
+    "error": "Missing required field: Amount",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:07:07 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 121,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "credit",
+        "amount": 0,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 0,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 0,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:07:07 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 121,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "credit",
+    "amount": 0,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 0,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 0,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:07:07 ===
+Validation failed
+Data: {
+    "error": "Card data is required for credit card payments"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:07:07 ===
+Error occurred
+Data: {
+    "error": "Card data is required for credit card payments",
+    "trace": "#0 {main}"
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:08:45 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 121,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "5",
+                "name": "Install",
+                "price": 0
+            }
+        ],
+        "payment_type": "credit",
+        "amount": 0,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/05\/2025"
+            }
+        },
+        "payments": {
+            "cash": 0,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 0,
+            "remaining_balance": 0
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:08:45 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 121,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "5",
+            "name": "Install",
+            "price": 0
+        }
+    ],
+    "payment_type": "credit",
+    "amount": 0,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/05\/2025"
+        }
+    },
+    "payments": {
+        "cash": 0,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 0,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-05 15:08:45 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "55",
+    "transaction_id": null,
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 0,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:42:35 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 8.51,
+        "description": "Invoice Payment",
+        "rent_total": -7.98,
+        "service_total": 0,
+        "tax_amount": -0.53,
+        "invoice_total": -8.51,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -7.98
+            },
+            "appointmentBalance": {
+                "rentBalance": -7.98,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 8.51,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 8.51,
+            "remaining_balance": -17.02
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:42:35 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 8.51,
+    "description": "Invoice Payment",
+    "rent_total": -7.98,
+    "service_total": 0,
+    "tax_amount": -0.53,
+    "invoice_total": -8.51,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -7.98
+        },
+        "appointmentBalance": {
+            "rentBalance": -7.98,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 8.51,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 8.51,
+        "remaining_balance": -17.02
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:42:35 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "56",
+    "transaction_id": "125",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": -0.53,
+        "total_collected": 8.51,
+        "remaining_balance": -17.02
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:46:34 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -10
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:46:34 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:46:34 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "57",
+    "transaction_id": "126",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:47:01 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -10
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:47:01 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:47:01 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "58",
+    "transaction_id": "127",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:47:59 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -10
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:47:59 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 17:47:59 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "59",
+    "transaction_id": "128",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:35:51 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 108,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": -4,
+        "service_total": 0,
+        "tax_amount": -0.27,
+        "invoice_total": -4.27,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -4
+            },
+            "appointmentBalance": {
+                "rentBalance": -4,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -14.27
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:35:51 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 108,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": -4,
+    "service_total": 0,
+    "tax_amount": -0.27,
+    "invoice_total": -4.27,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -4
+        },
+        "appointmentBalance": {
+            "rentBalance": -4,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -14.27
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:35:51 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "60",
+    "transaction_id": "129",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0.62,
+        "total_collected": 10,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:38:51 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 101,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 64,
+        "description": "Invoice Payment",
+        "rent_total": 69,
+        "service_total": 0,
+        "tax_amount": 4.57,
+        "invoice_total": 73.57,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 69
+            },
+            "appointmentBalance": {
+                "rentBalance": 69,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 64,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 64,
+            "remaining_balance": 9.569999999999993
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:38:51 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 101,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 64,
+    "description": "Invoice Payment",
+    "rent_total": 69,
+    "service_total": 0,
+    "tax_amount": 4.57,
+    "invoice_total": 73.57,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 69
+        },
+        "appointmentBalance": {
+            "rentBalance": 69,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 64,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 64,
+        "remaining_balance": 9.569999999999993
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:38:51 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "61",
+    "transaction_id": "130",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0,
+        "total_collected": 64,
+        "remaining_balance": 9.569999999999993
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:39:08 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 101,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 5,
+        "service_total": 0,
+        "tax_amount": 0.33,
+        "invoice_total": 5.33,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 5
+            },
+            "appointmentBalance": {
+                "rentBalance": 5,
+                "calculationDate": "04\/07\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -4.67
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:39:08 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 101,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 5,
+    "service_total": 0,
+    "tax_amount": 0.33,
+    "invoice_total": 5.33,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 5
+        },
+        "appointmentBalance": {
+            "rentBalance": 5,
+            "calculationDate": "04\/07\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -4.67
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 18:39:08 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "62",
+    "transaction_id": "131",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0.62,
+        "total_collected": 10,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:17 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 1.01,
+        "service_total": 0,
+        "tax_amount": 0.07,
+        "invoice_total": 1.08,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 1.01
+            },
+            "appointmentBalance": {
+                "rentBalance": 1.01,
+                "calculationDate": "04\/08\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -8.92
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:17 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 1.01,
+    "service_total": 0,
+    "tax_amount": 0.07,
+    "invoice_total": 1.08,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 1.01
+        },
+        "appointmentBalance": {
+            "rentBalance": 1.01,
+            "calculationDate": "04\/08\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -8.92
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:17 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "63",
+    "transaction_id": "132",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0.6200000000000001,
+        "total_collected": 10,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:38 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "credit",
+        "amount": -9,
+        "description": "Invoice Payment",
+        "rent_total": -8.37,
+        "service_total": 0,
+        "tax_amount": -0.55,
+        "invoice_total": -8.92,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -8.37
+            },
+            "appointmentBalance": {
+                "rentBalance": -8.37,
+                "calculationDate": "04\/08\/2025"
+            }
+        },
+        "payments": {
+            "cash": -9,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": -9,
+            "remaining_balance": 0.08000000000000007
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:38 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "credit",
+    "amount": -9,
+    "description": "Invoice Payment",
+    "rent_total": -8.37,
+    "service_total": 0,
+    "tax_amount": -0.55,
+    "invoice_total": -8.92,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -8.37
+        },
+        "appointmentBalance": {
+            "rentBalance": -8.37,
+            "calculationDate": "04\/08\/2025"
+        }
+    },
+    "payments": {
+        "cash": -9,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": -9,
+        "remaining_balance": 0.08000000000000007
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:38 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "64",
+    "transaction_id": null,
+    "breakdown": {
+        "services_collected": -9,
+        "services_tax_collected": -0.55,
+        "total_collected": -9,
+        "remaining_balance": 0.08000000000000007
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:47 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "credit",
+        "amount": -10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/08\/2025"
+            }
+        },
+        "payments": {
+            "cash": -10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": -10,
+            "remaining_balance": 10
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:47 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "credit",
+    "amount": -10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/08\/2025"
+        }
+    },
+    "payments": {
+        "cash": -10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": -10,
+        "remaining_balance": 10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:00:47 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "65",
+    "transaction_id": null,
+    "breakdown": {
+        "services_collected": -10,
+        "services_tax_collected": 0,
+        "total_collected": -10,
+        "remaining_balance": 10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:23:41 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [],
+        "payment_type": "cash",
+        "amount": 10,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 0,
+        "tax_amount": 0,
+        "invoice_total": 0,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": 0
+            },
+            "appointmentBalance": {
+                "rentBalance": 0,
+                "calculationDate": "04\/08\/2025"
+            }
+        },
+        "payments": {
+            "cash": 10,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 10,
+            "remaining_balance": -10
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:23:41 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [],
+    "payment_type": "cash",
+    "amount": 10,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 0,
+    "tax_amount": 0,
+    "invoice_total": 0,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": 0
+        },
+        "appointmentBalance": {
+            "rentBalance": 0,
+            "calculationDate": "04\/08\/2025"
+        }
+    },
+    "payments": {
+        "cash": 10,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 10,
+        "remaining_balance": -10
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:23:41 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "66",
+    "transaction_id": "133",
+    "breakdown": {
+        "services_collected": 0,
+        "services_tax_collected": 0.6199999999999992,
+        "total_collected": 10,
+        "remaining_balance": 0
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:54:19 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 17.28,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 25,
+        "tax_amount": 1.66,
+        "invoice_total": 26.66,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -9.38
+            },
+            "appointmentBalance": {
+                "rentBalance": -9.38,
+                "calculationDate": "04\/08\/2025"
+            }
+        },
+        "payments": {
+            "cash": 17.28,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 17.28,
+            "remaining_balance": -1.7763568394002505e-15
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:54:19 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 17.28,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 25,
+    "tax_amount": 1.66,
+    "invoice_total": 26.66,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -9.38
+        },
+        "appointmentBalance": {
+            "rentBalance": -9.38,
+            "calculationDate": "04\/08\/2025"
+        }
+    },
+    "payments": {
+        "cash": 17.28,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 17.28,
+        "remaining_balance": -1.7763568394002505e-15
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:54:19 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "67",
+    "transaction_id": "134",
+    "breakdown": {
+        "services_collected": 17.28,
+        "services_tax_collected": 0,
+        "total_collected": 17.28,
+        "remaining_balance": 9.379999999999999
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:56:46 ===
+Incoming Request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "method": "POST",
+    "data": {
+        "request_type": "create_invoice_with_payment",
+        "customer_id": 105,
+        "created_by": 1,
+        "location_id": 1,
+        "services": [
+            {
+                "id": "2",
+                "name": "Admin Fee",
+                "price": 25
+            }
+        ],
+        "payment_type": "cash",
+        "amount": 17.28,
+        "description": "Invoice Payment",
+        "rent_total": 0,
+        "service_total": 25,
+        "tax_amount": 1.66,
+        "invoice_total": 26.66,
+        "odometer_reading": null,
+        "notes": null,
+        "balance": {
+            "todayBalance": {
+                "rentBalance": -9.38
+            },
+            "appointmentBalance": {
+                "rentBalance": -9.38,
+                "calculationDate": "04\/08\/2025"
+            }
+        },
+        "payments": {
+            "cash": 17.28,
+            "credit": 0,
+            "check": 0,
+            "other": 0,
+            "total_collected": 17.28,
+            "remaining_balance": -1.7763568394002505e-15
+        }
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:56:46 ===
+Validating create_invoice_with_payment request
+Data: {
+    "request_type": "create_invoice_with_payment",
+    "customer_id": 105,
+    "created_by": 1,
+    "location_id": 1,
+    "services": [
+        {
+            "id": "2",
+            "name": "Admin Fee",
+            "price": 25
+        }
+    ],
+    "payment_type": "cash",
+    "amount": 17.28,
+    "description": "Invoice Payment",
+    "rent_total": 0,
+    "service_total": 25,
+    "tax_amount": 1.66,
+    "invoice_total": 26.66,
+    "odometer_reading": null,
+    "notes": null,
+    "balance": {
+        "todayBalance": {
+            "rentBalance": -9.38
+        },
+        "appointmentBalance": {
+            "rentBalance": -9.38,
+            "calculationDate": "04\/08\/2025"
+        }
+    },
+    "payments": {
+        "cash": 17.28,
+        "credit": 0,
+        "check": 0,
+        "other": 0,
+        "total_collected": 17.28,
+        "remaining_balance": -1.7763568394002505e-15
+    }
+}
+===================================
+
+=== Payment API Log - 2025-04-07 20:56:46 ===
+create_invoice_with_payment result
+Data: {
+    "success": true,
+    "message": "Invoice created with payment successfully",
+    "invoice_id": "68",
+    "transaction_id": "135",
+    "breakdown": {
+        "services_collected": 17.28,
+        "services_tax_collected": 0,
+        "total_collected": 17.28,
+        "remaining_balance": 9.379999999999999
+    }
+}
+===================================
