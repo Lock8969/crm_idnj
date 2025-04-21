@@ -1,3 +1,29 @@
+# Log files
 *.log
+*.txt
 authorize_log.txt
+balance_calc_log.txt
+payment_service_log.txt
+payment_api_log.txt
+appointment_api_log.txt
+appointment_service_log.txt
+payment_invoice_log.txt
+webhooks.log
+receipt_data.txt
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
 
