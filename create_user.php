@@ -13,6 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
+    $full_name = trim($_POST['full_name']);
+    $role = 'Sales Rep';
 
     error_log("Form data received: username=$username, email=$email");
 
@@ -57,29 +59,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
-// Insert the new user
-$stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, role) VALUES (:username, :email, :password_hash, 'Sales Rep')");
-$stmt->execute([
-    'username' => $username,
-    'email' => $email,
-    'password_hash' => $password_hash
-]);
+        // First, delete the existing user if it exists
+        $stmt = $pdo->prepare("DELETE FROM users WHERE username = :username");
+        $stmt->execute(['username' => $username]);
 
-error_log("User created successfully: $username");
+        // Insert the new user
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, full_name, role) VALUES (:username, :email, :password_hash, :full_name, :role)");
+        $result = $stmt->execute([
+            'username' => $username,
+            'email' => $email,
+            'password_hash' => $password_hash,
+            'full_name' => $full_name,
+            'role' => $role
+        ]);
 
-// Set success flag without HTML in the URL parameter
-header("Location: /sign-up.php?success=true");
-exit;
-} catch (PDOException $e) {
-error_log("Database error: " . $e->getMessage());
-
-$error = "An error occurred: " . $e->getMessage();
-header("Location: /sign-up.php?error=" . urlencode($error));
-exit;
-}
+        if ($result) {
+            error_log("User created successfully: $username");
+            // Set success flag without HTML in the URL parameter
+            header("Location: /sign-up.php?success=true");
+            exit;
+        } else {
+            error_log("Error creating user");
+            $error = "An error occurred: Unable to create user.";
+            header("Location: /sign-up.php?error=" . urlencode($error));
+            exit;
+        }
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        $error = "An error occurred: " . $e->getMessage();
+        header("Location: /sign-up.php?error=" . urlencode($error));
+        exit;
+    }
 } else {
-error_log("No POST data received");
-header("Location: /sign-up.php");
-exit;
+    error_log("No POST data received");
+    header("Location: /sign-up.php");
+    exit;
 }
 ?>

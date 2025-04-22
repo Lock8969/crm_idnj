@@ -29,13 +29,48 @@ require_once 'PaymentService.php';
 function logPaymentApi($message, $data = null) {
     $logFile = 'payment_api_log.txt';
     $timestamp = date('Y-m-d H:i:s');
-    $logMessage = "\n=== Payment API Log - {$timestamp} ===\n";
-    $logMessage .= $message . "\n";
-    if ($data !== null) {
-        $logMessage .= "Data: " . json_encode($data, JSON_PRETTY_PRINT) . "\n";
-    }
-    $logMessage .= "===================================\n";
-    file_put_contents($logFile, $logMessage, FILE_APPEND);
+    
+    // Create the log message with clear markers
+    $logMessage = "\n" . str_repeat("=", 80) . "\n";
+    $logMessage .= "BEGIN PAYMENT API LOG - $timestamp\n";
+    $logMessage .= str_repeat("=", 80) . "\n";
+    $logMessage .= "SOURCE: Frontend (invoice_appointment_modal.php)\n";
+    $logMessage .= "RECEIVED DATA (JSON):\n";
+    
+    // Ensure we log all data fields, including payments
+    $logData = [
+        'request_type' => $data['request_type'] ?? 'N/A',
+        'method' => $_SERVER['REQUEST_METHOD'],
+        'customer_id' => $data['customer_id'] ?? 'N/A',
+        'created_by' => $data['created_by'] ?? 'N/A',
+        'location_id' => $data['location_id'] ?? 'N/A',
+        'payment_type' => $data['payment_type'] ?? 'N/A',
+        'amount' => $data['amount'] ?? 0,
+        'services' => array_map(function($service) {
+            return [
+                'service_id' => $service['service_id'] ?? 'N/A',
+                'name' => $service['name'] ?? 'N/A',
+                'price' => $service['price'] ?? 0
+            ];
+        }, $data['services'] ?? []),
+        'payments' => $data['payments'] ?? [],
+        'rent_total' => $data['rent_total'] ?? 0,
+        'service_total' => $data['service_total'] ?? 0,
+        'sub_total' => $data['sub_total'] ?? 0,
+        'tax_amount' => $data['tax_amount'] ?? 0,
+        'invoice_total' => $data['invoice_total'] ?? 0,
+        'total_collected' => $data['total_collected'] ?? 0,
+        'remaining_balance' => $data['remaining_balance'] ?? 0
+    ];
+    
+    $logMessage .= json_encode($logData, JSON_PRETTY_PRINT) . "\n";
+    $logMessage .= str_repeat("=", 80) . "\n";
+    $logMessage .= "END PAYMENT API LOG\n";
+    $logMessage .= str_repeat("=", 80) . "\n";
+    
+    // Get existing content and prepend new log
+    $existingContent = file_exists($logFile) ? file_get_contents($logFile) : '';
+    file_put_contents($logFile, $logMessage . $existingContent);
 }
 
 header('Content-Type: application/json');
@@ -55,13 +90,6 @@ $data = json_decode(file_get_contents('php://input'), true);
 if (!$data) {
     $data = $_POST;
 }
-
-// Log incoming request
-logPaymentApi("Incoming Request", [
-    'request_type' => $data['request_type'] ?? 'unknown',
-    'method' => $_SERVER['REQUEST_METHOD'],
-    'data' => $data
-]);
 
 // Check for request type
 $requestType = $data['request_type'] ?? '';
@@ -207,11 +235,9 @@ try {
                 'created_by' => 'Created By',
                 'location_id' => 'Location ID',
                 'payment_type' => 'Payment Type',
-                'amount' => 'Amount'
+                'amount' => 'Amount',
+                'payments' => 'Payments Object'
             ];
-
-            // Log validation attempt
-            logPaymentApi("Validating create_invoice_with_payment request", $data);
 
             // Validate required fields
             foreach ($requiredFields as $field => $label) {
@@ -220,6 +246,13 @@ try {
                     logPaymentApi("Validation failed", ["error" => $error, "field" => $field]);
                     throw new Exception($error);
                 }
+            }
+
+            // Validate payments object structure
+            if (!is_array($data['payments']) || empty($data['payments'])) {
+                $error = "Payments object must be a non-empty array";
+                logPaymentApi("Validation failed", ["error" => $error, "payments" => $data['payments']]);
+                throw new Exception($error);
             }
 
             // If it's a credit card payment, validate card data
@@ -234,11 +267,28 @@ try {
                 $data['services'] = [];
             }
 
+            // Log the complete request data
+            logPaymentApi("Invoice Payment Request", [
+                'request_type' => $data['request_type'] ?? 'unknown',
+                'method' => $_SERVER['REQUEST_METHOD'],
+                'customer_id' => $data['customer_id'] ?? 'N/A',
+                'created_by' => $data['created_by'] ?? 'N/A',
+                'location_id' => $data['location_id'] ?? 'N/A',
+                'payment_type' => $data['payment_type'] ?? 'N/A',
+                'amount' => $data['amount'] ?? 0,
+                'services' => $data['services'] ?? [],
+                'payments' => $data['payments'] ?? [],
+                'rent_total' => $data['rent_total'] ?? 0,
+                'service_total' => $data['service_total'] ?? 0,
+                'sub_total' => $data['sub_total'] ?? 0,
+                'tax_amount' => $data['tax_amount'] ?? 0,
+                'invoice_total' => $data['invoice_total'] ?? 0,
+                'total_collected' => $data['total_collected'] ?? 0,
+                'remaining_balance' => $data['remaining_balance'] ?? 0
+            ]);
+
             // Create invoice with payment
             $result = $paymentService->createInvoiceWithPayment($data);
-            
-            // Log the result
-            logPaymentApi("create_invoice_with_payment result", $result);
             
             echo json_encode(['success' => $result['success'], 'data' => $result]);
             break;

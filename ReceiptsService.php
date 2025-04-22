@@ -51,33 +51,57 @@ class ReceiptsService {
     // @return: Array of receipt data including associated services
     public function getClientReceipts($clientId) {
         try {
-            //------------------------
-            // NOTES: SQL Query Construction
-            //------------------------
-            // Modified query to include created_by and location_id
+            // Add debug logging
+            error_log("Fetching receipts for client ID: " . $clientId);
+            
+            // First check if there are any invoices for this client
+            $check_query = "SELECT COUNT(*) as count FROM invoices WHERE customer_id = :client_id";
+            $check_stmt = $this->pdo->prepare($check_query);
+            $check_stmt->execute(['client_id' => $clientId]);
+            $invoice_count = $check_stmt->fetch()['count'];
+            error_log("Direct invoice count for client " . $clientId . ": " . $invoice_count);
+
+            // Log the actual query being executed
             $query = "
                 SELECT 
                     i.id,
                     i.created_at,
                     i.status,
                     i.total_amount,
-                    i.rent_collected,
-                    i.services_collected,
-                    i.tax_collected,
+                    i.rent_total as rent_collected,
+                    i.service_total as services_collected,
+                    i.tax_amount as tax_collected,
                     i.created_by,
                     i.location_id,
-                    GROUP_CONCAT(DISTINCT s.name ORDER BY s.name ASC) as service_names
+                    COALESCE(
+                        (SELECT GROUP_CONCAT(DISTINCT s.name ORDER BY s.name ASC)
+                         FROM invoice_services isv
+                         JOIN services s ON isv.service_id = s.id
+                         WHERE isv.invoice_id = i.id),
+                        'None'
+                    ) as service_names
                 FROM invoices i
-                LEFT JOIN invoice_services isv ON i.id = isv.invoice_id
-                LEFT JOIN services s ON isv.service_id = s.id
                 WHERE i.customer_id = :client_id
-                GROUP BY i.id
                 ORDER BY i.created_at DESC
             ";
+            
+            error_log("Executing query: " . $query);
+            error_log("With parameters: client_id = " . $clientId);
 
             $stmt = $this->pdo->prepare($query);
             $stmt->execute(['client_id' => $clientId]);
-            $receipts = $stmt->fetchAll();
+            
+            // Check for errors
+            $error = $stmt->errorInfo();
+            if ($error[0] !== '00000') {
+                error_log("SQL Error: " . print_r($error, true));
+            }
+            
+            $receipts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Log the raw results
+            error_log("Raw query results: " . print_r($receipts, true));
+            error_log("Number of receipts found: " . count($receipts));
 
             //------------------------
             // NOTES: Service Abbreviation Processing

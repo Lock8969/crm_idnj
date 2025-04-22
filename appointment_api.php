@@ -30,6 +30,17 @@ require_once 'auth_check.php';
 include 'db.php';
 require_once 'AppointmentService.php';
 
+// Add initial logging
+$logFile = 'appointment_api_log.txt';
+$timestamp = date('Y-m-d H:i:s');
+$logMessage = "\n" . str_repeat("=", 80) . "\n";
+$logMessage .= "APPOINTMENT API ENTRY - $timestamp\n";
+$logMessage .= str_repeat("=", 80) . "\n";
+$logMessage .= "Request Method: " . $_SERVER['REQUEST_METHOD'] . "\n";
+$logMessage .= "Request URI: " . $_SERVER['REQUEST_URI'] . "\n";
+$existingContent = file_exists($logFile) ? file_get_contents($logFile) : '';
+file_put_contents($logFile, $logMessage . $existingContent);
+
 header('Content-Type: application/json');
 
 // Create appointment service
@@ -43,8 +54,8 @@ try {
         case 'GET':
             // Get appointment(s)
             if (isset($_GET['id'])) {
-                // Get specific appointment
-                $appointment = $appointmentService->getAppointment($_GET['id']);
+                // Get specific appointment with all details
+                $appointment = $appointmentService->getAppointmentDetails($_GET['id']);
                 if (!$appointment) {
                     http_response_code(404);
                     echo json_encode(['success' => false, 'message' => 'Appointment not found']);
@@ -75,21 +86,16 @@ try {
                 $data = $_POST; // Try form data if JSON fails
             }
             
-            // Log the received data
-            $logFile = 'appointment_api_log.txt';
-            $timestamp = date('Y-m-d H:i:s');
-            $logMessage = "\n\n=== Appointment API Request ===\n";
-            $logMessage .= "Time: " . $timestamp . "\n";
-            $logMessage .= "Data received:\n";
+            // Log received data
+            $logMessage = "\n" . str_repeat("-", 80) . "\n";
+            $logMessage .= "RECEIVED DATA - $timestamp\n";
+            $logMessage .= str_repeat("-", 80) . "\n";
+            $logMessage .= "Raw Input: " . file_get_contents('php://input') . "\n";
+            $logMessage .= "Decoded Data:\n";
             foreach ($data as $key => $value) {
-                $logMessage .= "- $key: " . ($value === null ? 'null' : $value) . "\n";
+                $logMessage .= "$key: " . (is_array($value) ? json_encode($value) : $value) . "\n";
             }
-            $logMessage .= "===========================\n";
-            
-            // Read existing content
             $existingContent = file_exists($logFile) ? file_get_contents($logFile) : '';
-            
-            // Prepend new content
             file_put_contents($logFile, $logMessage . $existingContent);
             
             // Validate required fields

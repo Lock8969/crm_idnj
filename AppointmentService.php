@@ -80,8 +80,54 @@
 class AppointmentService {
     private $pdo;
     
+    //------------------------
+    // NOTES: Service Abbreviations
+    //------------------------
+    // Mapping of full service names to their abbreviations
+    private $serviceAbbreviations = [
+        'Final Download' => 'FD',
+        'Final_download' => 'FD',
+        'Admin Fee' => 'AF',
+        'Recalibration' => 'RC',
+        'Monitoring Check' => 'MC',
+        'Install' => 'I',
+        'Removal' => 'Rem',
+        'VIO Reset' => 'VR',
+        'Change Vehicle - tier 1' => 'CV1',
+        'Change Vehicle - tier 2' => 'CV2',
+        'Change Vehicle - tier 3' => 'CV3',
+        'Mouth piece 2 pack' => 'MP2',
+        'Unlock Code' => 'UC',
+        'Certification fee' => 'Cert'
+    ];
+    
     public function __construct($pdo) {
         $this->pdo = $pdo;
+        
+        // Log constructor call
+        $logFile = 'appointment_service_log.txt';
+        $timestamp = date('Y-m-d H:i:s');
+        $logMessage = "\n" . str_repeat("=", 80) . "\n";
+        $logMessage .= "APPOINTMENT SERVICE CONSTRUCTOR CALLED - $timestamp\n";
+        $logMessage .= str_repeat("=", 80) . "\n";
+        $logMessage .= "PDO Connection Status: " . ($pdo ? "Connected" : "Not Connected") . "\n";
+        $existingContent = file_exists($logFile) ? file_get_contents($logFile) : '';
+        file_put_contents($logFile, $logMessage . $existingContent);
+    }
+    
+    //-------------------------------------------------------------------
+    // Add logging functionality
+    //-------------------------------------------------------------------
+    private function logAppointmentServiceAction($logMessage) {
+        $logFile = 'appointment_service_log.txt';
+        $existingContent = file_exists($logFile) ? file_get_contents($logFile) : '';
+        $timestamp = date('Y-m-d H:i:s');
+        $newLogEntry = "\n" . str_repeat("=", 80) . "\n";
+        $newLogEntry .= "APPOINTMENT SERVICE LOG - $timestamp\n";
+        $newLogEntry .= str_repeat("=", 80) . "\n";
+        $newLogEntry .= $logMessage . "\n";
+        $newLogEntry .= str_repeat("=", 80) . "\n";
+        file_put_contents($logFile, $newLogEntry . $existingContent);
     }
     
     /**
@@ -96,6 +142,31 @@ class AppointmentService {
      */
     public function createAppointment($data) {
         try {
+            //-------------------------------------------------------------------
+            // Log incoming data
+            //-------------------------------------------------------------------
+            $this->logAppointmentServiceAction(
+                "INCOMING REQUEST DATA:\n" .
+                "Request Type: create_appointment\n" .
+                "Customer ID: " . $data['customer_id'] . "\n" .
+                "Created By: " . ($_SESSION['user_id'] ?? 'N/A') . "\n" .
+                "Location ID: " . $data['location_id'] . "\n" .
+                "Appointment Type: " . $data['appointment_type'] . "\n" .
+                "Start Time: " . $data['start_time'] . "\n" .
+                "Service Note: " . ($data['service_note'] ?? 'N/A') . "\n" .
+                "Status: " . ($data['status'] ?? 'scheduled') . "\n"
+            );
+
+            // Ensure start_time has seconds
+            if (strlen($data['start_time']) === 16) { // Format: YYYY-MM-DD HH:MM
+                $data['start_time'] .= ':00'; // Add seconds
+            }
+
+            // Convert browser time to UTC
+            $browserTime = new DateTime($data['start_time'], new DateTimeZone('America/New_York')); // Assuming browser is in ET
+            $browserTime->setTimezone(new DateTimeZone('UTC'));
+            $data['start_time'] = $browserTime->format('Y-m-d H:i:s');
+
             // Duration map for calculating end time (in minutes)
             $durationMap = [
                 'install90' => 89,
@@ -125,6 +196,15 @@ class AppointmentService {
                 'other45' => 'Other',
                 'other60' => 'Other'
             ];
+
+            //-------------------------------------------------------------------
+            // Log duration calculation
+            //-------------------------------------------------------------------
+            $this->logAppointmentServiceAction(
+                "CALCULATED DURATION:\n" .
+                "Appointment Type: " . $data['appointment_type'] . "\n" .
+                "Duration: " . $durationMap[$data['appointment_type']] . " minutes\n"
+            );
 
             // Validate required fields
             $requiredFields = ['start_time', 'location_id', 'title', 'appointment_type', 'customer_id'];
@@ -191,16 +271,45 @@ class AppointmentService {
             
             $appointmentId = $this->pdo->lastInsertId();
             
+            //-------------------------------------------------------------------
+            // Log successful creation
+            //-------------------------------------------------------------------
+            $this->logAppointmentServiceAction(
+                "DATABASE OPERATION:\n" .
+                "Table: appointments\n" .
+                "Action: INSERT\n" .
+                "Status: Success\n" .
+                "Appointment ID: " . $appointmentId . "\n"
+            );
+            
             // If this is an installation appointment, update client status
             if ($actualType === 'Install') {
                 $updateSql = "UPDATE client_information SET status = 'Scheduled' WHERE id = :customer_id";
                 $updateStmt = $this->pdo->prepare($updateSql);
                 $updateStmt->execute(['customer_id' => $data['customer_id']]);
+                
+                //-------------------------------------------------------------------
+                // Log client status update
+                //-------------------------------------------------------------------
+                $this->logAppointmentServiceAction(
+                    "CLIENT STATUS UPDATE:\n" .
+                    "Customer ID: " . $data['customer_id'] . "\n" .
+                    "New Status: Scheduled\n"
+                );
             }
             
             return $appointmentId;
             
         } catch (PDOException $e) {
+            //-------------------------------------------------------------------
+            // Log error
+            //-------------------------------------------------------------------
+            $this->logAppointmentServiceAction(
+                "ERROR OCCURRED:\n" .
+                "Error Message: " . $e->getMessage() . "\n" .
+                "Stack Trace:\n" . $e->getTraceAsString() . "\n"
+            );
+            
             throw new Exception("Error creating appointment: " . $e->getMessage());
         }
     }
@@ -222,6 +331,44 @@ class AppointmentService {
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Error getting appointment: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * =============================================
+     * GET APPOINTMENT DETAILS
+     * =============================================
+     * Retrieves complete appointment details including related data
+     * from locations, users, and other associated tables
+     * 
+     * @param int $id Appointment ID
+     * @return array|null Complete appointment details or null if not found
+     * =============================================
+     */
+    public function getAppointmentDetails($id) {
+        try {
+            $query = "
+                SELECT 
+                    a.*,
+                    l.location_name,
+                    l.nick_name as location_nick_name,
+                    l.location_type,
+                    l.address,
+                    l.city,
+                    l.state,
+                    l.zip,
+                    u.full_name as technician_name
+                FROM appointments a
+                LEFT JOIN locations l ON a.location_id = l.id
+                LEFT JOIN users u ON a.created_by = u.id
+                WHERE a.id = ?
+            ";
+            
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Error getting appointment details: " . $e->getMessage());
         }
     }
     
@@ -275,47 +422,111 @@ class AppointmentService {
      * =============================================
      * UPDATE APPOINTMENT
      * =============================================
-     * Updates an existing appointment's details
+     * Updates an existing appointment's details and tracks the change in history
      * 
      * @param int $id Appointment ID
-     * @param array $data Updated appointment data
-     * @param int $userId User making the update
+     * @param array $data {
+     *     @type int $user_id User making the update
+     *     @type int $location_id New location ID
+     *     @type string $appointment_type Type of appointment
+     *     @type string $date Appointment date (Y-m-d)
+     *     @type string $time Appointment time (H:i)
+     * }
+     * @return array Response with success status and message
      * =============================================
      */
-    public function updateAppointment($id, $data, $userId) {
+    public function updateAppointment($id, $data) {
         try {
-            $sql = "UPDATE appointments SET 
-                customer_id = :customer_id,
-                title = :title,
-                appointment_type = :appointment_type,
-                start_time = :start_time,
-                end_time = :end_time,
-                location_id = :location_id,
-                status = :status,
-                service_note = :service_note,
-                description = :description,
-                updated_by = :updated_by,
-                updated_at = NOW()
-                WHERE id = :id";
-            
-            $stmt = $this->pdo->prepare($sql);
-            
-            $stmt->execute([
-                ':id' => $id,
-                ':customer_id' => $data['customer_id'],
-                ':title' => $data['title'],
-                ':appointment_type' => $data['appointment_type'],
-                ':start_time' => $data['start_time'],
-                ':end_time' => $data['end_time'],
-                ':location_id' => $data['location_id'],
-                ':status' => $data['status'] ?? 'scheduled',
-                ':service_note' => $data['service_note'] ?? null,
-                ':description' => $data['description'] ?? null,
-                ':updated_by' => $userId
-            ]);
-            
-        } catch (PDOException $e) {
-            throw new Exception("Error updating appointment: " . $e->getMessage());
+            // Validate required parameters
+            if (!isset($data['user_id']) || !isset($data['location_id']) || 
+                !isset($data['appointment_type']) || !isset($data['date']) || 
+                !isset($data['time'])) {
+                throw new Exception("Missing required parameters");
+            }
+
+            // Get current appointment data
+            $current_appointment = $this->getAppointment($id);
+            if (!$current_appointment) {
+                throw new Exception("Appointment not found");
+            }
+
+            // Start transaction
+            $this->pdo->beginTransaction();
+
+            try {
+                // Insert into appointment_history
+                $history_stmt = $this->pdo->prepare("
+                    INSERT INTO appointment_history (
+                        appointment_id, previous_start, previous_end, 
+                        previous_status, previous_location_id, 
+                        changed_by_user_id, reason
+                    ) VALUES (
+                        :appointment_id, :previous_start, :previous_end,
+                        :previous_status, :previous_location_id,
+                        :changed_by_user_id, :reason
+                    )
+                ");
+
+                $history_stmt->execute([
+                    'appointment_id' => $id,
+                    'previous_start' => $current_appointment['start_time'],
+                    'previous_end' => $current_appointment['end_time'],
+                    'previous_status' => $current_appointment['status'],
+                    'previous_location_id' => $current_appointment['location_id'],
+                    'changed_by_user_id' => $data['user_id'],
+                    'reason' => 'Appointment updated via edit form'
+                ]);
+
+                // Calculate duration based on appointment type
+                $duration = 30; // Default 30 minutes
+                if ($data['appointment_type'] === 'Recalibration' || 
+                    $data['appointment_type'] === 'Final_download' || 
+                    $data['appointment_type'] === 'Paper_Swap') {
+                    $duration = 15;
+                }
+
+                // Create datetime strings
+                $start_time = $data['date'] . ' ' . $data['time'];
+                $end_time = date('Y-m-d H:i:s', strtotime($start_time . " +{$duration} minutes"));
+
+                // Update appointment
+                $update_stmt = $this->pdo->prepare("
+                    UPDATE appointments 
+                    SET start_time = :start_time,
+                        end_time = :end_time,
+                        location_id = :location_id,
+                        appointment_type = :appointment_type,
+                        updated_at = NOW()
+                    WHERE id = :id
+                ");
+
+                $update_stmt->execute([
+                    'id' => $id,
+                    'start_time' => $start_time,
+                    'end_time' => $end_time,
+                    'location_id' => $data['location_id'],
+                    'appointment_type' => $data['appointment_type']
+                ]);
+
+                // Commit transaction
+                $this->pdo->commit();
+
+                return [
+                    'success' => true,
+                    'message' => 'Appointment updated successfully'
+                ];
+
+            } catch (Exception $e) {
+                // Rollback transaction on error
+                $this->pdo->rollBack();
+                throw $e;
+            }
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
         }
     }
     
@@ -435,6 +646,160 @@ class AppointmentService {
             
         } catch (PDOException $e) {
             throw new Exception("Error getting available time slots: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * =============================================
+     * GET CLIENT APPOINTMENTS
+     * =============================================
+     * Retrieves all appointments for a specific client
+     * Includes both past and future appointments
+     * 
+     * @param int $clientId The ID of the client
+     * @return array Array of appointment data
+     * =============================================
+     */
+    public function getClientAppointments($clientId) {
+        try {
+            // Validate client ID
+            if (!is_numeric($clientId) || $clientId <= 0) {
+                throw new Exception("Invalid client ID provided");
+            }
+
+            // Verify client exists
+            $stmt = $this->pdo->prepare("SELECT id FROM client_information WHERE id = ?");
+            $stmt->execute([$clientId]);
+            if (!$stmt->fetch()) {
+                throw new Exception("Client not found");
+            }
+
+            // Log the request
+            $this->logAppointmentServiceAction(
+                "Fetching appointments for client ID: " . $clientId
+            );
+
+            // Query to get all appointments for the client
+            $query = "
+                SELECT 
+                    a.id,
+                    a.title,
+                    a.appointment_type,
+                    a.start_time,
+                    a.end_time,
+                    a.status,
+                    a.service_note,
+                    a.description,
+                    a.created_by,
+                    a.created_at,
+                    l.location_name,
+                    u.full_name as technician_name,
+                    FALSE as is_historical,
+                    NULL as update_reason
+                FROM appointments a
+                LEFT JOIN locations l ON a.location_id = l.id
+                LEFT JOIN users u ON a.created_by = u.id
+                WHERE a.customer_id = ?
+                
+                UNION ALL
+                
+                SELECT 
+                    ah.appointment_id as id,
+                    a.title,
+                    a.appointment_type,
+                    ah.previous_start as start_time,
+                    ah.previous_end as end_time,
+                    ah.previous_status as status,
+                    a.service_note,
+                    a.description,
+                    a.created_by,
+                    a.created_at,
+                    l.location_name,
+                    u.full_name as technician_name,
+                    TRUE as is_historical,
+                    ah.reason as update_reason
+                FROM appointment_history ah
+                JOIN appointments a ON ah.appointment_id = a.id
+                LEFT JOIN locations l ON ah.previous_location_id = l.id
+                LEFT JOIN users u ON ah.changed_by_user_id = u.id
+                WHERE a.customer_id = ?
+                
+                ORDER BY start_time DESC
+            ";
+
+            error_log("Executing query for client ID: " . $clientId);
+            error_log("Query: " . $query);
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$clientId, $clientId]);
+            
+            $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Raw appointments data: " . print_r($appointments, true));
+
+            if (empty($appointments)) {
+                error_log("No appointments found for client ID: " . $clientId);
+                return [];
+            }
+
+            // Process each appointment to add additional information
+            foreach ($appointments as &$appointment) {
+                // Format dates separately
+                $appointment['date_formatted'] = date('m/d/Y', strtotime($appointment['start_time']));
+                $appointment['time_formatted'] = date('g:i A', strtotime($appointment['start_time']));
+                
+                // Calculate duration
+                $start = new DateTime($appointment['start_time']);
+                $end = new DateTime($appointment['end_time']);
+                $interval = $start->diff($end);
+                $appointment['duration'] = $interval->format('%h hours %i minutes');
+                
+                // Get technician initials
+                if (!empty($appointment['technician_name'])) {
+                    $words = explode(' ', $appointment['technician_name']);
+                    $initials = '';
+                    foreach ($words as $word) {
+                        $initials .= strtoupper(substr($word, 0, 1));
+                    }
+                    $appointment['technician_initials'] = $initials;
+                } else {
+                    $appointment['technician_initials'] = 'Unknown';
+                }
+                
+                // Abbreviate appointment type
+                $appointmentType = trim($appointment['appointment_type']);
+                $found = false;
+                foreach ($this->serviceAbbreviations as $fullName => $abbr) {
+                    if (strcasecmp($appointmentType, $fullName) === 0) {
+                        $appointment['appointment_type'] = $abbr;
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $appointment['appointment_type'] = $appointmentType;
+                }
+                
+                // Determine if appointment is upcoming or past
+                $now = new DateTime();
+                $appointmentTime = new DateTime($appointment['start_time']);
+                // If it's a historical appointment, always mark it as past
+                $appointment['is_upcoming'] = $appointment['is_historical'] ? false : ($appointmentTime > $now);
+            }
+
+            error_log("Processed appointments data: " . print_r($appointments, true));
+            return $appointments;
+        } catch (PDOException $e) {
+            $this->logAppointmentServiceAction(
+                "Error fetching client appointments: " . $e->getMessage()
+            );
+            error_log("PDO Error: " . $e->getMessage());
+            throw new Exception("Error fetching client appointments: " . $e->getMessage());
+        } catch (Exception $e) {
+            $this->logAppointmentServiceAction(
+                "Error in getClientAppointments: " . $e->getMessage()
+            );
+            error_log("Error in getClientAppointments: " . $e->getMessage());
+            throw $e;
         }
     }
 }

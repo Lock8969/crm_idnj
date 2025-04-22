@@ -59,8 +59,6 @@ try {
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href="/dashui/assets/css/theme.min.css">
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="/dashui/assets/css/custom.css">
 
     <title>Client Detail | IDNJ</title>
     
@@ -170,6 +168,22 @@ $(document).ready(function(){
                     </div>
                 </div>
 
+                <!-- Appointments Card Row -->
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <?php 
+                        error_log("Including appointments_card.php");
+                        if (file_exists('appointments_card.php')) {
+                            include 'appointments_card.php';
+                            error_log("Successfully included appointments_card.php");
+                        } else {
+                            error_log("appointments_card.php file not found");
+                            echo "<div class='alert alert-danger'>Appointments card file not found</div>";
+                        }
+                        ?>
+                    </div>
+                </div>
+
                 <!-- Footer -->
                 <?php include 'footer.php'; ?>
             </div>
@@ -218,4 +232,6 @@ function toggleDeviceEditMode() {
     }
 }
 </script>
+
+
 

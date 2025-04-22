@@ -5,7 +5,7 @@
 // Includes the ReceiptsService class that handles data operations
 require_once 'ReceiptsService.php';
 require_once 'balance_calculator.php';
-require_once 'invoice_flow_modals.php';
+require_once 'invoice_appointment_modal.php';
 
 //------------------------
 // NOTES: Variable Validation
@@ -51,6 +51,9 @@ $receiptsService = new ReceiptsService($pdo);
 // Gets all receipts for the current client using the service
 $receipts = $receiptsService->getClientReceipts($client_id);
 
+// Add debug output
+error_log("Receipts data in receipts_card.php: " . print_r($receipts, true));
+
 //------------------------
 // NOTES: Debug Logging
 //------------------------
@@ -61,11 +64,17 @@ echo "<script>
     " . (!empty($receipts) ? "console.log('First receipt:', " . json_encode($receipts[0]) . ");" : "") . "
 </script>";
 
+// Add debug output to the page
+echo "<!-- Debug Output -->
+<div style='display:none;'>
+    <pre>" . print_r($receipts, true) . "</pre>
+</div>";
+
 //------------------------
 // NOTES: Render Invoice Modal
 //------------------------
 // Render the invoice modal for this client
-renderInvoiceModal($client, $pdo);
+renderNextAppointmentModal($client, $pdo);
 ?>
 
 <!-- ------------------------

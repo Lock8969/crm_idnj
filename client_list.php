@@ -67,6 +67,7 @@ try {
     $total_pages = 1;
 }
 
+
 // Create pagination URL
 function get_pagination_url($page, $search) {
     $url = '?';
@@ -196,12 +197,15 @@ function get_pagination_url($page, $search) {
 </div>
 
 <?php
-// Include the invoice flow modals
-include_once 'invoice_flow_modals.php';
+// ✅ Include modals now that $clients is safely defined
+include_once 'invoice_appointment_modal.php';
+include_once 'invoice_modal.php';
+
 
 // Render the next appointment modal for each client
 foreach ($clients as $client) {
     renderNextAppointmentModal($client, $pdo);
+    
 }
 ?>
 

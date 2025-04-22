@@ -1,62 +1,49 @@
 <?php
-/**
- * =============================================
- * EDIT APPOINTMENT MODAL
- * =============================================
- * 
- * This file handles the edit appointment modal
- * and pre-fills it with the selected appointment's data.
- */
+require_once 'auth_check.php';
+include 'db.php';
 
-// =============================================
-// REQUIRED FILES
-// =============================================
-include_once 'get_locations.php';
+// Get the appointment ID from the URL
+$appointment_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// =============================================
-// GET APPOINTMENT DATA
-// =============================================
-if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
+// Log the appointment ID
+error_log("Edit Appointment - Appointment ID: " . $appointment_id);
+echo "<script>console.log('Edit Appointment - ID from URL:', " . $appointment_id . ");</script>";
+
+if (!$appointment_id) {
     die("Invalid appointment ID");
 }
 
-$appointment_id = $_GET['id'];
-
 try {
     // Get appointment details
-    $query = "SELECT a.*, l.location_name, u.full_name as technician_name 
-              FROM appointments a 
-              LEFT JOIN locations l ON a.location_id = l.id 
-              LEFT JOIN users u ON a.created_by = u.id 
-              WHERE a.id = ?";
-    
-    $stmt = $pdo->prepare($query);
+    $stmt = $pdo->prepare("SELECT * FROM appointments WHERE id = ?");
     $stmt->execute([$appointment_id]);
-    $appointment = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+    $appointment = $stmt->fetch();
+
     if (!$appointment) {
         die("Appointment not found");
     }
-    
-    // Get client details
-    $client_query = "SELECT * FROM client_information WHERE id = ?";
-    $client_stmt = $pdo->prepare($client_query);
-    $client_stmt->execute([$appointment['customer_id']]);
-    $client = $client_stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$client) {
-        die("Client not found");
-    }
-    
-    // Get client inventory
-    $inventory_query = "SELECT * FROM vehicle_information WHERE customer_id = ?";
-    $inventory_stmt = $pdo->prepare($inventory_query);
-    $inventory_stmt->execute([$appointment['customer_id']]);
-    $inventory = $inventory_stmt->fetch(PDO::FETCH_ASSOC);
-    
+
+    // Log the appointment details
+    error_log("Edit Appointment - Appointment Details: " . print_r($appointment, true));
+    echo "<script>console.log('Edit Appointment - Appointment Details:', " . json_encode($appointment) . ");</script>";
+
+    // Get client information
+    $stmt = $pdo->prepare("SELECT * FROM client_information WHERE id = ?");
+    $stmt->execute([$appointment['customer_id']]);
+    $client = $stmt->fetch();
+
+    // Get inventory information
+    $stmt = $pdo->prepare("SELECT * FROM vehicle_information WHERE customer_id = ?");
+    $stmt->execute([$appointment['customer_id']]);
+    $inventory = $stmt->fetch();
+
+    // Get locations for dropdown
+    $stmt = $pdo->query("SELECT id, location_name FROM locations ORDER BY location_name");
+    $locations = $stmt->fetchAll();
+
 } catch (PDOException $e) {
-    error_log("Error fetching appointment data: " . $e->getMessage());
-    die("Error fetching appointment data");
+    error_log("Database error: " . $e->getMessage());
+    die("An error occurred while fetching data");
 }
 ?>
 
@@ -64,9 +51,6 @@ try {
 <!-- Edit Appointment Modal -->
 <!-- ============================================= -->
 <div class="modal fade" id="editAppointmentModal<?php echo htmlspecialchars($appointment_id); ?>" tabindex="-1" aria-labelledby="editAppointmentModalLabel<?php echo htmlspecialchars($appointment_id); ?>" aria-hidden="true">
-    <!-- Add Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -80,7 +64,7 @@ try {
                 <div class="mb-4">
                     <p class="mb-1"><?php echo htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?></p>
                     <p class="mb-0">ID: <?php echo htmlspecialchars($client['id']); ?></p>
-                    <p class="mb-0">Install Date: <?php echo htmlspecialchars(date('m/d/Y', strtotime($client['install_date']))); ?></p>
+                    <p class="mb-0">Install Date: <?php echo htmlspecialchars(date('m/d/Y', strtotime($client['install_on']))); ?></p>
                     <p class="mb-0">Control Box: <?php echo htmlspecialchars($inventory['control_box'] ?? 'N/A'); ?></p>
                     <p class="mb-0">Handset: <?php echo htmlspecialchars($inventory['handset'] ?? 'N/A'); ?></p>
                 </div>
@@ -93,7 +77,6 @@ try {
                         <select class="form-select" id="appointmentLocation<?php echo htmlspecialchars($appointment_id); ?>" required>
                             <option value="">Select Location</option>
                             <?php
-                            $locations = getLocations();
                             foreach ($locations as $location) {
                                 $selected = $location['id'] == $appointment['location_id'] ? 'selected' : '';
                                 echo '<option value="' . htmlspecialchars($location['id']) . '" ' . $selected . '>' . 
@@ -106,11 +89,8 @@ try {
                     <!-- Appointment Date/Time -->
                     <div class="mb-3">
                         <label for="appointmentDate<?php echo htmlspecialchars($appointment_id); ?>" class="form-label">Appointment Date</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control flatpickr" id="appointmentDate<?php echo htmlspecialchars($appointment_id); ?>" 
-                                   value="<?php echo date('m/d/Y', strtotime($appointment['start_time'])); ?>" required>
-                            <span class="input-group-text"><i class="feather icon-calendar"></i></span>
-                        </div>
+                        <input type="date" class="form-control" id="appointmentDate<?php echo htmlspecialchars($appointment_id); ?>" 
+                               value="<?php echo date('Y-m-d', strtotime($appointment['start_time'])); ?>" required>
                     </div>
 
                     <!-- Appointment Type -->
@@ -157,76 +137,220 @@ try {
                     <i class="bi bi-trash me-1"></i>Delete
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.location.reload()">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveAppointmentBtn<?php echo htmlspecialchars($appointment_id); ?>" onclick="saveAppointment(<?php echo htmlspecialchars($appointment_id); ?>)">
-                    Save Changes
+                <button type="button" class="btn btn-info" id="getTimesBtn<?php echo $appointment_id; ?>">
+                    <i class="bi bi-clock me-1"></i>Get Times
+                </button>
+                <button type="button" class="btn btn-success d-none" id="updateAppointmentBtn<?php echo $appointment_id; ?>">
+                    <i class="bi bi-check-circle me-1"></i>Update Appointment
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Add Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+<!-- ============================================= -->
+<!-- MODAL SCRIPTS -->
+<!-- ============================================= -->
 <script>
-// Initialize Flatpickr when modal opens
+// =============================================
+// MODAL INITIALIZATION AND EVENT HANDLERS
+// =============================================
 document.getElementById('editAppointmentModal<?php echo htmlspecialchars($appointment_id); ?>').addEventListener('show.bs.modal', function() {
-    // Store appointment data in session storage
-    const appointmentData = {
-        id: <?php echo htmlspecialchars($appointment_id); ?>,
-        client_id: <?php echo htmlspecialchars($appointment['customer_id']); ?>,
-        location_id: <?php echo htmlspecialchars($appointment['location_id']); ?>,
-        appointment_date: '<?php echo date('m/d/Y', strtotime($appointment['start_time'])); ?>',
-        appointment_time: '<?php echo date('H:i', strtotime($appointment['start_time'])); ?>',
-        appointment_type: '<?php echo htmlspecialchars($appointment['appointment_type']); ?>',
-        service_note: '<?php echo htmlspecialchars($appointment['service_note'] ?? ''); ?>',
-        user_id: <?php echo htmlspecialchars($_SESSION['user_id']); ?>,
-        current_location_id: <?php echo htmlspecialchars($_SESSION['location_id']); ?>
-    };
-    sessionStorage.setItem('currentAppointment', JSON.stringify(appointmentData));
-
-    const dateInput = document.getElementById('appointmentDate<?php echo htmlspecialchars($appointment_id); ?>');
-    const flatpickrConfig = {
-        dateFormat: "m/d/Y",
-        minDate: "today",
-        disableMobile: "true",
-        allowInput: true,
-        altInput: true,
-        altFormat: "m/d/Y",
-        width: "100%",
-        calendarWidth: "300px",
-        position: "below"
-    };
+    console.log('Edit Appointment Modal opened');
     
-    flatpickr(dateInput, flatpickrConfig);
-    
-    // Set initial time
-    const timeSelect = document.getElementById('appointmentTime<?php echo htmlspecialchars($appointment_id); ?>');
-    const appointmentTime = '<?php echo date('H:i', strtotime($appointment['start_time'])); ?>';
-    timeSelect.innerHTML = `<option value="${appointmentTime}" selected>${appointmentTime}</option>`;
-    
-    // Show/hide duration container based on appointment type
+    // Initialize appointment type change handler
     const typeSelect = document.getElementById('appointmentType<?php echo htmlspecialchars($appointment_id); ?>');
     const otherDurationContainer = document.getElementById('otherDurationContainer<?php echo htmlspecialchars($appointment_id); ?>');
     
-    if (typeSelect.value === 'Other') {
-        otherDurationContainer.style.display = 'block';
-    }
-    
     typeSelect.addEventListener('change', function() {
-        otherDurationContainer.style.display = this.value === 'Other' ? 'block' : 'none';
+        const isOther = this.value === 'Other';
+        otherDurationContainer.style.display = isOther ? 'block' : 'none';
+    });
+    
+    // Initialize get times button
+    const getTimesBtn = document.getElementById('getTimesBtn<?php echo $appointment_id; ?>');
+    console.log('Get Times Button:', getTimesBtn);
+    
+    getTimesBtn.addEventListener('click', function() {
+        console.log('Get Times button clicked');
+        getAvailableTimesForEdit();
+    });
+    
+    // Initialize update button
+    const updateBtn = document.getElementById('updateAppointmentBtn<?php echo $appointment_id; ?>');
+    updateBtn.addEventListener('click', function() {
+        updateEditAppointment();
     });
 });
 
-// Save appointment changes
-function saveAppointment(appointmentId) {
-    // TODO: Implement save functionality
-    console.log('Saving appointment:', appointmentId);
+// =============================================
+// GET AVAILABLE TIMES FUNCTION
+// =============================================
+function getAvailableTimesForEdit() {
+    console.log('getAvailableTimesForEdit function called');
+    
+    const appointmentId = <?php echo $appointment_id; ?>;
+    console.log('Found appointment ID:', appointmentId);
+    
+    const date = document.getElementById('appointmentDate<?php echo $appointment_id; ?>').value;
+    const location = document.getElementById('appointmentLocation<?php echo $appointment_id; ?>').value;
+    const type = document.getElementById('appointmentType<?php echo $appointment_id; ?>').value;
+    const duration = type === 'Other' ? document.getElementById('otherDuration<?php echo $appointment_id; ?>').value : 
+                    type === 'Removal' || type === 'Service' ? '30' : '15';
+
+    console.log('Form values:', {
+        date: date,
+        location: location,
+        type: type,
+        duration: duration
+    });
+
+    // Prepare the data to send
+    const formData = {
+        location_id: location,
+        date: date,
+        type: type,
+        duration: duration
+    };
+
+    // Log the data being sent
+    console.log('Sending form data to get_available_slots.php:', JSON.stringify(formData, null, 2));
+
+    // Make the AJAX call
+    console.log('Making fetch call to get_available_slots.php');
+    fetch('get_available_slots.php?' + new URLSearchParams(formData))
+        .then(response => {
+            console.log('Response received:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response from get_available_slots.php:', JSON.stringify(data, null, 2));
+            
+            if (data.success && data.data) {
+                // 1. Update the time slots dropdown
+                const timeSelect = document.getElementById('appointmentTime<?php echo $appointment_id; ?>');
+                timeSelect.innerHTML = '<option value="">Select Time</option>';
+                
+                data.data.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    timeSelect.appendChild(option);
+                });
+                
+                // 2. Replace Get Times button with Update Appointment button
+                const getTimesBtn = document.getElementById('getTimesBtn<?php echo $appointment_id; ?>');
+                if (getTimesBtn) {
+                    getTimesBtn.classList.add('d-none');
+                    const updateBtn = document.getElementById('updateAppointmentBtn<?php echo $appointment_id; ?>');
+                    updateBtn.classList.remove('d-none');
+                }
+
+                // 3. Make location, date, and type fields read-only and change their appearance
+                const fieldsToDisable = [
+                    'appointmentLocation<?php echo $appointment_id; ?>',
+                    'appointmentDate<?php echo $appointment_id; ?>',
+                    'appointmentType<?php echo $appointment_id; ?>'
+                ];
+
+                fieldsToDisable.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.disabled = true;
+                        field.classList.add('bg-light');
+                        // If it's a select element, also style the selected option
+                        if (field.tagName === 'SELECT') {
+                            const selectedOption = field.options[field.selectedIndex];
+                            if (selectedOption) {
+                                selectedOption.style.backgroundColor = '#f8f9fa';
+                            }
+                        }
+                    }
+                });
+
+                // Also disable the duration dropdown if it's visible
+                const durationField = document.getElementById('otherDuration<?php echo $appointment_id; ?>');
+                if (durationField && durationField.style.display !== 'none') {
+                    durationField.disabled = true;
+                    durationField.classList.add('bg-light');
+                }
+            } else {
+                console.error('No available times returned');
+                alert('No available times found for the selected criteria');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching available slots:', error);
+            alert('Error fetching available time slots. Please try again.');
+        });
 }
 
-// Delete appointment function
-function deleteAppointment(appointmentId) {
-    // TODO: Implement delete functionality
-    console.log('Delete appointment:', appointmentId);
+// =============================================
+// UPDATE APPOINTMENT FUNCTION
+// =============================================
+function updateEditAppointment() {
+    console.log('updateEditAppointment function called');
+    
+    try {
+        // Get the selected time
+        const time = document.getElementById('appointmentTime<?php echo $appointment_id; ?>').value;
+        console.log('Selected time:', time);
+        
+        if (!time) {
+            alert('Please select a time slot');
+            return;
+        }
+
+        // Prepare the update data
+        const updateData = {
+            appointment_id: <?php echo $appointment_id; ?>,
+            user_id: <?php echo $_SESSION['user_id'] ?? 0; ?>,
+            location_id: document.getElementById('appointmentLocation<?php echo $appointment_id; ?>').value,
+            date: document.getElementById('appointmentDate<?php echo $appointment_id; ?>').value,
+            type: document.getElementById('appointmentType<?php echo $appointment_id; ?>').value,
+            time: time
+        };
+
+        console.log('Sending update data:', updateData);
+
+        // Send to update_appointment_api.php
+        fetch('update_appointment_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData)
+        })
+        .then(response => {
+            console.log('Update response received:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Update response data:', data);
+            if (data.success) {
+                alert('Appointment updated successfully');
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating appointment:', error);
+            alert('Error updating appointment');
+        });
+    } catch (error) {
+        console.error('Error in updateEditAppointment function:', error);
+        alert('An error occurred while updating the appointment');
+    }
 }
-</script> 
+
+// =============================================
+// DELETE APPOINTMENT FUNCTION
+// =============================================
+function deleteAppointment(appointmentId) {
+    if (confirm('Are you sure you want to delete this appointment?')) {
+        // TODO: Implement appointment deletion
+        console.log('Deleting appointment:', appointmentId);
+    }
+}
+</script>

@@ -141,19 +141,42 @@ try {
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($pastAppointments as $appointment): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($appointment['date_formatted']); ?></td>
+                                    <tr class="<?php echo $appointment['is_historical'] ? 'table-secondary' : ''; ?>">
+                                        <td>
+                                            <?php echo htmlspecialchars($appointment['date_formatted']); ?>
+                                            <?php if ($appointment['is_historical']): ?>
+                                                <span class="badge bg-warning text-dark ms-2" title="This appointment was updated">Updated</span>
+                                            <?php endif; ?>
+                                        </td>
                                         <td><?php echo htmlspecialchars($appointment['time_formatted']); ?></td>
                                         <td><?php echo htmlspecialchars($appointment['appointment_type']); ?></td>
                                         <td><?php echo htmlspecialchars($appointment['location_name']); ?></td>
                                         <td><?php echo htmlspecialchars($appointment['technician_initials']); ?></td>
-                                        <td><?php echo htmlspecialchars($appointment['service_note'] ?? ''); ?></td>
+                                        <td>
+                                            <?php echo htmlspecialchars($appointment['service_note'] ?? ''); ?>
+                                            <?php if ($appointment['is_historical'] && !empty($appointment['update_reason'])): ?>
+                                                <div class="small text-muted mt-1">
+                                                    <i class="bi bi-info-circle"></i> <?php echo htmlspecialchars($appointment['update_reason']); ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 
                                                         onclick="viewAppointment(<?php echo $appointment['id']; ?>)">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
+                                                <?php if ($appointment['is_historical']): ?>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-info ms-1" 
+                                                            title="This appointment was updated"
+                                                            data-bs-toggle="popover"
+                                                            data-bs-trigger="hover"
+                                                            data-bs-placement="left"
+                                                            data-appointment-id="<?php echo $appointment['id']; ?>">
+                                                        <i class="bi bi-clock-history"></i>
+                                                    </button>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
@@ -191,6 +214,8 @@ function viewAppointment(id) {
 }
 
 function editAppointment(id) {
+    console.log('Edit Appointment - ID from appointments_card.php:', id);
+    
     // Include the edit appointment modal
     fetch(`edit_appointment.php?id=${id}`)
         .then(response => response.text())
@@ -199,15 +224,33 @@ function editAppointment(id) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = html;
             
+            // Get the modal element
+            const modalElement = tempDiv.querySelector('.modal');
+            if (!modalElement) {
+                console.error('Modal element not found in response');
+                return;
+            }
+            
+            // Get all script tags
+            const scripts = tempDiv.querySelectorAll('script');
+            
             // Add the modal to the document
-            document.body.appendChild(tempDiv.firstElementChild);
+            document.body.appendChild(modalElement);
+            
+            // Execute each script
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+                newScript.remove();
+            });
             
             // Initialize the modal
-            const modal = new bootstrap.Modal(document.getElementById(`editAppointmentModal${id}`));
+            const modal = new bootstrap.Modal(modalElement);
             modal.show();
             
             // Clean up when modal is hidden
-            document.getElementById(`editAppointmentModal${id}`).addEventListener('hidden.bs.modal', function() {
+            modalElement.addEventListener('hidden.bs.modal', function() {
                 this.remove();
             });
         })
@@ -220,4 +263,66 @@ function cancelAppointment(id) {
     // TODO: Implement cancel appointment
     console.log('Cancel appointment:', id);
 }
-</script> 
+
+// Initialize popovers
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl, {
+            html: false,
+            content: 'Loading current appointment details...'
+        });
+    });
+
+    // Add hover event listeners to historical appointment buttons
+    document.querySelectorAll('[data-appointment-id]').forEach(function(button) {
+        button.addEventListener('mouseenter', function() {
+            const appointmentId = this.dataset.appointmentId;
+            const popover = bootstrap.Popover.getInstance(this);
+            
+            // Fetch appointment details using the appointment ID
+            fetch(`appointment_api.php?id=${appointmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Appointment Details:', data);
+                    if (data.success && data.data) {
+                        const appointment = data.data;
+                        
+                        // Format the date and time
+                        const date = new Date(appointment.start_time);
+                        const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                                            date.getDate().toString().padStart(2, '0') + '/' + 
+                                            date.getFullYear();
+                        const hours = date.getHours();
+                        const minutes = date.getMinutes().toString().padStart(2, '0');
+                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                        const formattedHours = (hours % 12 || 12).toString().padStart(2, '0');
+                        const formattedTime = `${formattedHours}:${minutes}${ampm}`;
+
+                        const content = 
+                            'Appointment Details\n\n' +
+                            `Date: ${formattedDate}\n` +
+                            `Time: ${formattedTime}\n` +
+                            `Type: ${appointment.appointment_type}\n` +
+                            `Location: ${appointment.location_name}\n` +
+                            `Technician: ${appointment.technician_name}\n` +
+                            `Status: ${appointment.status}\n` +
+                            (appointment.service_note ? `Notes: ${appointment.service_note}` : '');
+                        
+                        popover._config.content = content;
+                        popover.show();
+                    } else {
+                        popover._config.content = 'Error loading appointment details';
+                        popover.show();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    popover._config.content = 'Error loading appointment details';
+                    popover.show();
+                });
+        });
+    });
+});
+</script>
