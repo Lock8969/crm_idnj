@@ -1,3 +1,14 @@
+<?php
+// Check if user is already logged in
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (isset($_SESSION['username'])) {
+    header("Location: /dashboard.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,11 +84,7 @@
                                 <label for="username" class="form-label">User Name</label>
                                 <input type="text" id="username" class="form-control" name="username" placeholder="User Name" required />
                             </div>
-                            <!-- Email -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" id="email" class="form-control" name="email" placeholder="Email address here" required />
-                            </div>
+                           
                             <!-- Password -->
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>

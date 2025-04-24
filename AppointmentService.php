@@ -459,11 +459,11 @@ class AppointmentService {
                     INSERT INTO appointment_history (
                         appointment_id, previous_start, previous_end, 
                         previous_status, previous_location_id, 
-                        changed_by_user_id, reason
+                        changed_by_user_id, reason, notes
                     ) VALUES (
                         :appointment_id, :previous_start, :previous_end,
                         :previous_status, :previous_location_id,
-                        :changed_by_user_id, :reason
+                        :changed_by_user_id, :reason, :notes
                     )
                 ");
 
@@ -474,7 +474,8 @@ class AppointmentService {
                     'previous_status' => $current_appointment['status'],
                     'previous_location_id' => $current_appointment['location_id'],
                     'changed_by_user_id' => $data['user_id'],
-                    'reason' => 'Appointment updated via edit form'
+                    'reason' => 'Appointment updated via edit form',
+                    'notes' => $current_appointment['service_note'] // Copy the service notes from current appointment
                 ]);
 
                 // Calculate duration based on appointment type
@@ -485,17 +486,27 @@ class AppointmentService {
                     $duration = 15;
                 }
 
-                // Create datetime strings
+                // Create datetime strings and convert to UTC
                 $start_time = $data['date'] . ' ' . $data['time'];
-                $end_time = date('Y-m-d H:i:s', strtotime($start_time . " +{$duration} minutes"));
+                // Convert browser time to UTC
+                $browserTime = new DateTime($start_time, new DateTimeZone('America/New_York')); // Assuming browser is in ET
+                $browserTime->setTimezone(new DateTimeZone('UTC'));
+                $start_time = $browserTime->format('Y-m-d H:i:s');
+                
+                // Calculate end time in UTC (subtract 1 minute from duration)
+                $end_time = date('Y-m-d H:i:s', strtotime($start_time . " +" . ($duration - 1) . " minutes"));
 
-                // Update appointment
+                // Update appointment - Change status to 'rescheduled' if it was 'scheduled'
                 $update_stmt = $this->pdo->prepare("
                     UPDATE appointments 
                     SET start_time = :start_time,
                         end_time = :end_time,
                         location_id = :location_id,
                         appointment_type = :appointment_type,
+                        status = CASE 
+                            WHEN status = 'scheduled' THEN 'rescheduled'
+                            ELSE status
+                        END,
                         updated_at = NOW()
                     WHERE id = :id
                 ");
@@ -727,30 +738,30 @@ class AppointmentService {
                 ORDER BY start_time DESC
             ";
 
-            error_log("Executing query for client ID: " . $clientId);
-            error_log("Query: " . $query);
-
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([$clientId, $clientId]);
             
             $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("Raw appointments data: " . print_r($appointments, true));
 
             if (empty($appointments)) {
-                error_log("No appointments found for client ID: " . $clientId);
                 return [];
             }
 
             // Process each appointment to add additional information
             foreach ($appointments as &$appointment) {
-                // Format dates separately
-                $appointment['date_formatted'] = date('m/d/Y', strtotime($appointment['start_time']));
-                $appointment['time_formatted'] = date('g:i A', strtotime($appointment['start_time']));
+                // Convert UTC times to ET
+                $utcStart = new DateTime($appointment['start_time'], new DateTimeZone('UTC'));
+                $utcStart->setTimezone(new DateTimeZone('America/New_York'));
                 
-                // Calculate duration
-                $start = new DateTime($appointment['start_time']);
-                $end = new DateTime($appointment['end_time']);
-                $interval = $start->diff($end);
+                $utcEnd = new DateTime($appointment['end_time'], new DateTimeZone('UTC'));
+                $utcEnd->setTimezone(new DateTimeZone('America/New_York'));
+
+                // Format dates and times in ET
+                $appointment['date_formatted'] = $utcStart->format('m/d/Y');
+                $appointment['time_formatted'] = $utcStart->format('g:i A');
+                
+                // Calculate duration using ET times
+                $interval = $utcStart->diff($utcEnd);
                 $appointment['duration'] = $interval->format('%h hours %i minutes');
                 
                 // Get technician initials
@@ -779,26 +790,160 @@ class AppointmentService {
                     $appointment['appointment_type'] = $appointmentType;
                 }
                 
-                // Determine if appointment is upcoming or past
-                $now = new DateTime();
-                $appointmentTime = new DateTime($appointment['start_time']);
+                // Determine if appointment is upcoming or past using ET time
+                $now = new DateTime('now', new DateTimeZone('America/New_York'));
+                $appointmentTime = $utcStart;
                 // If it's a historical appointment, always mark it as past
                 $appointment['is_upcoming'] = $appointment['is_historical'] ? false : ($appointmentTime > $now);
             }
 
-            error_log("Processed appointments data: " . print_r($appointments, true));
             return $appointments;
-        } catch (PDOException $e) {
-            $this->logAppointmentServiceAction(
-                "Error fetching client appointments: " . $e->getMessage()
-            );
-            error_log("PDO Error: " . $e->getMessage());
-            throw new Exception("Error fetching client appointments: " . $e->getMessage());
         } catch (Exception $e) {
             $this->logAppointmentServiceAction(
                 "Error in getClientAppointments: " . $e->getMessage()
             );
-            error_log("Error in getClientAppointments: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * =============================================
+     * GET SHOP APPOINTMENTS
+     * =============================================
+     * Retrieves all appointments for a specific shop on a specific date
+     * 
+     * @param int $shopId The ID of the shop/location
+     * @param string $date The date to check (Y-m-d format)
+     * @return array Array of appointment data with formatted times and related information
+     * =============================================
+     */
+    public function getShopAppointments($shopId, $date) {
+        try {
+            // Validate shop ID
+            if (!is_numeric($shopId) || $shopId <= 0) {
+                throw new Exception("Invalid shop ID provided");
+            }
+
+            // Validate date format
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                throw new Exception("Invalid date format. Expected Y-m-d");
+            }
+
+            // Log the request
+            $this->logAppointmentServiceAction(
+                "Fetching appointments for shop ID: " . $shopId . " on date: " . $date
+            );
+
+            // Query to get all appointments for the shop on the specified date
+            $query = "
+                SELECT 
+                    a.id,
+                    a.customer_id,
+                    a.title,
+                    a.appointment_type,
+                    a.start_time,
+                    a.end_time,
+                    a.status,
+                    a.service_note,
+                    a.description,
+                    a.created_by,
+                    a.created_at,
+                    c.first_name as customer_first_name,
+                    c.last_name as customer_last_name,
+                    u.full_name as technician_name,
+                    vm.make as vehicle_make,
+                    vmo.model as vehicle_model,
+                    vy.year as vehicle_year,
+                    CASE 
+                        WHEN EXISTS (
+                            SELECT 1 
+                            FROM invoices i 
+                            WHERE i.customer_id = a.customer_id 
+                            AND DATE(i.created_at) = ?
+                            AND i.status = 'paid'
+                        ) THEN 1
+                        ELSE 0
+                    END as has_invoice_today
+                FROM appointments a
+                LEFT JOIN client_information c ON a.customer_id = c.id
+                LEFT JOIN users u ON a.created_by = u.id
+                LEFT JOIN vehicle_information vi ON a.customer_id = vi.customer_id
+                LEFT JOIN vehicle_makes vm ON vi.make_id = vm.id
+                LEFT JOIN vehicle_models vmo ON vi.model_id = vmo.id
+                LEFT JOIN vehicle_years vy ON vi.year_id = vy.id
+                WHERE a.location_id = ?
+                AND DATE(a.start_time) = ?
+                AND a.status != 'cancelled'
+                GROUP BY a.id
+                ORDER BY a.start_time ASC
+            ";
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$date, $shopId, $date]);
+            $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($appointments)) {
+                return [];
+            }
+
+            // Process each appointment to add additional information
+            foreach ($appointments as &$appointment) {
+                // Convert UTC times to ET
+                $utcStart = new DateTime($appointment['start_time'], new DateTimeZone('UTC'));
+                $utcStart->setTimezone(new DateTimeZone('America/New_York'));
+                
+                $utcEnd = new DateTime($appointment['end_time'], new DateTimeZone('UTC'));
+                $utcEnd->setTimezone(new DateTimeZone('America/New_York'));
+
+                // Format dates and times in ET
+                $appointment['date_formatted'] = $utcStart->format('m/d/Y');
+                $appointment['time_formatted'] = $utcStart->format('g:i A');
+                $appointment['end_time_formatted'] = $utcEnd->format('g:i A');
+                
+                // Calculate duration using ET times
+                $interval = $utcStart->diff($utcEnd);
+                $appointment['duration'] = $interval->format('%h hours %i minutes');
+                
+                // Get technician initials
+                if (!empty($appointment['technician_name'])) {
+                    $words = explode(' ', $appointment['technician_name']);
+                    $initials = '';
+                    foreach ($words as $word) {
+                        $initials .= strtoupper(substr($word, 0, 1));
+                    }
+                    $appointment['technician_initials'] = $initials;
+                } else {
+                    $appointment['technician_initials'] = 'Unknown';
+                }
+                
+                // Format vehicle information
+                $appointment['vehicle_info'] = '';
+                if (!empty($appointment['vehicle_year']) && !empty($appointment['vehicle_make']) && !empty($appointment['vehicle_model'])) {
+                    $appointment['vehicle_info'] = $appointment['vehicle_year'] . ' ' . 
+                                                 $appointment['vehicle_make'] . ' ' . 
+                                                 $appointment['vehicle_model'];
+                }
+                
+                // Abbreviate appointment type
+                $appointmentType = trim($appointment['appointment_type']);
+                $found = false;
+                foreach ($this->serviceAbbreviations as $fullName => $abbr) {
+                    if (strcasecmp($appointmentType, $fullName) === 0) {
+                        $appointment['appointment_type'] = $abbr;
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $appointment['appointment_type'] = $appointmentType;
+                }
+            }
+
+            return $appointments;
+        } catch (Exception $e) {
+            $this->logAppointmentServiceAction(
+                "Error in getShopAppointments: " . $e->getMessage()
+            );
             throw $e;
         }
     }

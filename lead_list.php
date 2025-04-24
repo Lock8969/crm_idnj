@@ -76,7 +76,6 @@ try {
     }
     
     $leads = $stmt->fetchAll();
-    error_log("Number of leads fetched: " . count($leads));
 } catch (PDOException $e) {
     error_log("Error fetching leads list: " . $e->getMessage());
     $leads = [];
