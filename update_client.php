@@ -15,10 +15,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = $_POST['city'];
     $state = $_POST['state'];
     $zip = $_POST['zip'];
-    $dob = $_POST['dob'];
+    $dob = !empty($_POST['dob']) ? $_POST['dob'] : null;
 
     try {
         $stmt = $pdo->prepare("UPDATE client_information SET first_name = :first_name, last_name = :last_name, phone_number = :phone_number, email = :email, address1 = :address1, address2 = :address2, city = :city, state = :state, zip = :zip, dob = :dob WHERE id = :id");
+        
+        // Log the data being sent
+        error_log("Attempting to update client with data: " . print_r([
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'phone_number' => $phone_number,
+            'email' => $email,
+            'address1' => $address1,
+            'address2' => $address2,
+            'city' => $city,
+            'state' => $state,
+            'zip' => $zip,
+            'dob' => $dob,
+            'id' => $client_id
+        ], true));
+        
         $stmt->execute([
             'first_name' => $first_name,
             'last_name' => $last_name,
@@ -32,11 +48,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dob' => $dob,
             'id' => $client_id
         ]);  
-        header("Location: $redirect_url"); //Rediect to whichever page called for the Update
+        
+        // Check if any rows were actually updated
+        if ($stmt->rowCount() === 0) {
+            error_log("No rows were updated for client ID: " . $client_id);
+            die("No changes were made. The client information may not exist or the data is identical.");
+        }
+        
+        header("Location: $redirect_url");
         exit;
     } catch (PDOException $e) {
+        // Log detailed error information
         error_log("Error updating client information: " . $e->getMessage());
-        die("An error occurred while updating client information.");
+        error_log("SQL State: " . $e->getCode());
+        error_log("Client ID: " . $client_id);
+        error_log("SQL Query: UPDATE client_information SET first_name = :first_name, last_name = :last_name, phone_number = :phone_number, email = :email, address1 = :address1, address2 = :address2, city = :city, state = :state, zip = :zip, dob = :dob WHERE id = :id");
+        
+        // Show the actual error message to the user
+        die("Database Error: " . $e->getMessage() . ". Please try again or contact support if the problem persists.");
     }
 }
 ?>

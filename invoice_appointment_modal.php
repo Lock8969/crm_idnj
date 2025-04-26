@@ -753,6 +753,18 @@ function renderNextAppointmentModal($client, $pdo) {
                     }
                     
                     updateTotals(clientId);
+                    
+                    // Initialize Total Due with the Total value
+                    const total = parseFloat(document.getElementById('total' + clientId).textContent);
+                    const totalDueSpan = document.getElementById('totalDue' + clientId);
+                    totalDueSpan.textContent = total.toFixed(2);
+                    
+                    // Set initial color based on total
+                    if (total <= 0) {
+                        totalDueSpan.style.color = '#198754'; // GREEN FOR PAID IN FULL
+                    } else {
+                        totalDueSpan.style.color = '#dc3545'; // RED FOR STILL OWING
+                    }
                 }
             })
             .catch(error => {

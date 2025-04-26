@@ -380,40 +380,93 @@ class AppointmentService {
      * 
      * @param string $startDate Start date (Y-m-d format)
      * @param string $endDate End date (Y-m-d format)
-     * @param array $filters Optional filters
-     * @return array Array of appointments
+     * @param array $filters Optional filters (location_id, status, appointment_type, customer_id)
+     * @return array Array of appointments with location and client information
      * =============================================
      */
     public function getAppointmentsForRange($startDate, $endDate, $filters = []) {
         try {
-            $sql = "SELECT * FROM appointments WHERE start_time BETWEEN ? AND ?";
+            // Log the request
+            $this->logAppointmentServiceAction(
+                "Fetching appointments for date range: " . $startDate . " to " . $endDate . 
+                " with filters: " . json_encode($filters)
+            );
+
+            // Base query with joins to get location and client information
+            $sql = "SELECT 
+                    a.*,
+                    l.location_name,
+                    c.first_name as customer_first_name,
+                    c.last_name as customer_last_name
+                FROM appointments a
+                LEFT JOIN locations l ON a.location_id = l.id
+                LEFT JOIN client_information c ON a.customer_id = c.id
+                WHERE a.start_time BETWEEN ? AND ?
+                AND a.status != 'cancelled'";
+            
             $params = [$startDate . ' 00:00:00', $endDate . ' 23:59:59'];
             
-            // Add filters if provided
+            // Add location filter if provided
             if (!empty($filters['location_id'])) {
-                $sql .= " AND location_id = ?";
-                $params[] = $filters['location_id'];
+                // Handle multiple locations if array is provided
+                if (is_array($filters['location_id'])) {
+                    $placeholders = str_repeat('?,', count($filters['location_id']) - 1) . '?';
+                    $sql .= " AND a.location_id IN ($placeholders)";
+                    $params = array_merge($params, $filters['location_id']);
+                } else {
+                    $sql .= " AND a.location_id = ?";
+                    $params[] = $filters['location_id'];
+                }
             }
+
+            // Add other filters if provided
             if (!empty($filters['status'])) {
-                $sql .= " AND status = ?";
+                $sql .= " AND a.status = ?";
                 $params[] = $filters['status'];
             }
             if (!empty($filters['appointment_type'])) {
-                $sql .= " AND appointment_type = ?";
+                $sql .= " AND a.appointment_type = ?";
                 $params[] = $filters['appointment_type'];
             }
             if (!empty($filters['customer_id'])) {
-                $sql .= " AND customer_id = ?";
+                $sql .= " AND a.customer_id = ?";
                 $params[] = $filters['customer_id'];
             }
             
-            $sql .= " ORDER BY start_time ASC";
+            $sql .= " ORDER BY a.start_time ASC";
             
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Process each appointment to add formatted dates and times
+            foreach ($appointments as &$appointment) {
+                // Convert UTC times to ET
+                $utcStart = new DateTime($appointment['start_time'], new DateTimeZone('UTC'));
+                $utcStart->setTimezone(new DateTimeZone('America/New_York'));
+                
+                $utcEnd = new DateTime($appointment['end_time'], new DateTimeZone('UTC'));
+                $utcEnd->setTimezone(new DateTimeZone('America/New_York'));
+
+                // Format dates and times in ET
+                $appointment['date_formatted'] = $utcStart->format('m/d/Y');
+                $appointment['time_formatted'] = $utcStart->format('g:i A');
+                $appointment['end_time_formatted'] = $utcEnd->format('g:i A');
+                
+                // Calculate duration
+                $interval = $utcStart->diff($utcEnd);
+                $appointment['duration'] = $interval->format('%h hours %i minutes');
+                
+                // Combine first and last name
+                $appointment['customer_name'] = $appointment['customer_first_name'] . ' ' . $appointment['customer_last_name'];
+            }
+
+            return $appointments;
             
         } catch (PDOException $e) {
+            $this->logAppointmentServiceAction(
+                "Error in getAppointmentsForRange: " . $e->getMessage()
+            );
             throw new Exception("Error getting appointments: " . $e->getMessage());
         }
     }
@@ -808,7 +861,7 @@ class AppointmentService {
 
     /**
      * =============================================
-     * GET SHOP APPOINTMENTS
+     * GET SHOP APPOINTMENTS- QUICK SCHEDULE
      * =============================================
      * Retrieves all appointments for a specific shop on a specific date
      * 

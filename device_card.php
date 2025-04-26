@@ -123,8 +123,10 @@ $current_control_box = $stmt->fetch();
                                        id="handsetInput" 
                                        placeholder="Search and select handset..."
                                        value="<?php echo $current_handset ? htmlspecialchars($current_handset['serial_number']) : ''; ?>"
-                                       autocomplete="off">
-                                <div id="handsetResults" class="dropdown-menu w-100" style="display: none; position: absolute; width: calc(100% - 2px); left: 1px; right: 1px;"></div>
+                                       autocomplete="off"
+                                       data-bs-toggle="dropdown"
+                                       data-bs-auto-close="false">
+                                <div id="handsetResults" class="dropdown-menu w-100" style="display: none; position: absolute; width: calc(100% - 2px); left: 1px; right: 1px;" data-bs-popper="none"></div>
                             </div>
                         </div>
                         <!-- -----
@@ -139,8 +141,10 @@ $current_control_box = $stmt->fetch();
                                        id="controlBoxInput" 
                                        placeholder="Search and select control box..."
                                        value="<?php echo $current_control_box ? htmlspecialchars($current_control_box['serial_number']) : ''; ?>"
-                                       autocomplete="off">
-                                <div id="controlBoxResults" class="dropdown-menu w-100" style="display: none; position: absolute; width: calc(100% - 2px); left: 1px; right: 1px;"></div>
+                                       autocomplete="off"
+                                       data-bs-toggle="dropdown"
+                                       data-bs-auto-close="false">
+                                <div id="controlBoxResults" class="dropdown-menu w-100" style="display: none; position: absolute; width: calc(100% - 2px); left: 1px; right: 1px;" data-bs-popper="none"></div>
                             </div>
                         </div>
                     </div>
@@ -180,10 +184,13 @@ document.addEventListener('DOMContentLoaded', function() {
         let searchTimeout;
         let currentIndex = -1;
 
-        // -----
-        // INPUT EVENT HANDLER
-        // Manages real-time search as user types
-        // -----
+        // Prevent Bootstrap dropdown from handling keyboard events
+        input.addEventListener('keydown', function(e) {
+            if (['ArrowDown', 'ArrowUp', 'Enter', 'Escape', 'Tab'].includes(e.key)) {
+                e.stopPropagation();
+            }
+        });
+
         input.addEventListener('input', function() {
             clearTimeout(searchTimeout);
             const searchTerm = this.value.trim();
@@ -206,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 option.className = 'dropdown-item';
                                 option.href = '#';
                                 option.textContent = device.serial_number;
+                                option.dataset.id = device.id;
                                 option.onclick = (e) => {
                                     e.preventDefault();
                                     input.value = device.serial_number;
@@ -214,7 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 };
                                 results.appendChild(option);
                             });
+                            // Show dropdown immediately when there are results
                             results.style.display = 'block';
+                            // Focus the first item
+                            if (results.children.length > 0) {
+                                currentIndex = 0;
+                                results.children[0].focus();
+                            }
                         } else {
                             results.style.display = 'none';
                         }
@@ -227,33 +241,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         });
 
-        // -----
-        // KEYBOARD NAVIGATION - INPUT FIELD
-        // Handles keyboard navigation when focus is in input field
-        // -----
+        // Handle keyboard navigation
         input.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab' || e.key === 'ArrowDown') {
-                if (results.style.display !== 'none' && results.children.length > 0) {
-                    e.preventDefault();
-                    currentIndex = 0;
-                    results.children[0].focus();
-                }
-            }
-        });
-
-        // -----
-        // KEYBOARD NAVIGATION - DROPDOWN
-        // Handles keyboard navigation within the dropdown results
-        // -----
-        results.addEventListener('keydown', function(e) {
             const items = results.children;
             const lastIndex = items.length - 1;
 
             switch(e.key) {
                 case 'ArrowDown':
                     e.preventDefault();
-                    if (currentIndex < lastIndex) {
-                        currentIndex++;
+                    if (results.style.display !== 'none' && items.length > 0) {
+                        currentIndex = Math.min(currentIndex + 1, lastIndex);
                         items[currentIndex].focus();
                     }
                     break;
@@ -284,29 +281,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.focus();
                     break;
                 case 'Tab':
-                    e.preventDefault();
-                    const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1;
-                    
-                    if (nextIndex >= 0 && nextIndex <= lastIndex) {
-                        currentIndex = nextIndex;
-                        items[currentIndex].focus();
-                    } else if (nextIndex < 0) {
-                        currentIndex = -1;
-                        input.focus();
-                    } else {
-                        const nextInput = type === 'handset' ? document.getElementById('controlBoxInput') : null;
-                        if (nextInput) {
-                            nextInput.focus();
-                        }
+                    if (currentIndex >= 0 && currentIndex <= lastIndex) {
+                        e.preventDefault();
+                        const device = items[currentIndex];
+                        input.value = device.textContent;
+                        hiddenInput.value = device.dataset.id;
                     }
                     break;
             }
         });
 
-        // -----
-        // CLICK OUTSIDE HANDLER
-        // Closes dropdown when clicking outside the input and results
-        // -----
+        // Handle click outside
         document.addEventListener('click', function(e) {
             if (!input.contains(e.target) && !results.contains(e.target)) {
                 results.style.display = 'none';

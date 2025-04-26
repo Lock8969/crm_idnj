@@ -37,49 +37,43 @@ if (!isset($client)) {
         <div class="card-body">
             <!-- STATIC VIEW -->
             <div id="program-static-view">
+                <!-- Row 1 -->
                 <div class="row info-row">
-                    <div class="col-md-6">
-                        <div class="info-label">Status</div>
-                        <div class="info-value" data-field="status"><?php echo htmlspecialchars($client['status']); ?></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">Offense Number</div>
-                        <div class="info-value" data-field="offense_number"><?php echo htmlspecialchars($client['offense_number'] ?: 'N/A'); ?></div>
-                    </div>
-                </div>
-                
-                <div class="row info-row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Install Date</div>
                         <div class="info-value" data-field="install_on">
                             <?php echo $client['install_on'] ? date('m/d/Y', strtotime($client['install_on'])) : 'Not scheduled'; ?>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="info-label">Driver's License State</div>
-                        <div class="info-value" data-field="dl_state"><?php echo htmlspecialchars($client['dl_state'] ?: 'N/A'); ?></div>
+                    <div class="col-md-4">
+                        <div class="info-label">Offense Number</div>
+                        <div class="info-value" data-field="offense_number"><?php echo htmlspecialchars($client['offense_number'] ?: 'N/A'); ?></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-label">Status</div>
+                        <div class="info-value" data-field="status"><?php echo htmlspecialchars($client['status']); ?></div>
                     </div>
                 </div>
                 
+                <!-- Row 2 -->
                 <div class="row info-row">
-                    <div class="col-md-6">
-                        <div class="info-label">Law Type</div>
-                        <div class="info-value" data-field="law_type"><?php echo htmlspecialchars($client['law_type'] ?: 'N/A'); ?></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">Price Code</div>
-                        <div class="info-value" data-field="price_code">
-                            <?php echo $client['price_code'] ? '$' . number_format($client['price_code'], 2) : 'N/A'; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row info-row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Calibration Interval</div>
                         <div class="info-value" data-field="calibration_interval"><?php echo htmlspecialchars($client['calibration_interval'] ?: 'N/A'); ?></div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="info-label">Law Type</div>
+                        <div class="info-value" data-field="law_type"><?php echo htmlspecialchars($client['law_type'] ?: 'N/A'); ?></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-label">Out of State</div>
+                        <div class="info-value" data-field="out_of_state"><?php echo $client['out_of_state'] ? 'Yes' : 'No'; ?></div>
+                    </div>
+                </div>
+                
+                <!-- Row 3 -->
+                <div class="row info-row">
+                    <div class="col-md-4">
                         <div class="info-label">Arresting Municipality</div>
                         <div class="info-value" data-field="arresting_municipality">
                             <?php 
@@ -94,27 +88,39 @@ if (!isset($client)) {
                             ?>
                         </div>
                     </div>
-                </div>
-
-                <div class="row info-row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Offense Date</div>
                         <div class="info-value" data-field="offense_date"><?php echo $client['offense_date'] ? date('m/d/Y', strtotime($client['offense_date'])) : 'N/A'; ?></div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="info-label">Out of State</div>
-                        <div class="info-value" data-field="out_of_state"><?php echo $client['out_of_state'] ? 'Yes' : 'No'; ?></div>
+                    <div class="col-md-4">
+                        <div class="info-label">Driver's License State</div>
+                        <div class="info-value" data-field="dl_state"><?php echo htmlspecialchars($client['dl_state'] ?: 'N/A'); ?></div>
                     </div>
                 </div>
 
-                <?php if (!empty($client['install_comments'])): ?>
+                <!-- Row 4 -->
                 <div class="row info-row">
-                    <div class="col-md-12">
-                        <div class="info-label">Install Comments</div>
-                        <div class="info-value" data-field="install_comments"><?php echo nl2br(htmlspecialchars($client['install_comments'])); ?></div>
+                    <div class="col-md-4">
+                        <div class="info-label">Price Code</div>
+                        <div class="info-value" data-field="price_code">
+                            <?php echo $client['price_code'] ? '$' . number_format($client['price_code'], 2) : 'N/A'; ?>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-center">
+                        <?php if (!empty($client['install_comments'])): ?>
+                        <button type="button" class="btn btn-primary" 
+                            data-bs-toggle="popover" 
+                            data-bs-placement="bottom"
+                            title="Install Comments" 
+                            data-bs-content="<?php echo htmlspecialchars($client['install_comments']); ?>">
+                            <i class="bi bi-card-text me-2"></i>Install Comments
+                        </button>
+                        <?php endif; ?>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- Empty column for alignment -->
                     </div>
                 </div>
-                <?php endif; ?>
             </div>
 
             <!-- Edit View -->
@@ -150,18 +156,18 @@ if (!isset($client)) {
                     <input type="hidden" name="redirect_url" value="client_detail.php?id=<?php echo htmlspecialchars($client['id']); ?>">
                     <input type="hidden" name="status" value="<?php echo htmlspecialchars($client['status']); ?>">
 
+                    <!-- Row 1 -->
                     <div class="row">
-                        <!-- Column 1: Status (Read Only) -->
-                        <div class="col-md-6">
+                        <!-- Column 1: Install Date -->
+                        <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label fw-bold fs-5 mb-0">Status</label>
-                                <div class="form-control-lg mb-0 fw-bold">
-                                    <?php echo htmlspecialchars($client['status']); ?>
-                                </div>
+                                <label for="install_on" class="form-label fw-bold fs-5 mb-0">Install Date</label>
+                                <input type="date" class="form-control form-control-lg mb-0" id="install_on" name="install_on"
+                                    value="<?php echo $client['install_on'] ?: ''; ?>">
                             </div>
                         </div>
                         <!-- Column 2: Offense Number -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="offense_number" class="form-label fw-bold fs-5 mb-0">Offense Number</label>
                                 <select class="form-control form-control-lg mb-0" id="offense_number" name="offense_number">
@@ -173,22 +179,86 @@ if (!isset($client)) {
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- Column 1: Install Date -->
-                        <div class="col-md-6">
+                        <!-- Column 3: Status (Read Only) -->
+                        <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="install_on" class="form-label fw-bold fs-5 mb-0">Install Date</label>
-                                <input type="date" class="form-control form-control-lg mb-0" id="install_on" name="install_on"
-                                    value="<?php echo $client['install_on'] ?: ''; ?>">
+                                <label class="form-label fw-bold fs-5 mb-0">Status</label>
+                                <div class="form-control-lg mb-0 fw-bold">
+                                    <?php echo htmlspecialchars($client['status']); ?>
+                                </div>
                             </div>
                         </div>
-                        <!-- Column 2: Driver's License State -->
-                        <div class="col-md-6">
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="row">
+                        <!-- Column 1: Calibration Interval -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="calibration_interval" class="form-label fw-bold fs-5 mb-0">Calibration Interval</label>
+                                <select class="form-control form-control-lg mb-0" id="calibration_interval" name="calibration_interval">
+                                    <option value="">Select Interval</option>
+                                    <option value="30 day" <?php echo $client['calibration_interval'] == '30 day' ? 'selected' : ''; ?>>30 Day</option>
+                                    <option value="60 day" <?php echo $client['calibration_interval'] == '60 day' ? 'selected' : ''; ?>>60 Day</option>
+                                    <option value="90 day" <?php echo $client['calibration_interval'] == '90 day' ? 'selected' : ''; ?>>90 Day</option>
+                                    <option value="No Limit" <?php echo $client['calibration_interval'] == 'No Limit' ? 'selected' : ''; ?>>No Limit</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Column 2: Law Type -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="law_type" class="form-label fw-bold fs-5 mb-0">Law Type</label>
+                                <select class="form-control form-control-lg mb-0" id="law_type" name="law_type">
+                                    <option value="">Select Law Type</option>
+                                    <option value="old law" <?php echo $client['law_type'] == 'old law' ? 'selected' : ''; ?>>Old Law</option>
+                                    <option value="new law" <?php echo $client['law_type'] == 'new law' ? 'selected' : ''; ?>>New Law</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Column 3: Out of State -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="out_of_state" class="form-label fw-bold fs-5 mb-0">Out of State</label>
+                                <select class="form-control form-control-lg mb-0" id="out_of_state" name="out_of_state">
+                                    <option value="0" <?php echo $client['out_of_state'] == 0 ? 'selected' : ''; ?>>No</option>
+                                    <option value="1" <?php echo $client['out_of_state'] == 1 ? 'selected' : ''; ?>>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="row">
+                        <!-- Column 1: Arresting Municipality -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="arresting_municipality" class="form-label fw-bold fs-5 mb-0">Arresting Municipality</label>
+                                <select class="form-control form-control-lg mb-0" id="arresting_municipality" name="arresting_municipality">
+                                    <option value="">Select Municipality</option>
+                                    <?php
+                                    $stmt = $pdo->query("SELECT id, township, municipal_code FROM municipality ORDER BY township");
+                                    while ($municipality = $stmt->fetch()) {
+                                        $selected = ($client['arresting_municipality'] == $municipality['id']) ? 'selected' : '';
+                                        echo "<option value='{$municipality['id']}' {$selected}>{$municipality['township']} ({$municipality['municipal_code']})</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Column 2: Offense Date -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="offense_date" class="form-label fw-bold fs-5 mb-0">Offense Date</label>
+                                <input type="date" class="form-control form-control-lg mb-0" id="offense_date" name="offense_date"
+                                    value="<?php echo $client['offense_date'] ? date('Y-m-d', strtotime($client['offense_date'])) : ''; ?>">
+                            </div>
+                        </div>
+                        <!-- Column 3: Driver's License State -->
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="dl_state" class="form-label fw-bold fs-5 mb-0">Driver's License State</label>
-                                <?php include 'states.php'; ?> <!-- LOAD the states array from states.php page -->
+                                <?php include 'states.php'; ?>
                                 <select id="dl_state" name="dl_state" class="form-control form-control-lg mb-0">
                                     <option value="">Select State</option>
                                     <?php
@@ -202,20 +272,10 @@ if (!isset($client)) {
                         </div>
                     </div>
 
+                    <!-- Row 4 -->
                     <div class="row">
-                        <!-- Column 1: Law Type -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="law_type" class="form-label fw-bold fs-5 mb-0">Law Type</label>
-                                <select class="form-control form-control-lg mb-0" id="law_type" name="law_type">
-                                    <option value="">Select Law Type</option>
-                                    <option value="old law" <?php echo $client['law_type'] == 'old law' ? 'selected' : ''; ?>>Old Law</option>
-                                    <option value="new law" <?php echo $client['law_type'] == 'new law' ? 'selected' : ''; ?>>New Law</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Column 2: Price Code -->
-                        <div class="col-md-6">
+                        <!-- Column 1: Price Code -->
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="price_code" class="form-label fw-bold fs-5 mb-0">Price Code</label>
                                 <input type="number" step="0.01" class="form-control form-control-lg mb-0" id="price_code" name="price_code"
@@ -224,62 +284,8 @@ if (!isset($client)) {
                         </div>
                     </div>
 
+                    <!-- Install Comments -->
                     <div class="row">
-                        <!-- Column 1: Calibration Interval -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="calibration_interval" class="form-label fw-bold fs-5 mb-0">Calibration Interval</label>
-                                <select class="form-control form-control-lg mb-0" id="calibration_interval" name="calibration_interval">
-                                    <option value="">Select Interval</option>
-                                    <option value="30 day" <?php echo $client['calibration_interval'] == '30 day' ? 'selected' : ''; ?>>30 Day</option>
-                                    <option value="60 day" <?php echo $client['calibration_interval'] == '60 day' ? 'selected' : ''; ?>>60 Day</option>
-                                    <option value="90 day" <?php echo $client['calibration_interval'] == '90 day' ? 'selected' : ''; ?>>90 Day</option>
-                                    <option value="No Limit" <?php echo $client['calibration_interval'] == 'No Limit' ? 'selected' : ''; ?>>No Limit</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Column 2: Arresting Municipality -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="arresting_municipality" class="form-label fw-bold fs-5 mb-0">Arresting Municipality</label>
-                                <select class="form-control form-control-lg mb-0" id="arresting_municipality" name="arresting_municipality">
-                                    <option value="">Select Municipality</option>
-                                    <?php
-                                    // Fetch municipalities from the database
-                                    $stmt = $pdo->query("SELECT id, township, municipal_code FROM municipality ORDER BY township");
-                                    while ($municipality = $stmt->fetch()) {
-                                        $selected = ($client['arresting_municipality'] == $municipality['id']) ? 'selected' : '';
-                                        echo "<option value='{$municipality['id']}' {$selected}>{$municipality['township']} ({$municipality['municipal_code']})</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- Column 1: Offense Date -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="offense_date" class="form-label fw-bold fs-5 mb-0">Offense Date</label>
-                                <input type="date" class="form-control form-control-lg mb-0" id="offense_date" name="offense_date"
-                                    value="<?php echo $client['offense_date'] ? date('Y-m-d', strtotime($client['offense_date'])) : ''; ?>">
-                            </div>
-                        </div>
-                        <!-- Column 2: Out of State -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="out_of_state" class="form-label fw-bold fs-5 mb-0">Out of State</label>
-                                <select class="form-control form-control-lg mb-0" id="out_of_state" name="out_of_state">
-                                    <option value="0" <?php echo $client['out_of_state'] == 0 ? 'selected' : ''; ?>>No</option>
-                                    <option value="1" <?php echo $client['out_of_state'] == 1 ? 'selected' : ''; ?>>Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- Install Comments -->
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="install_comments" class="form-label fw-bold fs-5 mb-0">Install Comments</label>

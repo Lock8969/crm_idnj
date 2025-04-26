@@ -10,15 +10,23 @@ header('Content-Type: application/json');
 
 if (isset($_POST['make_id'])) {
     $make_id = intval($_POST['make_id']); // Ensure it's an integer
-    // Fetch models based on the selected make
-    $stmt = $pdo->prepare("SELECT id, model FROM vehicle_models WHERE make_id = ? ORDER BY model");
-    $stmt->execute([$make_id]);
-    
-    $options = "<option value=''>Select Model</option>"; // Default option
-
-    while ($row = $stmt->fetch()) {
-        $options .= "<option value='{$row['id']}'>{$row['model']}</option>";
+    try {
+        // Fetch models based on the selected make
+        $stmt = $pdo->prepare("SELECT id, model FROM vehicle_models WHERE make_id = ? ORDER BY model");
+        $stmt->execute([$make_id]);
+        
+        $models = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $models[] = $row;
+        }
+        
+        echo json_encode($models);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
-    echo $options; // Send response back to AJAX
+} else {
+    http_response_code(400);
+    echo json_encode(['error' => 'No make_id provided']);
 }
 ?>

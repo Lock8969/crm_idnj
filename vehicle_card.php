@@ -86,13 +86,13 @@ if (!isset($vehicle)) {
         <div class="card-body">
             <!-- STATIC VIEW -->
             <div id="vehicle-static-view">
+                <!-- Row 1 -->
                 <div class="row info-row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Year</div>
                         <div class="info-value" data-field="year">
                             <?php 
                             if (!empty($vehicle['year_id'])) {
-                                // Fetch the year name directly here
                                 $year_id = $vehicle['year_id'];
                                 try {
                                     $year_stmt = $pdo->prepare("SELECT year FROM vehicle_years WHERE id = ?");
@@ -108,7 +108,7 @@ if (!isset($vehicle)) {
                             ?>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Make</div>
                         <div class="info-value" data-field="make">
                             <?php 
@@ -128,10 +128,7 @@ if (!isset($vehicle)) {
                             ?>
                         </div>
                     </div>
-                </div>
-                
-                <div class="row info-row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Model</div>
                         <div class="info-value" data-field="model">
                             <?php 
@@ -151,25 +148,11 @@ if (!isset($vehicle)) {
                             ?>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="info-label">Hybrid</div>
-                        <div class="info-value" data-field="hybrid">
-                            <?php 
-                            // TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified
-                            if ($vehicle['hybrid'] === null) {
-                                echo 'Not specified';
-                            } elseif ($vehicle['hybrid'] == 1) {
-                                echo 'Yes';
-                            } else {
-                                echo 'No';
-                            }
-                            ?>
-                        </div>
-                    </div>
                 </div>
                 
+                <!-- Row 2 -->
                 <div class="row info-row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="info-label">Start System</div>
                         <div class="info-value" data-field="start_system">
                             <?php 
@@ -181,11 +164,24 @@ if (!isset($vehicle)) {
                             ?>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="info-label">Hybrid</div>
+                        <div class="info-value" data-field="hybrid">
+                            <?php 
+                            if ($vehicle['hybrid'] === null) {
+                                echo 'Not specified';
+                            } elseif ($vehicle['hybrid'] == 1) {
+                                echo 'Yes';
+                            } else {
+                                echo 'No';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="info-label">Start/Stop</div>
                         <div class="info-value" data-field="start_stop">
                             <?php 
-                            // TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified
                             if ($vehicle['start_stop'] === null) {
                                 echo 'Not specified';
                             } elseif ($vehicle['start_stop'] == 1) {
@@ -199,6 +195,7 @@ if (!isset($vehicle)) {
                 </div>
                 
                 <?php if (!empty($vehicle['notes'])): ?>
+                <!-- Row 3 -->
                 <div class="row info-row">
                     <div class="col-md-12">
                         <div class="info-label">Vehicle Notes</div>
@@ -215,9 +212,10 @@ if (!isset($vehicle)) {
                 <input type="hidden" name="customer_id" value="<?php echo htmlspecialchars($client_id); ?>">
                 <input type="hidden" name="redirect_url" value="client_detail.php?id=<?php echo htmlspecialchars($client_id); ?>">
 
+                    <!-- Row 1 -->
                     <div class="row">
                         <!-- Column 1: Year -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="year" class="form-label fw-bold fs-5 mb-0">Year</label>
                                 <select id="year" name="year_id" class="form-control form-control-lg mb-0">
@@ -233,7 +231,7 @@ if (!isset($vehicle)) {
                             </div>
                         </div>
                         <!-- Column 2: Make -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="make" class="form-label fw-bold fs-5 mb-0">Make</label>
                                 <select id="make" name="make_id" class="form-control form-control-lg mb-0">
@@ -248,17 +246,13 @@ if (!isset($vehicle)) {
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- Column 1: Model -->
-                        <div class="col-md-6">
+                        <!-- Column 3: Model -->
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="model" class="form-label fw-bold fs-5 mb-0">Model</label>
                                 <select id="model" name="model_id" class="form-control form-control-lg mb-0" <?php echo empty($vehicle['make_id']) ? 'disabled' : ''; ?>>
                                     <option value="">Select Model</option>
                                     <?php
-                                    // If a model is already selected, fetch its name
                                     if (!empty($vehicle['model_id']) && !empty($vehicle['make_id'])) {
                                         $stmt = $pdo->prepare("SELECT id, model FROM vehicle_models WHERE make_id = ? ORDER BY model");
                                         $stmt->execute([$vehicle['make_id']]);
@@ -271,23 +265,12 @@ if (!isset($vehicle)) {
                                 </select>
                             </div>
                         </div>
-                        <!-- Column 2: Hybrid -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="hybrid" class="form-label fw-bold fs-5 mb-0">Hybrid</label>
-                                <!-- TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified -->
-                                <select id="hybrid" name="hybrid" class="form-control form-control-lg mb-0">
-                                    <option value="" <?php echo ($vehicle['hybrid'] === null) ? "selected" : ""; ?>>Select</option>
-                                    <option value="0" <?php echo ($vehicle['hybrid'] == 0) ? "selected" : ""; ?>>No</option>
-                                    <option value="1" <?php echo ($vehicle['hybrid'] == 1) ? "selected" : ""; ?>>Yes</option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
 
+                    <!-- Row 2 -->
                     <div class="row">
                         <!-- Column 1: Start System -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="start_system" class="form-label fw-bold fs-5 mb-0">Start System</label>
                                 <select id="start_system" name="start_system" class="form-control form-control-lg mb-0">
@@ -297,11 +280,21 @@ if (!isset($vehicle)) {
                                 </select>
                             </div>
                         </div>
-                        <!-- Column 2: Start/Stop -->
-                        <div class="col-md-6">
+                        <!-- Column 2: Hybrid -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="hybrid" class="form-label fw-bold fs-5 mb-0">Hybrid</label>
+                                <select id="hybrid" name="hybrid" class="form-control form-control-lg mb-0">
+                                    <option value="" <?php echo ($vehicle['hybrid'] === null) ? "selected" : ""; ?>>Select</option>
+                                    <option value="0" <?php echo ($vehicle['hybrid'] == 0) ? "selected" : ""; ?>>No</option>
+                                    <option value="1" <?php echo ($vehicle['hybrid'] == 1) ? "selected" : ""; ?>>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Column 3: Start/Stop -->
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="start_stop" class="form-label fw-bold fs-5 mb-0">Start/Stop</label>
-                                <!-- TINYINT(1) values: 1 = Yes, 0 = No, NULL = Not specified -->
                                 <select id="start_stop" name="start_stop" class="form-control form-control-lg mb-0">
                                     <option value="" <?php echo ($vehicle['start_stop'] === null) ? "selected" : ""; ?>>Select</option>
                                     <option value="0" <?php echo ($vehicle['start_stop'] == 0) ? "selected" : ""; ?>>No</option>
@@ -311,8 +304,8 @@ if (!isset($vehicle)) {
                         </div>
                     </div>
 
+                    <!-- Row 3: Notes -->
                     <div class="row">
-                        <!-- Column 1: Notes -->
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="notes" class="form-label fw-bold fs-5 mb-0">Vehicle Notes</label>

@@ -108,11 +108,20 @@ $(document).ready(function(){
                 url: "get_models.php",
                 type: "POST",
                 data: { make_id: make_id },
+                dataType: 'json',
                 success: function(response){
-                    $("#model").html(response).prop("disabled", false);
+                    var options = '<option value="">Select Model</option>';
+                    if (Array.isArray(response)) {
+                        response.forEach(function(model) {
+                            options += '<option value="' + model.id + '">' + model.model + '</option>';
+                        });
+                    }
+                    $("#model").html(options).prop("disabled", false);
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error("Error fetching models:", error);
                     alert("Error fetching models. Please try again.");
+                    $("#model").html("<option value=''>Select Model</option>").prop("disabled", true);
                 }
             });
         } else {
