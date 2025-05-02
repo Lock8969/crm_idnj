@@ -142,11 +142,14 @@ function get_pagination_url($page, $search) {
                                 <td><?php echo htmlspecialchars($client['phone_number']); ?></td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#nextAppointmentModal<?php echo htmlspecialchars($client['id']); ?>">
+                                        <a href="invoice-page.php?client_id=<?php echo htmlspecialchars($client['id']); ?>" 
+                                           class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                                           data-template="invoice<?php echo $index; ?>">
                                             <i data-feather="plus-circle" class="icon-xs text-primary"></i>
-                                        </button>
+                                            <div id="invoice<?php echo $index; ?>" class="d-none">
+                                                <span>Create Invoice</span>
+                                            </div>
+                                        </a>
                                         <a href="client_detail.php?id=<?php echo htmlspecialchars($client['id']); ?>" 
                                            class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
                                            data-template="view<?php echo $index; ?>">

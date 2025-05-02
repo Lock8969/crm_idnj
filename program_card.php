@@ -34,76 +34,96 @@ if (!isset($client)) {
 
     <!-- Card Body -->
     <div id="programInfo">
-        <div class="card-body">
+        <div class="card-body" style="min-height: 400px;">
             <!-- STATIC VIEW -->
-            <div id="program-static-view">
+            <div id="program-static-view" class="h-100 d-flex flex-column justify-content-between">
                 <!-- Row 1 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-4">
-                        <div class="info-label">Install Date</div>
-                        <div class="info-value" data-field="install_on">
-                            <?php echo $client['install_on'] ? date('m/d/Y', strtotime($client['install_on'])) : 'Not scheduled'; ?>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Install Date</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="install_on">
+                                <?php echo $client['install_on'] ? date('m/d/Y', strtotime($client['install_on'])) : 'Not scheduled'; ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Offense Number</div>
-                        <div class="info-value" data-field="offense_number"><?php echo htmlspecialchars($client['offense_number'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Offense Number</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="offense_number"><?php echo htmlspecialchars($client['offense_number'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Status</div>
-                        <div class="info-value" data-field="status"><?php echo htmlspecialchars($client['status']); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Status</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="status"><?php echo htmlspecialchars($client['status']); ?></div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Row 2 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-4">
-                        <div class="info-label">Calibration Interval</div>
-                        <div class="info-value" data-field="calibration_interval"><?php echo htmlspecialchars($client['calibration_interval'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Calibration Interval</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="calibration_interval"><?php echo htmlspecialchars($client['calibration_interval'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Law Type</div>
-                        <div class="info-value" data-field="law_type"><?php echo htmlspecialchars($client['law_type'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Law Type</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="law_type"><?php echo htmlspecialchars($client['law_type'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Out of State</div>
-                        <div class="info-value" data-field="out_of_state"><?php echo $client['out_of_state'] ? 'Yes' : 'No'; ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Out of State</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="out_of_state"><?php echo $client['out_of_state'] ? 'Yes' : 'No'; ?></div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Row 3 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-4">
-                        <div class="info-label">Arresting Municipality</div>
-                        <div class="info-value" data-field="arresting_municipality">
-                            <?php 
-                            if ($client['arresting_municipality']) {
-                                $stmt = $pdo->prepare("SELECT township, municipal_code FROM municipality WHERE id = :id");
-                                $stmt->execute(['id' => $client['arresting_municipality']]);
-                                $municipality = $stmt->fetch();
-                                echo htmlspecialchars($municipality['township'] . ' (' . $municipality['municipal_code'] . ')');
-                            } else {
-                                echo 'N/A';
-                            }
-                            ?>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Arresting Municipality</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="arresting_municipality">
+                                <?php 
+                                if ($client['arresting_municipality']) {
+                                    $stmt = $pdo->prepare("SELECT township, municipal_code FROM municipality WHERE id = :id");
+                                    $stmt->execute(['id' => $client['arresting_municipality']]);
+                                    $municipality = $stmt->fetch();
+                                    echo htmlspecialchars($municipality['township'] . ' (' . $municipality['municipal_code'] . ')');
+                                } else {
+                                    echo 'N/A';
+                                }
+                                ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Offense Date</div>
-                        <div class="info-value" data-field="offense_date"><?php echo $client['offense_date'] ? date('m/d/Y', strtotime($client['offense_date'])) : 'N/A'; ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Offense Date</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="offense_date"><?php echo $client['offense_date'] ? date('m/d/Y', strtotime($client['offense_date'])) : 'N/A'; ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Driver's License State</div>
-                        <div class="info-value" data-field="dl_state"><?php echo htmlspecialchars($client['dl_state'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Driver's License State</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="dl_state"><?php echo htmlspecialchars($client['dl_state'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Row 4 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-4">
-                        <div class="info-label">Price Code</div>
-                        <div class="info-value" data-field="price_code">
-                            <?php echo $client['price_code'] ? '$' . number_format($client['price_code'], 2) : 'N/A'; ?>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Price Code</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="price_code">
+                                <?php echo $client['price_code'] ? '$' . number_format($client['price_code'], 2) : 'N/A'; ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4 d-flex align-items-center">

@@ -239,7 +239,8 @@ class AppointmentService {
                 service_note,
                 description,
                 created_by,
-                created_at
+                created_at,
+                invoice_id
             ) VALUES (
                 :customer_id,
                 :title,
@@ -251,7 +252,8 @@ class AppointmentService {
                 :service_note,
                 :description,
                 :created_by,
-                NOW()
+                NOW(),
+                :invoice_id
             )";
             
             $stmt = $this->pdo->prepare($sql);
@@ -266,7 +268,8 @@ class AppointmentService {
                 ':status' => $data['status'] ?? 'scheduled',
                 ':service_note' => $data['service_note'] ?? null,
                 ':description' => $data['description'] ?? null,
-                ':created_by' => $_SESSION['user_id'] ?? null
+                ':created_by' => $_SESSION['user_id'] ?? null,
+                ':invoice_id' => $data['invoice_id'] ?? null
             ]);
             
             $appointmentId = $this->pdo->lastInsertId();

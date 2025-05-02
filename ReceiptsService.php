@@ -71,6 +71,7 @@ class ReceiptsService {
                     i.rent_total as rent_collected,
                     i.service_total as services_collected,
                     i.tax_amount as tax_collected,
+                    i.total_collected,
                     i.created_by,
                     i.location_id,
                     COALESCE(

@@ -193,5 +193,271 @@ class SystemService {
             return ['success' => false, 'message' => 'Error updating user: ' . $stmt->error];
         }
     }
+
+    /**
+     * =============================================
+     * HANDLE TIME CLOCK
+     * =============================================
+     * Manages clock in/out operations for users
+     * 
+     * @param array $data Contains:
+     *   - user_id: ID of the user
+     *   - location_id: ID of the location
+     *   - clock_in_time: DateTime for clock in (if clocking in)
+     *   - clock_out_time: DateTime for clock out (if clocking out)
+     *   - additional_time: Additional minutes (only for clock out)
+     *   - notes: Any notes for the time entry
+     *   - action: Optional - 'check_status' to only check if user has active entry
+     * 
+     * @return array Contains success status and message
+     */
+    public function handleTimeClock($data) {
+        try {
+            // Validate required fields
+            if (empty($data['user_id'])) {
+                return ['success' => false, 'message' => 'User ID is required'];
+            }
+
+            // Get device type from data
+            $browser = isset($data['device_type']) ? $data['device_type'] : 'other';
+
+            // If just checking status
+            if (isset($data['action']) && $data['action'] === 'check_status') {
+                $stmt = $this->db->prepare("
+                    SELECT id FROM time_table 
+                    WHERE user_id = ? AND status = 'active'
+                ");
+                $stmt->bind_param("i", $data['user_id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                return [
+                    'success' => true,
+                    'has_active_entry' => $result->num_rows > 0
+                ];
+            }
+
+            // Validate location_id for actual clock in/out operations
+            if (empty($data['location_id'])) {
+                return ['success' => false, 'message' => 'Location ID is required'];
+            }
+
+            // Get user's full name and location name
+            $stmt = $this->db->prepare("
+                SELECT u.full_name, l.location_name 
+                FROM users u 
+                JOIN locations l ON l.id = ? 
+                WHERE u.id = ?
+            ");
+            $stmt->bind_param("ii", $data['location_id'], $data['user_id']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $userInfo = $result->fetch_assoc();
+
+            if (!$userInfo) {
+                return ['success' => false, 'message' => 'User or location not found'];
+            }
+
+            // If clocking in
+            if (!empty($data['clock_in_time'])) {
+                // Check if user already has an active time entry
+                $stmt = $this->db->prepare("
+                    SELECT id FROM time_table 
+                    WHERE user_id = ? AND status = 'active'
+                ");
+                $stmt->bind_param("i", $data['user_id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                if ($result->num_rows > 0) {
+                    return ['success' => false, 'message' => 'User already has an active time entry'];
+                }
+
+                // Create new time entry
+                $stmt = $this->db->prepare("
+                    INSERT INTO time_table (
+                        user_id, location_id, clock_in_time, status, clock_in_browser, notes
+                    ) VALUES (?, ?, ?, 'active', ?, ?)
+                ");
+                $stmt->bind_param("iisss", 
+                    $data['user_id'], 
+                    $data['location_id'], 
+                    $data['clock_in_time'],
+                    $browser,
+                    $data['notes']
+                );
+                
+                if ($stmt->execute()) {
+                    return [
+                        'success' => true, 
+                        'message' => 'Successfully clocked in',
+                        'log_id' => $stmt->insert_id,
+                        'full_name' => $userInfo['full_name'],
+                        'location_name' => $userInfo['location_name']
+                    ];
+                } else {
+                    return ['success' => false, 'message' => 'Error clocking in: ' . $stmt->error];
+                }
+            }
+            
+            // If clocking out
+            if (!empty($data['clock_out_time'])) {
+                // Find the active time entry for this user
+                $stmt = $this->db->prepare("
+                    SELECT id FROM time_table 
+                    WHERE user_id = ? AND status = 'active'
+                ");
+                $stmt->bind_param("i", $data['user_id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                if ($result->num_rows === 0) {
+                    return ['success' => false, 'message' => 'No active time entry found for user'];
+                }
+
+                $row = $result->fetch_assoc();
+                $log_id = $row['id'];
+
+                // Update the time entry with clock out time
+                $stmt = $this->db->prepare("
+                    UPDATE time_table 
+                    SET clock_out_time = ?,
+                        additional_time = ?,
+                        notes = ?,
+                        clock_out_browser = ?,
+                        status = 'completed'
+                    WHERE user_id = ? AND status = 'active'
+                ");
+                $stmt->bind_param("sissi", 
+                    $data['clock_out_time'],
+                    $data['additional_time'],
+                    $data['notes'],
+                    $browser,
+                    $data['user_id']
+                );
+                
+                if ($stmt->execute()) {
+                    return [
+                        'success' => true, 
+                        'message' => 'Successfully clocked out',
+                        'log_id' => $log_id,
+                        'full_name' => $userInfo['full_name'],
+                        'location_name' => $userInfo['location_name']
+                    ];
+                } else {
+                    return ['success' => false, 'message' => 'Error clocking out: ' . $stmt->error];
+                }
+            }
+
+            return ['success' => false, 'message' => 'Invalid time clock operation'];
+            
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * =============================================
+     * GET TIME CLOCK REPORT
+     * =============================================
+     * Fetches time clock entries for a given date range
+     * 
+     * @param array $data Contains:
+     *   - start_date: Start date in Y-m-d format
+     *   - end_date: End date in Y-m-d format
+     *   - location_id: Optional - Filter by location
+     *   - user_id: Optional - Filter by user
+     * 
+     * @return array Array of time entries with user and location details
+     */
+    public function getTimeClockReport($data) {
+        try {
+            // Validate required fields
+            if (empty($data['start_date']) || empty($data['end_date'])) {
+                return ['success' => false, 'message' => 'Start date and end date are required'];
+            }
+
+            // Build the base query
+            $sql = "
+                SELECT 
+                    t.id,
+                    t.clock_in_time,
+                    t.clock_out_time,
+                    t.additional_time,
+                    t.notes,
+                    t.status,
+                    u.full_name as user_name,
+                    l.location_name,
+                    l.location_type,
+                    TIMESTAMPDIFF(MINUTE, t.clock_in_time, COALESCE(t.clock_out_time, NOW())) + COALESCE(t.additional_time, 0) as total_minutes
+                FROM time_table t
+                JOIN users u ON u.id = t.user_id
+                JOIN locations l ON l.id = t.location_id
+                WHERE DATE(t.clock_in_time) BETWEEN ? AND ?
+            ";
+
+            $params = [$data['start_date'], $data['end_date']];
+            $types = "ss";
+
+            // Add optional filters
+            if (!empty($data['location_id'])) {
+                $sql .= " AND t.location_id = ?";
+                $params[] = $data['location_id'];
+                $types .= "i";
+            }
+
+            if (!empty($data['user_id'])) {
+                $sql .= " AND t.user_id = ?";
+                $params[] = $data['user_id'];
+                $types .= "i";
+            }
+
+            // Order by clock in time
+            $sql .= " ORDER BY t.clock_in_time DESC";
+
+            // Prepare and execute the query
+            $stmt = $this->db->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare statement: " . $this->db->error);
+            }
+
+            $stmt->bind_param($types, ...$params);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            // Process the results
+            $entries = [];
+            while ($row = $result->fetch_assoc()) {
+                // Format dates and times
+                $row['clock_in_time'] = date('Y-m-d g:i A', strtotime($row['clock_in_time']));
+                if ($row['clock_out_time']) {
+                    $row['clock_out_time'] = date('Y-m-d g:i A', strtotime($row['clock_out_time']));
+                }
+
+                // Calculate hours and minutes
+                $totalMinutes = $row['total_minutes'];
+                $hours = floor($totalMinutes / 60);
+                $minutes = $totalMinutes % 60;
+                $row['total_time'] = sprintf('%d hours %d minutes', $hours, $minutes);
+
+                // Add status label
+                $row['status_label'] = $row['status'] === 'active' ? 'Active' : 'Completed';
+
+                $entries[] = $row;
+            }
+
+            return [
+                'success' => true,
+                'data' => $entries,
+                'total_entries' => count($entries)
+            ];
+
+        } catch (Exception $e) {
+            error_log("Time Clock Report Error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Error generating time clock report: ' . $e->getMessage()
+            ];
+        }
+    }
 }
 ?> 

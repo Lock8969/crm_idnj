@@ -118,13 +118,37 @@ if (session_status() === PHP_SESSION_NONE) {
         <!-- Navbar nav -->
         <ul class="navbar-nav flex-column nav-centered" id="sideNavbar">
             <!-- Dashboard direct link -->
+            
             <li class="nav-item">
                 <a class="nav-link" href="https://crm.idnj.com/dashboard.php">
                     <i data-feather="home" class="nav-icon icon-xxs"></i>
                     Dashboard
                 </a>
             </li>
-
+            <!-- Leads dropdown -->
+            <li class="nav-item">
+                <a
+                    class="nav-link has-arrow collapsed"
+                    href="#!"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navLeads"
+                    aria-expanded="false"
+                    aria-controls="navLeads"
+                >
+                    <i data-feather="users" class="nav-icon icon-xxs"></i>
+                    Leads
+                </a>
+                <div id="navLeads" class="collapse" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://crm.idnj.com/leads_incoming.php">Call_log</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://crm.idnj.com/call_log.php">All Leads</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <!-- Inventory direct link -->
             <li class="nav-item">
                 <a class="nav-link" href="inventory.php">
@@ -159,6 +183,9 @@ if (session_status() === PHP_SESSION_NONE) {
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/shop-schedule.php">Shop Schedule</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/report_time.php">Time Tracker</a>
                         </li>
                     </ul>
                 </div>

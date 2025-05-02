@@ -194,11 +194,10 @@ function getClientInfo($clientId) {
                                                         </td>
                                                         <td><?php echo htmlspecialchars($appointment['service_note'] ?? ''); ?></td>
                                                         <td>
-                                                            <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                                   data-bs-toggle="modal" 
-                                                                   data-bs-target="#nextAppointmentModal<?php echo htmlspecialchars($appointment['client_id']); ?>">
+                                                            <a href="invoice-page.php?client_id=<?php echo htmlspecialchars($appointment['client_id']); ?>" 
+                                                               class="btn btn-sm btn-outline-primary">
                                                                 <i class="bi bi-plus-circle"></i>
-                                                            </button>
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>
@@ -214,7 +213,7 @@ function getClientInfo($clientId) {
 <!-- ============================================= -->
 <!-- INVOICE APPOINTMENT MODAL -->
 <!-- ============================================= -->
-<?php foreach ($appointments as $appointment): ?>
+<?php /* foreach ($appointments as $appointment): ?>
 <div class="modal fade" id="nextAppointmentModal<?php echo htmlspecialchars($appointment['client_id']); ?>" tabindex="-1" aria-labelledby="nextAppointmentModalLabel<?php echo htmlspecialchars($appointment['client_id']); ?>" aria-hidden="true">
     <!-- Add Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -329,12 +328,12 @@ function getClientInfo($clientId) {
         </div>
     </div>
 </div>
-<?php endforeach; ?>
+<?php endforeach; */ ?>
 
 <!-- ============================================= -->
 <!-- INVOICE MODAL -->
 <!-- ============================================= -->
-<?php foreach ($appointments as $appointment): ?>
+<?php /* foreach ($appointments as $appointment): ?>
 <div class="modal fade" id="invoiceModal<?php echo htmlspecialchars($appointment['client_id']); ?>" tabindex="-1" aria-labelledby="invoiceModalLabel<?php echo htmlspecialchars($appointment['client_id']); ?>" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 575px;">
         <div class="modal-content">
@@ -451,7 +450,7 @@ function getClientInfo($clientId) {
         </div>
     </div>
 </div>
-<?php endforeach; ?>
+<?php endforeach; */ ?>
 
 <!-- Add Flatpickr JS before other scripts -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

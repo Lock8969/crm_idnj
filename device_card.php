@@ -77,23 +77,27 @@ $current_control_box = $stmt->fetch();
          Contains both static and edit views
          ----- -->
     <div id="deviceInfo">
-        <div class="card-body">
+        <div class="card-body" style="min-height: 200px;">
             <!-- -----
                  STATIC VIEW
                  Displays current device assignments in read-only format
                  ----- -->
-            <div id="device-static-view">
-                <div class="row info-row">
+            <div id="device-static-view" class="h-100 d-flex flex-column justify-content-between">
+                <div class="row">
                     <div class="col-md-6">
-                        <div class="info-label">Handset</div>
-                        <div class="info-value" data-field="handset">
-                            <?php echo $current_handset ? htmlspecialchars($current_handset['serial_number']) : 'N/A'; ?>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Handset</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="handset">
+                                <?php echo $current_handset ? htmlspecialchars($current_handset['serial_number']) : 'N/A'; ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="info-label">Control Box</div>
-                        <div class="info-value" data-field="control_box">
-                            <?php echo $current_control_box ? htmlspecialchars($current_control_box['serial_number']) : 'N/A'; ?>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Control Box</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="control_box">
+                                <?php echo $current_control_box ? htmlspecialchars($current_control_box['serial_number']) : 'N/A'; ?>
+                            </div>
                         </div>
                     </div>
                 </div>

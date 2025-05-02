@@ -83,33 +83,33 @@ NOTES: Card Structure
 This is the main container for the receipts table
 It uses Bootstrap card classes for styling -->
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Receipts</h4>
-        <div class="balance-display">
-            <div class="balance-label">Current Balance (no tax)</div>
-            <div class="balance-amount <?php 
-                if ($balance > 0) echo 'positive';
-                elseif ($balance < 0) echo 'negative';
-                else echo 'zero';
-            ?>" style="<?php 
-                if ($balance > 0) echo 'color: #dc3545;';
-                elseif ($balance < 0) echo 'color: #198754;';
-                else echo 'color: #0d6efd;';
-            ?>">
-                <?php 
-                if ($balance > 0) echo 'Balance Owed: $';
-                elseif ($balance < 0) echo 'Customer Credit: $';
-                else echo 'Balance: $';
-                ?><?php echo number_format(abs($balance), 2); ?>
+    <div class="card-header bg-white" role="button" id="receiptsHeader">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Receipts</h5>
+            <div class="d-flex align-items-center">
+                <div class="balance-display me-3">
+                    <div class="balance-label">Current Balance (no tax)</div>
+                    <div class="balance-amount <?php 
+                        if ($balance > 0) echo 'positive';
+                        elseif ($balance < 0) echo 'negative';
+                        else echo 'zero';
+                    ?>" style="<?php 
+                        if ($balance > 0) echo 'color: #dc3545;';
+                        elseif ($balance < 0) echo 'color: #198754;';
+                        else echo 'color: #0d6efd;';
+                    ?>">
+                        <?php 
+                        if ($balance > 0) echo 'Balance Owed: $';
+                        elseif ($balance < 0) echo 'Customer Credit: $';
+                        else echo 'Balance: $';
+                        ?><?php echo number_format(abs($balance), 2); ?>
+                    </div>
+                </div>
+                <i class="bi bi-chevron-down collapse-icon"></i>
             </div>
         </div>
     </div>
-    <div class="card-body">
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invoiceModal<?php echo $client_id; ?>">
-                <i class="bi bi-plus-lg me-1"></i>New Invoice
-            </button>
-        </div>
+    <div id="receiptsTable" class="card-body" style="display: none;">
         <!-- ------------------------
         NOTES: Table Container
         ------------------------
@@ -128,9 +128,6 @@ It uses Bootstrap card classes for styling -->
                         <th>Invoice #</th>
                         <th>Services</th>
                         <th>Invoice Total</th>
-                        <th>Services Paid</th>
-                        <th>Rent Paid</th>
-                        <th>Tax Paid</th>
                         <th>Total Collected</th>
                         <th>Location</th>
                         <th>Tech</th>
@@ -146,17 +143,10 @@ It uses Bootstrap card classes for styling -->
                 <tbody>
                     <?php if (empty($receipts)): ?>
                         <tr>
-                            <td colspan="12" class="text-center">No receipts found</td>
+                            <td colspan="9" class="text-center">No receipts found</td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach ($receipts as $receipt): 
-                            //------------------------
-                            // NOTES: Total Calculation
-                            //------------------------
-                            // Calculates the total amount collected
-                            // Sums up services, rent, and tax collected
-                            $total_collected = $receipt['services_collected'] + $receipt['rent_collected'] + $receipt['tax_collected'];
-                        ?>
+                        <?php foreach ($receipts as $receipt): ?>
                             <tr>
                                 <!-- ------------------------
                                 NOTES: Data Display
@@ -169,10 +159,7 @@ It uses Bootstrap card classes for styling -->
                                 <td><?php echo htmlspecialchars($receipt['id']); ?></td>
                                 <td><?php echo htmlspecialchars($receipt['service_names']); ?></td>
                                 <td>$<?php echo number_format($receipt['total_amount'], 2); ?></td>
-                                <td>$<?php echo number_format($receipt['services_collected'], 2); ?></td>
-                                <td>$<?php echo number_format($receipt['rent_collected'], 2); ?></td>
-                                <td>$<?php echo number_format($receipt['tax_collected'], 2); ?></td>
-                                <td>$<?php echo number_format($total_collected, 2); ?></td>
+                                <td>$<?php echo number_format($receipt['total_collected'], 2); ?></td>
                                 <td><?php echo htmlspecialchars($receipt['location_name']); ?></td>
                                 <td><?php echo htmlspecialchars($receipt['technician_initials']); ?></td>
                                 <td><?php echo htmlspecialchars($receipt['status']); ?></td>
@@ -186,4 +173,50 @@ It uses Bootstrap card classes for styling -->
             </table>
         </div>
     </div>
-</div> 
+</div>
+
+<style>
+.card-header {
+    cursor: pointer;
+}
+.card-header:hover {
+    background-color: #f8f9fa;
+}
+.balance-display {
+    text-align: right;
+}
+.balance-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+.balance-amount {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.collapse-icon {
+    transition: transform 0.2s ease-in-out;
+}
+.collapse-icon.rotated {
+    transform: rotate(180deg);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.getElementById('receiptsHeader');
+    const content = document.getElementById('receiptsTable');
+    const chevron = header.querySelector('.collapse-icon');
+    
+    header.addEventListener('click', function() {
+        const isVisible = content.style.display !== 'none';
+        
+        if (isVisible) {
+            content.style.display = 'none';
+            chevron.classList.remove('rotated');
+        } else {
+            content.style.display = 'block';
+            chevron.classList.add('rotated');
+        }
+    });
+});
+</script> 

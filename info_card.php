@@ -34,62 +34,82 @@ if (!isset($client)) {
 
     <!-- Card Body -->
     <div id="contactInfo">
-        <div class="card-body">
+        <div class="card-body" style="min-height: 400px;">
             <!-- STATIC VIEW -->
-            <div id="static-view">
+            <div id="static-view" class="h-100 d-flex flex-column justify-content-between">
                 <!-- Row 1 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-4">
-                        <div class="info-label">First Name</div>
-                        <div class="info-value" data-field="first_name"><?php echo htmlspecialchars($client['first_name']); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">First Name</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="first_name"><?php echo htmlspecialchars($client['first_name']); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Last Name</div>
-                        <div class="info-value" data-field="last_name"><?php echo htmlspecialchars($client['last_name']); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Last Name</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="last_name"><?php echo htmlspecialchars($client['last_name']); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Phone</div>
-                        <div class="info-value" data-field="phone_number"><?php echo htmlspecialchars($client['phone_number']); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Phone</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="phone_number"><?php echo htmlspecialchars($client['phone_number']); ?></div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Row 2 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-8">
-                        <div class="info-label">Email</div>
-                        <div class="info-value" data-field="email"><?php echo htmlspecialchars($client['email']); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Email</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="email"><?php echo htmlspecialchars($client['email']); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Date of Birth</div>
-                        <div class="info-value" data-field="dob"><?php echo $client['dob'] ? date('m/d/Y', strtotime($client['dob'])) : 'N/A'; ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Date of Birth</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="dob"><?php echo $client['dob'] ? date('m/d/Y', strtotime($client['dob'])) : 'N/A'; ?></div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Row 3 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-8">
-                        <div class="info-label">Address</div>
-                        <div class="info-value" data-field="address1"><?php echo htmlspecialchars($client['address1']); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Address</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="address1"><?php echo htmlspecialchars($client['address1']); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Address 2</div>
-                        <div class="info-value" data-field="address2"><?php echo htmlspecialchars($client['address2'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Address 2</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="address2"><?php echo htmlspecialchars($client['address2'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Row 4 -->
-                <div class="row info-row">
+                <div class="row">
                     <div class="col-md-4">
-                        <div class="info-label">City</div>
-                        <div class="info-value" data-field="city"><?php echo htmlspecialchars($client['city'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">City</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="city"><?php echo htmlspecialchars($client['city'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">State</div>
-                        <div class="info-value" data-field="state"><?php echo htmlspecialchars($client['state'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">State</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="state"><?php echo htmlspecialchars($client['state'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-label">Zip</div>
-                        <div class="info-value" data-field="zip"><?php echo htmlspecialchars($client['zip'] ?: 'N/A'); ?></div>
+                        <div class="mb-3">
+                            <div class="form-label fw-bold fs-5 mb-0">Zip</div>
+                            <div class="form-control form-control-lg mb-0 bg-light" data-field="zip"><?php echo htmlspecialchars($client['zip'] ?: 'N/A'); ?></div>
+                        </div>
                     </div>
                 </div>
             </div>

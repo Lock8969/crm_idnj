@@ -42,21 +42,26 @@ try {
 ?>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Appointments</h4>
-        <div class="appointment-stats">
-            <div class="upcoming-label">Upcoming Appointments</div>
-            <div class="upcoming-count">
-                <?php 
-                $upcomingCount = count(array_filter($appointments, function($appt) { 
-                    return $appt['is_upcoming']; 
-                }));
-                echo $upcomingCount;
-                ?>
+    <div class="card-header bg-white" role="button" id="appointmentsHeader">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Appointments</h5>
+            <div class="d-flex align-items-center">
+                <div class="appointment-stats">
+                    <div class="upcoming-label">Upcoming Appointments</div>
+                    <div class="upcoming-count">
+                        <?php 
+                        $upcomingCount = count(array_filter($appointments, function($appt) { 
+                            return $appt['is_upcoming']; 
+                        }));
+                        echo $upcomingCount;
+                        ?>
+                    </div>
+                </div>
+                <i class="bi bi-chevron-down collapse-icon ms-3"></i>
             </div>
         </div>
     </div>
-    <div class="card-body">
+    <div id="appointmentsTable" class="card-body" style="display: none;">
         <?php if (empty($appointments)): ?>
             <div class="alert alert-info">
                 <i class="bi bi-info-circle me-2"></i>No appointments found for this client.
@@ -69,13 +74,13 @@ try {
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Type</th>
-                                <th>Location</th>
-                                <th>Tech</th>
-                                <th>Notes</th>
-                                <th>Actions</th>
+                                <th style="width: 15%">Date</th>
+                                <th style="width: 10%">Time</th>
+                                <th style="width: 15%">Type</th>
+                                <th style="width: 20%">Location</th>
+                                <th style="width: 10%">Tech</th>
+                                <th style="width: 20%">Notes</th>
+                                <th style="width: 10%">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,7 +90,7 @@ try {
                             });
                             if (empty($upcomingAppointments)): ?>
                                 <tr>
-                                    <td colspan="6" class="text-center">No upcoming appointments</td>
+                                    <td colspan="7" class="text-center">No upcoming appointments</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($upcomingAppointments as $appointment): ?>
@@ -121,13 +126,13 @@ try {
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Type</th>
-                                <th>Location</th>
-                                <th>Tech</th>
-                                <th>Notes</th>
-                                <th>Actions</th>
+                                <th style="width: 15%">Date</th>
+                                <th style="width: 10%">Time</th>
+                                <th style="width: 15%">Type</th>
+                                <th style="width: 20%">Location</th>
+                                <th style="width: 10%">Tech</th>
+                                <th style="width: 20%">Notes</th>
+                                <th style="width: 10%">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -204,9 +209,39 @@ try {
     font-weight: bold;
     color: #0d6efd;
 }
+.card-header {
+    cursor: pointer;
+}
+.card-header:hover {
+    background-color: #f8f9fa;
+}
+.collapse-icon {
+    transition: transform 0.2s ease-in-out;
+}
+.collapse-icon.rotated {
+    transform: rotate(180deg);
+}
 </style>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.getElementById('appointmentsHeader');
+    const content = document.getElementById('appointmentsTable');
+    const chevron = header.querySelector('.collapse-icon');
+    
+    header.addEventListener('click', function() {
+        const isVisible = content.style.display !== 'none';
+        
+        if (isVisible) {
+            content.style.display = 'none';
+            chevron.classList.remove('rotated');
+        } else {
+            content.style.display = 'block';
+            chevron.classList.add('rotated');
+        }
+    });
+});
+
 // Appointment Action Functions
 function viewAppointment(id) {
     // TODO: Implement view appointment details

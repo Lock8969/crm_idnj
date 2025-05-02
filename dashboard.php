@@ -80,7 +80,7 @@ $(document).ready(function(){
                                 <h3 class="mb-0 fw-bold">Dashboard</h3>
                                 <p class="text-muted mb-0">Location: <?php echo htmlspecialchars($_SESSION['location_name'] ?? 'Unknown'); ?></p>
                             </div>
-                            <a href="#!" class="btn btn-primary">Time Clock</a>
+                            <a href="time_clock.php" class="btn btn-primary">Time Clock</a>
                         </div>
                     </div>
                 </div>

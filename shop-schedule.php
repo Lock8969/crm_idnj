@@ -252,17 +252,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         groupedAppointments[locationName].push(appointment);
                     });
 
-                    // Create a table for each location
+                    // Create a card for each location
                     Object.entries(groupedAppointments).forEach(([locationName, locationAppointments]) => {
-                        // Create location header
-                        const locationHeader = document.createElement('h4');
-                        locationHeader.className = 'mt-4 mb-3';
-                        locationHeader.textContent = locationName;
-                        container.appendChild(locationHeader);
+                        // Create card
+                        const card = document.createElement('div');
+                        card.className = 'card mb-3';
+
+                        // Create card header
+                        const cardHeader = document.createElement('div');
+                        cardHeader.className = 'card-header bg-white';
+                        cardHeader.setAttribute('role', 'button');
+                        cardHeader.setAttribute('data-bs-toggle', 'collapse');
+                        cardHeader.setAttribute('data-bs-target', `#location-${locationName.replace(/\s+/g, '-').toLowerCase()}`);
+                        cardHeader.setAttribute('aria-expanded', 'false');
+                        cardHeader.setAttribute('aria-controls', `location-${locationName.replace(/\s+/g, '-').toLowerCase()}`);
+
+                        // Add header content
+                        cardHeader.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">${locationName}</h5>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                        `;
+                        card.appendChild(cardHeader);
+
+                        // Create collapse div
+                        const collapseDiv = document.createElement('div');
+                        collapseDiv.className = 'collapse';
+                        collapseDiv.id = `location-${locationName.replace(/\s+/g, '-').toLowerCase()}`;
+
+                        // Create card body
+                        const cardBody = document.createElement('div');
+                        cardBody.className = 'card-body';
 
                         // Create table
                         const table = document.createElement('table');
-                        table.className = 'table table-striped table-hover';
+                        table.className = 'table table-hover';
                         
                         // Create table header
                         const thead = document.createElement('thead');
@@ -304,7 +329,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         });
                         table.appendChild(tbody);
 
-                        container.appendChild(table);
+                        // Add table to card body
+                        cardBody.appendChild(table);
+                        collapseDiv.appendChild(cardBody);
+                        card.appendChild(collapseDiv);
+
+                        // Add card to container
+                        container.appendChild(card);
                     });
                 }
 
